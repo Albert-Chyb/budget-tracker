@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "expense-tracker-bf5ac": {
+      "hosting": {
+        "budget-tracker": [
+          "expense-tracker-bf5ac"
+        ]
+      }
+    }
+  }
+}
