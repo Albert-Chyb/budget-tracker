@@ -1,0 +1,24 @@
+:host {
+	display: block;
+}
+
+.login {
+	max-width: 70rem;
+	margin: 0px auto;
+}
+
+.login-section {
+	&:not(:first-child) {
+		margin-top: 1.2rem;
+	}
+
+	&:not(:last-child) {
+		padding-bottom: 1.2rem;
+	}
+}
+
+mat-icon.mat-card-avatar {
+	font-size: 4rem;
+	width: 4rem;
+	height: 4rem;
+}

@@ -5,7 +5,6 @@ import {
 	Provider,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,6 +12,11 @@ import { MatModule } from './mat.module';
 import { MainNavbarComponent } from './components/main-navbar/main-navbar.component';
 import { registerLocaleData } from '@angular/common';
 import localePL from '@angular/common/locales/pl';
+import { LoginComponent } from './pages/login/login.component';
+
+// TODO: 1. Add Progressive Web App
+// TODO: 2. Create service for authentication
+// TODO: 3. Create service for managing currently logged in user.
 
 const PolishLocaleProvider: Provider = {
 	provide: LOCALE_ID,
@@ -24,7 +28,7 @@ const PolishCurrencyCodeProvider: Provider = {
 };
 
 @NgModule({
-	declarations: [AppComponent, MainNavbarComponent],
+	declarations: [AppComponent, MainNavbarComponent, LoginComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,

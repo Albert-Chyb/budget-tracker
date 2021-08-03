@@ -1,0 +1,57 @@
+<mat-card class="login">
+	<mat-card-header>
+		<mat-icon mat-card-avatar>person_add</mat-icon>
+		<mat-card-title>
+			<h1>Zaloguj się</h1>
+		</mat-card-title>
+		<mat-card-subtitle>
+			<p>Wybierz jedną z dostępnych metod logowania.</p>
+		</mat-card-subtitle>
+	</mat-card-header>
+
+	<mat-card-content>
+		<section class="login-section">
+			<mat-card-title-group>
+				<img
+					mat-card-avatar
+					src="assets/icons/google-logo.svg"
+					alt="Google logo"
+				/>
+
+				<mat-card-title>
+					<h2>Google</h2>
+				</mat-card-title>
+
+				<mat-card-subtitle>
+					<p>Skorzystaj z konta Google, aby się zalogować.</p>
+				</mat-card-subtitle>
+			</mat-card-title-group>
+			<button mat-button type="button" color="accent">
+				Zaloguj się z Google
+			</button>
+		</section>
+
+		<mat-divider></mat-divider>
+
+		<section class="login-section">
+			<mat-card-title-group>
+				<img mat-card-avatar src="assets/icons/mask.svg" alt="mask" />
+
+				<mat-card-title>
+					<h2>Kontynuuj bez konta</h2>
+				</mat-card-title>
+
+				<mat-card-subtitle>
+					<p>
+						Przetestuj aplikacje bez zakładania konta. Będziesz mógł później
+						zmienic konto anonimowe na statndardowe z zachowaniem wszystkich
+						danych. Po wylogowaniu nie będzie można przywrócić konta.
+					</p>
+				</mat-card-subtitle>
+			</mat-card-title-group>
+			<button mat-button type="button" color="accent">
+				Zaloguj się anonimowo
+			</button>
+		</section>
+	</mat-card-content>
+</mat-card>
