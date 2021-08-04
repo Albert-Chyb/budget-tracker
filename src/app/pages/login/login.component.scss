@@ -1,3 +1,5 @@
+$section-vertical-spacing: 1.2rem;
+
 :host {
 	display: block;
 }
@@ -9,11 +11,11 @@
 
 .login-section {
 	&:not(:first-child) {
-		margin-top: 1.2rem;
+		padding-top: $section-vertical-spacing;
 	}
 
 	&:not(:last-child) {
-		padding-bottom: 1.2rem;
+		padding-bottom: $section-vertical-spacing;
 	}
 }
 
