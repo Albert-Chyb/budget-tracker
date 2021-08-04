@@ -13,6 +13,10 @@ import { MainNavbarComponent } from './components/main-navbar/main-navbar.compon
 import { registerLocaleData } from '@angular/common';
 import localePL from '@angular/common/locales/pl';
 import { LoginComponent } from './pages/login/login.component';
+import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/auth';
+import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
+import { environment } from 'src/environments/environment';
+import { AngularFireModule } from '@angular/fire';
 
 // TODO: 1. Add Progressive Web App
 // TODO: 2. Create service for authentication
@@ -26,6 +30,14 @@ const PolishCurrencyCodeProvider: Provider = {
 	provide: DEFAULT_CURRENCY_CODE,
 	useValue: 'PLN',
 };
+const FirestoreEmulatorProvider: Provider = {
+	provide: USE_FIRESTORE_EMULATOR,
+	useValue: environment.firestoreEmulators.firestore,
+};
+const AuthEmulatorProvider: Provider = {
+	provide: USE_AUTH_EMULATOR,
+	useValue: environment.firestoreEmulators.auth,
+};
 
 @NgModule({
 	declarations: [AppComponent, MainNavbarComponent, LoginComponent],
@@ -34,8 +46,14 @@ const PolishCurrencyCodeProvider: Provider = {
 		AppRoutingModule,
 		BrowserAnimationsModule,
 		MatModule,
+		AngularFireModule.initializeApp(environment.firestore),
 	],
-	providers: [PolishLocaleProvider, PolishCurrencyCodeProvider],
+	providers: [
+		PolishLocaleProvider,
+		PolishCurrencyCodeProvider,
+		AuthEmulatorProvider,
+		FirestoreEmulatorProvider,
+	],
 	bootstrap: [AppComponent],
 })
 export class AppModule {

@@ -8,4 +8,9 @@ export const environment = {
 		messagingSenderId: '996068851259',
 		appId: '1:996068851259:web:39e7684497a5c9bb19261e',
 	},
+	firestoreEmulators: {
+		useEmulators: false,
+		firestore: undefined,
+		auth: undefined,
+	},
 };
