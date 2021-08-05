@@ -13,7 +13,10 @@ import { MainNavbarComponent } from './components/main-navbar/main-navbar.compon
 import { registerLocaleData } from '@angular/common';
 import localePL from '@angular/common/locales/pl';
 import { LoginComponent } from './pages/login/login.component';
-import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/auth';
+import {
+	AngularFireAuthModule,
+	USE_EMULATOR as USE_AUTH_EMULATOR,
+} from '@angular/fire/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
@@ -47,6 +50,7 @@ const AuthEmulatorProvider: Provider = {
 		BrowserAnimationsModule,
 		MatModule,
 		AngularFireModule.initializeApp(environment.firestore),
+		AngularFireAuthModule,
 	],
 	providers: [
 		PolishLocaleProvider,
