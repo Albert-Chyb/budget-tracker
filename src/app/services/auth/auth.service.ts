@@ -9,8 +9,6 @@ import { map } from 'rxjs/operators';
 })
 export class AuthService {
 	constructor(private readonly _afAuth: AngularFireAuth) {
-		this._afAuth.user.subscribe(user => console.log(user?.displayName));
-
 		this._isLoggedIn$ = this._afAuth.user.pipe(map(user => !!user));
 	}
 
@@ -32,15 +30,8 @@ export class AuthService {
 		if (!user.isAnonymous) throw new Error('User`s account is not anonymous !');
 
 		const googleProvider = new firebase.auth.GoogleAuthProvider();
-		let credentials;
 
-		try {
-			credentials = await user.linkWithPopup(googleProvider);
-		} catch (error) {
-			console.log(error);
-		}
-
-		return credentials;
+		return await user.linkWithPopup(googleProvider);
 	}
 
 	logout() {
