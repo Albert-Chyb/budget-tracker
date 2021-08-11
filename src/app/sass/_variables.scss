@@ -1,0 +1,8 @@
+// Angular material toolbar height on wider screens.
+$mat-toolbar-desktop-height: 64px;
+// Angular material toolbar height on narrower screens.
+$mat-toolbar-mobile-height: 56px;
+// Breakpoint at which material toolbar changes its size.
+$mat-toolbar-size-change-breakpoint: 599px;
+// Distance from edges of the screen to give elements space to breathe.
+$global-spacing: 1rem;

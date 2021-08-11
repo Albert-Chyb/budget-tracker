@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import './app/sass/_variables.scss';
+
 html {
 	font-size: 62.5%;
 }
@@ -14,13 +16,29 @@ body {
 	height: 100%;
 }
 
+* {
+	// Scroll padding that contains fixed navbar height and some additional space.
+	scroll-padding-top: calc(#{$mat-toolbar-desktop-height} + #{$global-spacing});
+
+	@media (max-width: $mat-toolbar-size-change-breakpoint) {
+		scroll-padding-top: calc(
+			#{$mat-toolbar-mobile-height} + #{$global-spacing}
+		);
+	}
+}
+
 // Adds margin equal to the mat-toolbar height.
 .with-fixed-mat-toolbar {
 	// Angular material toolbar height, on screens wider than 599px.
-	padding-top: 64px;
+	padding-top: $mat-toolbar-desktop-height;
 
-	@media (max-width: 599px) {
+	@media (max-width: $mat-toolbar-size-change-breakpoint) {
 		// Angular material toolbar height, on screens narrower than 599px.
-		padding-top: 56px;
+		padding-top: $mat-toolbar-mobile-height;
 	}
+}
+
+// Remove firebase auth emulator warning.
+.firebase-emulator-warning {
+	display: none;
 }
