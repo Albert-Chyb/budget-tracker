@@ -1,6 +1,7 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import firebase from 'firebase/app';
+import { ErrorsService } from '../services/errors/errors.service';
 
 import { FirebaseError } from './errors/firebase-errors';
 
@@ -58,12 +59,8 @@ export class GlobalErrorHandler implements ErrorHandler {
 	}
 
 	private _showMessage(message: string) {
-		const matSnackBar = this._injector.get(MatSnackBar);
+		const matSnackBar = this._injector.get(ErrorsService);
 
-		matSnackBar.open(message, 'Zamknij', {
-			duration: 5000,
-			verticalPosition: 'bottom',
-			horizontalPosition: 'center',
-		});
+		matSnackBar.show(message);
 	}
 }
