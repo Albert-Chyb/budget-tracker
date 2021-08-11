@@ -16,24 +16,18 @@ export class LoginComponent implements OnInit {
 	ngOnInit(): void {}
 
 	async loginWithGoogle() {
-		try {
-			await this._auth.loginWithGoogle();
+		const [, error] = await this._auth.loginWithGoogle();
+
+		if (!error) {
 			this._router.navigateByUrl('/');
-		} catch (error) {
-			this._handleError(error);
 		}
 	}
 
 	async loginAnonymously() {
-		try {
-			await this._auth.loginAnonymously();
-			this._router.navigateByUrl('/');
-		} catch (error) {
-			this._handleError(error);
-		}
-	}
+		const [, error] = await this._auth.loginAnonymously();
 
-	private _handleError(error: any) {
-		console.log(error);
+		if (!error) {
+			this._router.navigateByUrl('/');
+		}
 	}
 }

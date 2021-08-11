@@ -1,5 +1,6 @@
 import {
 	DEFAULT_CURRENCY_CODE,
+	ErrorHandler,
 	LOCALE_ID,
 	NgModule,
 	Provider,
@@ -20,6 +21,7 @@ import {
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
+import { GlobalErrorHandler } from './common/global-error-handler';
 
 // TODO: 1. Add Progressive Web App
 // TODO: 2. Create service for authentication
@@ -37,9 +39,13 @@ const FirestoreEmulatorProvider: Provider = {
 	provide: USE_FIRESTORE_EMULATOR,
 	useValue: environment.firestoreEmulators.firestore,
 };
-const AuthEmulatorProvider: Provider = {
+const FirebaseAuthEmulatorProvider: Provider = {
 	provide: USE_AUTH_EMULATOR,
 	useValue: environment.firestoreEmulators.auth,
+};
+const ErrorHandlerProvider: Provider = {
+	provide: ErrorHandler,
+	useClass: GlobalErrorHandler,
 };
 
 @NgModule({
@@ -55,8 +61,9 @@ const AuthEmulatorProvider: Provider = {
 	providers: [
 		PolishLocaleProvider,
 		PolishCurrencyCodeProvider,
-		AuthEmulatorProvider,
+		FirebaseAuthEmulatorProvider,
 		FirestoreEmulatorProvider,
+		ErrorHandlerProvider,
 	],
 	bootstrap: [AppComponent],
 })
