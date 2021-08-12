@@ -5,5 +5,10 @@
 }
 
 main {
-	margin: vars.$global-spacing;
+	padding: {
+		top: calc(env(safe-area-inset-top) + #{vars.$global-spacing});
+		bottom: calc(env(safe-area-inset-bottom) + #{vars.$global-spacing});
+		left: calc(env(safe-area-inset-left) + #{vars.$global-spacing});
+		right: calc(env(safe-area-inset-right) + #{vars.$global-spacing});
+	}
 }
