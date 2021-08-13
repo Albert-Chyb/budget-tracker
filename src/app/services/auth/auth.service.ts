@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
@@ -14,7 +15,8 @@ export class AuthService {
 	constructor(
 		private readonly _afAuth: AngularFireAuth,
 		private readonly _errorHandler: GlobalErrorHandler,
-		private readonly _user: UserService
+		private readonly _user: UserService,
+		private readonly _router: Router
 	) {}
 
 	private readonly _isLoggedIn$: Observable<boolean> = this._afAuth.user.pipe(
@@ -51,6 +53,8 @@ export class AuthService {
 				take(1)
 			)
 			.toPromise();
+
+		this._router.navigateByUrl('/');
 	}
 
 	private async _executeAuthorization(
