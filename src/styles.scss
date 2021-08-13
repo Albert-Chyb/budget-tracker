@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import './app/sass/_variables.scss';
+@import './app/sass/variables';
+@import './app/sass/components/containers';
 
 html {
 	font-size: 62.5%;

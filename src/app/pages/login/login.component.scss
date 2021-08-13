@@ -1,12 +1,11 @@
+@use '../../sass/components/containers';
+
 $section-vertical-spacing: 1.2rem;
 
 :host {
-	display: block;
-}
+	@include containers.apply('sm');
 
-.login {
-	max-width: 70rem;
-	margin: 0px auto;
+	display: block;
 }
 
 .login-section {
@@ -21,6 +20,6 @@ $section-vertical-spacing: 1.2rem;
 
 mat-icon.mat-card-avatar {
 	font-size: 4rem;
-	width: 4rem;
-	height: 4rem;
+	width: 1em;
+	height: 1em;
 }
