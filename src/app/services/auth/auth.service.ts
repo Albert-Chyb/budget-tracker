@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { FirebaseError } from 'src/app/common/errors/firebase-errors';
 import { GlobalErrorHandler } from 'src/app/common/global-error-handler';
+import { UserService } from '../user/user.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -12,7 +13,8 @@ import { GlobalErrorHandler } from 'src/app/common/global-error-handler';
 export class AuthService {
 	constructor(
 		private readonly _afAuth: AngularFireAuth,
-		private readonly _errorHandler: GlobalErrorHandler
+		private readonly _errorHandler: GlobalErrorHandler,
+		private readonly _user: UserService
 	) {}
 
 	private readonly _isLoggedIn$: Observable<boolean> = this._afAuth.user.pipe(
@@ -40,8 +42,15 @@ export class AuthService {
 		return this._executeAuthorization(() => user.linkWithPopup(googleProvider));
 	}
 
-	logout() {
-		this._afAuth.signOut();
+	async logout() {
+		await this._afAuth.signOut();
+		// Wait until user$ observable emits null which means that user data is no longer present (only then app can be sure that the user is logged out).
+		await this._user.user$
+			.pipe(
+				filter(user => !user),
+				take(1)
+			)
+			.toPromise();
 	}
 
 	private async _executeAuthorization(
@@ -52,6 +61,14 @@ export class AuthService {
 
 		try {
 			await handler();
+
+			// Wait until user data of the newly logged in user is stored in the user$ observable (only then app can be sure that the user is logged in).
+			await this._user.user$
+				.pipe(
+					filter(user => !!user),
+					take(1)
+				)
+				.toPromise();
 		} catch (ex) {
 			error = new FirebaseError(ex);
 			this._errorHandler.handleError(error);

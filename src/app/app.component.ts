@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { UserService } from './services/user/user.service';
 
 @Component({
 	selector: 'app-root',
@@ -10,7 +9,5 @@ import { UserService } from './services/user/user.service';
 	},
 })
 export class AppComponent {
-	constructor(private readonly _user: UserService) {
-		this._user.init();
-	}
+	constructor() {}
 }

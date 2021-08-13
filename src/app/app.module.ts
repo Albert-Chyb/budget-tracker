@@ -1,4 +1,5 @@
 import {
+	APP_INITIALIZER,
 	DEFAULT_CURRENCY_CODE,
 	ErrorHandler,
 	LOCALE_ID,
@@ -22,6 +23,8 @@ import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore'
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { GlobalErrorHandler } from './common/global-error-handler';
+import { initializeUser } from './common/initializers/user-auth-status';
+import { UserService } from './services/user/user.service';
 
 // TODO: 1. Add Progressive Web App
 // TODO: 2. Create service for authentication
@@ -47,6 +50,12 @@ const ErrorHandlerProvider: Provider = {
 	provide: ErrorHandler,
 	useClass: GlobalErrorHandler,
 };
+const UserInitializerProvider: Provider = {
+	provide: APP_INITIALIZER,
+	useFactory: initializeUser,
+	deps: [UserService],
+	multi: true,
+};
 
 @NgModule({
 	declarations: [AppComponent, MainNavbarComponent, LoginComponent],
@@ -64,6 +73,7 @@ const ErrorHandlerProvider: Provider = {
 		FirebaseAuthEmulatorProvider,
 		FirestoreEmulatorProvider,
 		ErrorHandlerProvider,
+		UserInitializerProvider,
 	],
 	bootstrap: [AppComponent],
 })

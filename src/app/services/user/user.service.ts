@@ -28,9 +28,24 @@ export class UserService {
 
 	private _user$: Observable<IUser | null>;
 
-	init() {
-		// TODO: Try to move first subscription in an app initializer.
-		return this._user$.subscribe();
+	/**
+	 * Gets currently logged in user's id (promise way).
+	 *
+	 * @returns Promise of currently logged in user.
+	 */
+	async getUid() {
+		const user = await this._afAuth.currentUser;
+
+		return user?.uid;
+	}
+
+	/**
+	 * Gets currently logged in user's id (rxjs way).
+	 *
+	 * @returns Observable of currently logged in user.
+	 */
+	getUid$() {
+		return from(this.getUid());
 	}
 
 	/**
@@ -51,7 +66,7 @@ export class UserService {
 		};
 
 		const userDocRef = this._afFirestore.doc<IUser>(`users/${user.uid}`);
-		const userDoc = await userDocRef.ref.get();
+		const userDoc = await userDocRef.get().toPromise();
 
 		if (userDoc.exists) {
 			// If user data exists in database, the createdAt field should not be updated.
@@ -86,10 +101,12 @@ export class UserService {
 		);
 	}
 
+	/** Observable of the user data. */
 	get user$() {
 		return this._user$;
 	}
 
+	/** Observable of the user's auth state. */
 	get isLoggedIn$(): Observable<boolean> {
 		return this._user$.pipe(map(user => !!user));
 	}
