@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
 	selector: 'main-navbar',
@@ -7,12 +8,13 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 	styleUrls: ['./main-navbar.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainNavbarComponent implements OnInit {
-	constructor(private readonly _auth: AuthService) {}
+export class MainNavbarComponent {
+	constructor(
+		private readonly _auth: AuthService,
+		private readonly _user: UserService
+	) {}
 
-	isLoggedIn$ = this._auth.isLoggedIn$;
-
-	ngOnInit(): void {}
+	isLoggedIn$ = this._user.isLoggedIn$;
 
 	logout() {
 		this._auth.logout();
