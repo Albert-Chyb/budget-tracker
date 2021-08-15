@@ -54,7 +54,7 @@ export class AuthService {
 			)
 			.toPromise();
 
-		this._router.navigateByUrl('/');
+		this._router.navigateByUrl('/login');
 	}
 
 	private async _executeAuthorization(
@@ -73,6 +73,8 @@ export class AuthService {
 					take(1)
 				)
 				.toPromise();
+
+			this._router.navigateByUrl('/');
 		} catch (ex) {
 			error = new FirebaseError(ex);
 			this._errorHandler.handleError(error);
