@@ -19,8 +19,4 @@ export class MainNavbarComponent {
 	logout() {
 		this._auth.logout();
 	}
-
-	convertAnonymousAccountToPermanent() {
-		this._auth.convertAnonymousAccountToPermanent();
-	}
 }
