@@ -11,4 +11,6 @@ main {
 		left: calc(env(safe-area-inset-left) + #{vars.$global-spacing});
 		right: calc(env(safe-area-inset-right) + #{vars.$global-spacing});
 	}
+	max-width: vars.$global-container-width;
+	margin: 0px auto;
 }
