@@ -8,6 +8,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 
 import { LoginComponent } from './pages/login/login.component';
+import { WalletsComponent } from './pages/wallets/wallets.component';
 
 const redirectLoggedInToHome = () => redirectLoggedInTo(['/']);
 const redirectLoggedOutToLogin = () => redirectUnauthorizedTo(['/login']);
@@ -27,6 +28,14 @@ const routes: Routes = [
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedInToHome,
+		},
+	},
+	{
+		path: 'wallets',
+		component: WalletsComponent,
+		canActivate: [AngularFireAuthGuard],
+		data: {
+			authGuardPipe: redirectLoggedOutToLogin,
 		},
 	},
 ];

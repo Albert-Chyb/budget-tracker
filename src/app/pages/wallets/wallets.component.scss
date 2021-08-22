@@ -1,0 +1,22 @@
+:host {
+	display: block;
+}
+
+.wallets {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+	gap: 1rem;
+}
+
+.wallet-balance {
+	font-size: 3rem;
+}
+
+.wallets-actions {
+	display: flex;
+	align-items: flex-start;
+}
+
+.spacer {
+	flex: 1 1 auto;
+}

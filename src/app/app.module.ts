@@ -1,3 +1,5 @@
+import { registerLocaleData } from '@angular/common';
+import localePL from '@angular/common/locales/pl';
 import {
 	APP_INITIALIZER,
 	DEFAULT_CURRENCY_CODE,
@@ -6,27 +8,28 @@ import {
 	NgModule,
 	Provider,
 } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatModule } from './mat.module';
-import { MainNavbarComponent } from './components/main-navbar/main-navbar.component';
-import { registerLocaleData } from '@angular/common';
-import localePL from '@angular/common/locales/pl';
-import { LoginComponent } from './pages/login/login.component';
+import { AngularFireModule } from '@angular/fire';
 import {
 	AngularFireAuthModule,
 	USE_EMULATOR as USE_AUTH_EMULATOR,
 } from '@angular/fire/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/environments/environment';
-import { AngularFireModule } from '@angular/fire';
+import { FormsModule } from '@angular/forms';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { GlobalErrorHandler } from './common/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
-import { UserService } from './services/user/user.service';
+import { MainNavbarComponent } from './components/main-navbar/main-navbar.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { MatModule } from './mat.module';
 import { HomeComponent } from './pages/home/home.component';
+import { LoginComponent } from './pages/login/login.component';
+import { WalletsComponent } from './pages/wallets/wallets.component';
+import { UserService } from './services/user/user.service';
 
 // TODO: 1. Add Progressive Web App
 // TODO: 2. Create service for authentication
@@ -60,7 +63,14 @@ const UserInitializerProvider: Provider = {
 };
 
 @NgModule({
-	declarations: [AppComponent, MainNavbarComponent, LoginComponent, SidenavComponent, HomeComponent],
+	declarations: [
+		AppComponent,
+		MainNavbarComponent,
+		LoginComponent,
+		SidenavComponent,
+		HomeComponent,
+		WalletsComponent,
+	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
