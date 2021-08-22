@@ -1,0 +1,62 @@
+<ng-container *ngIf="user$ | async as user; else unauthorized">
+	<section class="user" *ngIf="!user.isAnonymous; else isAnonymous">
+		<div class="user-avatar">
+			<img [src]="user.photoURL" alt="Zdjęcie profilowe" />
+		</div>
+
+		<div class="user-name mat-headline">
+			{{ user.displayName }}
+		</div>
+
+		<div class="user-email mat-caption">
+			{{ user.email }}
+		</div>
+	</section>
+
+	<mat-divider></mat-divider>
+
+	<mat-nav-list>
+		<mat-list-item>
+			<mat-icon mat-list-icon>home</mat-icon>
+
+			<a mat-line>Strona główna</a>
+		</mat-list-item>
+
+		<mat-list-item>
+			<mat-icon mat-list-icon>add_circle</mat-icon>
+
+			<a mat-line>Dodaj transakcje</a>
+		</mat-list-item>
+
+		<mat-list-item>
+			<mat-icon mat-list-icon>analytics</mat-icon>
+
+			<a mat-line>Statystyki</a>
+		</mat-list-item>
+
+		<mat-list-item>
+			<mat-icon mat-list-icon>account_balance_wallet</mat-icon>
+
+			<a mat-line>Portfele</a>
+		</mat-list-item>
+
+		<mat-list-item>
+			<mat-icon mat-list-icon>category</mat-icon>
+
+			<a mat-line>Kategorie</a>
+		</mat-list-item>
+	</mat-nav-list>
+</ng-container>
+
+<ng-template #unauthorized>
+	<div class="login-info">
+		<a mat-raised-button color="accent" routerLink="/login">Zaloguj się</a>
+	</div>
+</ng-template>
+
+<ng-template #isAnonymous>
+	<p class="anonymous-account-info">
+		Jesteś zalogowany jako gość, przejdź do strony profilowej, aby założyć
+		konto.
+	</p>
+</ng-template>

@@ -1,4 +1,8 @@
 <mat-toolbar color="primary" role="header">
+	<button mat-icon-button (click)="onHamburgerClick.emit()">
+		<mat-icon>menu</mat-icon>
+	</button>
+
 	<nav>
 		<a mat-button routerLink="/">Monitor budżetu</a>
 	</nav>

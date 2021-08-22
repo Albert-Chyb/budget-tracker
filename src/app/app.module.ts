@@ -25,6 +25,7 @@ import { AngularFireModule } from '@angular/fire';
 import { GlobalErrorHandler } from './common/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
 import { UserService } from './services/user/user.service';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
 
 // TODO: 1. Add Progressive Web App
 // TODO: 2. Create service for authentication
@@ -58,7 +59,7 @@ const UserInitializerProvider: Provider = {
 };
 
 @NgModule({
-	declarations: [AppComponent, MainNavbarComponent, LoginComponent],
+	declarations: [AppComponent, MainNavbarComponent, LoginComponent, SidenavComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,

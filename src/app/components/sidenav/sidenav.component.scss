@@ -1,0 +1,51 @@
+@use '../../sass/variables' as vars;
+@use '../../sass/utils/text-ellipsis' as ellipsis;
+
+:host {
+	display: block;
+	width: 25rem;
+}
+
+.user {
+	padding: vars.$global-spacing 0rem;
+
+	&-avatar {
+		max-height: 10rem;
+		max-width: 10rem;
+		margin: 0px auto;
+
+		img {
+			display: block;
+			width: 100%;
+			height: auto;
+			border-radius: 50%;
+		}
+	}
+
+	&-name,
+	&-email {
+		@include ellipsis.text-ellipsis();
+
+		margin: 0px auto;
+		margin-top: vars.$global-spacing;
+		text-align: center;
+	}
+
+	&-name {
+		width: 17ch;
+	}
+
+	&-email {
+		margin-top: 0.5rem;
+		width: 30ch;
+	}
+}
+
+.login-info {
+	text-align: center;
+	margin-top: 3rem;
+}
+
+.anonymous-account-info {
+	padding: 1rem;
+}

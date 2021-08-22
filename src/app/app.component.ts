@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserService } from './services/user/user.service';
 
 @Component({
 	selector: 'app-root',
@@ -8,6 +9,4 @@ import { Component } from '@angular/core';
 		class: 'with-fixed-mat-toolbar',
 	},
 })
-export class AppComponent {
-	constructor() {}
-}
+export class AppComponent {}

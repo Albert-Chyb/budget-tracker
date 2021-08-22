@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	Output,
+	EventEmitter,
+} from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 
@@ -13,6 +18,8 @@ export class MainNavbarComponent {
 		private readonly _auth: AuthService,
 		private readonly _user: UserService
 	) {}
+
+	@Output('onHamburgerClick') onHamburgerClick = new EventEmitter();
 
 	isLoggedIn$ = this._user.isLoggedIn$;
 

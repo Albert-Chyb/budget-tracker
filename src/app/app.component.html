@@ -1,5 +1,13 @@
-<main-navbar></main-navbar>
+<main-navbar (onHamburgerClick)="sidenav.toggle()"></main-navbar>
 
-<main>
-	<router-outlet></router-outlet>
-</main>
+<mat-sidenav-container>
+	<mat-sidenav class="sidenav" #sidenav mode="side" opened>
+		<sidenav></sidenav>
+	</mat-sidenav>
+
+	<mat-sidenav-content>
+		<main>
+			<router-outlet></router-outlet>
+		</main>
+	</mat-sidenav-content>
+</mat-sidenav-container>
