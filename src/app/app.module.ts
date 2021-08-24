@@ -30,10 +30,9 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { UserService } from './services/user/user.service';
+import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
 
-// TODO: 1. Add Progressive Web App
-// TODO: 2. Create service for authentication
-// TODO: 3. Create service for managing currently logged in user.
+// TODO: Add Progressive Web App
 
 const PolishLocaleProvider: Provider = {
 	provide: LOCALE_ID,
@@ -70,6 +69,7 @@ const UserInitializerProvider: Provider = {
 		SidenavComponent,
 		HomeComponent,
 		WalletsComponent,
+		NewWalletDialogComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -78,6 +78,7 @@ const UserInitializerProvider: Provider = {
 		MatModule,
 		AngularFireModule.initializeApp(environment.firestore),
 		AngularFireAuthModule,
+		FormsModule,
 	],
 	providers: [
 		PolishLocaleProvider,

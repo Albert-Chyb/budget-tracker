@@ -1,0 +1,17 @@
+:host {
+	display: block;
+}
+
+.mat-form-field {
+	width: 100%;
+	margin-bottom: 0.5rem;
+}
+
+.wallet-form-actions {
+	display: flex;
+	justify-content: flex-end;
+
+	*:not(:last-child) {
+		margin-right: 1rem;
+	}
+}

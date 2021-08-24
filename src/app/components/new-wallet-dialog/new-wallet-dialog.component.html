@@ -1,0 +1,80 @@
+<h2 mat-dialog-title>Dodaj nowy portfel</h2>
+
+<mat-dialog-content>
+	<form #walletForm="ngForm">
+		<div>
+			<mat-form-field>
+				<input
+					matInput
+					type="text"
+					name="name"
+					[(ngModel)]="wallet.name"
+					#name="ngModel"
+					required
+					minlength="3"
+					maxlength="32"
+				/>
+				<mat-label>Nazwa</mat-label>
+				<mat-icon matPrefix>title</mat-icon>
+
+				<mat-error *ngIf="name.hasError('required')">
+					Portfel <strong>musi</strong> mieć nazwę
+				</mat-error>
+				<mat-error *ngIf="name.hasError('minlength')">
+					Nazwa musi zawierać <strong>conajmniej</strong>
+					{{ name.getError('minlength').requiredLength }} znaki
+				</mat-error>
+				<mat-error *ngIf="name.hasError('maxlength')">
+					Nazwa <strong>nie może zawierać</strong> więcej niż
+					{{ name.getError('maxlength').requiredLength }} znaki
+				</mat-error>
+			</mat-form-field>
+		</div>
+
+		<div>
+			<mat-form-field>
+				<input
+					matInput
+					type="number"
+					name="balance"
+					[(ngModel)]="wallet.balance"
+					#balance="ngModel"
+					inputmode="numeric"
+					required
+					min="0"
+				/>
+				<mat-label>Wartość</mat-label>
+				<mat-icon matPrefix>paid</mat-icon>
+				<span matSuffix>PLN</span>
+
+				<mat-error *ngIf="balance.hasError('required')">
+					Balans jest wymagany
+				</mat-error>
+				<mat-error *ngIf="balance.hasError('min')">
+					Balans <strong>nie może</strong> być ujemny
+				</mat-error>
+			</mat-form-field>
+		</div>
+
+		<div class="wallet-form-actions">
+			<button
+				type="submit"
+				mat-raised-button
+				color="accent"
+				[mat-dialog-close]="walletForm.value"
+				[disabled]="walletForm.invalid"
+			>
+				Dodaj
+			</button>
+
+			<button
+				type="button"
+				mat-raised-button
+				color="warn"
+				[mat-dialog-close]="null"
+			>
+				Anuluj
+			</button>
+		</div>
+	</form>
+</mat-dialog-content>

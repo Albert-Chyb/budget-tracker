@@ -9,6 +9,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
+import {
+	MatFormFieldDefaultOptions,
+	MatFormFieldModule,
+	MAT_FORM_FIELD_DEFAULT_OPTIONS,
+} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
+	appearance: 'fill',
+};
 
 @NgModule({
 	declarations: [],
@@ -23,6 +34,15 @@ import { MatListModule } from '@angular/material/list';
 		MatSnackBarModule,
 		MatSidenavModule,
 		MatListModule,
+		MatDialogModule,
+		MatFormFieldModule,
+		MatInputModule,
+	],
+	providers: [
+		{
+			provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+			useValue: MAT_FORM_FIELD_SETTINGS,
+		},
 	],
 })
 export class MatModule {
