@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<mat-dialog-content>
+	<form>
+		<mat-form-field>
+			<input
+				name="value"
+				matInput
+				type="text"
+				[placeholder]="placeholder"
+				[(ngModel)]="value"
+				select-on-focus
+			/>
+			<mat-label *ngIf="label">{{ label }}</mat-label>
+		</mat-form-field>
+
+		<div class="actions">
+			<button
+				type="submit"
+				mat-raised-button
+				color="accent"
+				[mat-dialog-close]="value"
+			>
+				OK
+			</button>
+
+			<button
+				type="button"
+				mat-raised-button
+				color="warn"
+				[mat-dialog-close]="null"
+			>
+				Anuluj
+			</button>
+		</div>
+	</form>
+</mat-dialog-content>

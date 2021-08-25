@@ -31,6 +31,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { UserService } from './services/user/user.service';
 import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
+import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
+import { SelectOnFocusDirective } from './directives/select-on-focus/select-on-focus.directive';
 
 // TODO: Add Progressive Web App
 
@@ -70,6 +72,8 @@ const UserInitializerProvider: Provider = {
 		HomeComponent,
 		WalletsComponent,
 		NewWalletDialogComponent,
+		PromptDialogComponent,
+  SelectOnFocusDirective,
 	],
 	imports: [
 		BrowserModule,
