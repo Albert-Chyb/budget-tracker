@@ -1,7 +1,9 @@
 <section *ngIf="wallets$ | async as wallets">
 	<div class="wallets-actions">
 		<h1>Twoje portfele</h1>
+
 		<div class="spacer"></div>
+
 		<button mat-button color="accent" (click)="createWallet()">
 			Dodaj portfel
 		</button>
@@ -22,17 +24,18 @@
 			</mat-card-content>
 
 			<mat-card-actions>
-				<button mat-icon-button matTooltip="Ustaw jako domyślny">
-					<mat-icon>favorite_border</mat-icon>
-				</button>
-
-				<button mat-icon-button color="accent" matTooltip="Zmień nazwę">
+				<button
+					mat-icon-button
+					color="accent"
+					matTooltip="Zmień nazwę"
+					(click)="updateName(wallet)"
+				>
 					<mat-icon>edit</mat-icon>
 				</button>
 
 				<button
 					mat-icon-button
-					color="error"
+					color="warn"
 					matTooltip="Usuń portfel"
 					(click)="deleteWallet(wallet)"
 				>
