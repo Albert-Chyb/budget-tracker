@@ -1,0 +1,21 @@
+:host {
+	display: block;
+}
+
+.wallet-balance {
+	font-size: 3rem;
+}
+
+.wallets-actions {
+	display: flex;
+	align-items: flex-start;
+}
+
+.spacer {
+	flex: 1 1 auto;
+}
+
+.mat-card-actions {
+	display: flex;
+	justify-content: flex-end;
+}

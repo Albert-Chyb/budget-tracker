@@ -1,39 +1,42 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { INewWallet, IWallet } from 'src/app/common/interfaces/wallet';
-import { NewWalletDialogComponent } from 'src/app/components/new-wallet-dialog/new-wallet-dialog.component';
 import { PromptService } from 'src/app/services/prompt/prompt.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
+import { NewWalletDialogComponent } from '../new-wallet-dialog/new-wallet-dialog.component';
+
 @Component({
-	templateUrl: './wallets.component.html',
-	styleUrls: ['./wallets.component.scss'],
+	selector: 'wallet',
+	templateUrl: './wallet.component.html',
+	styleUrls: ['./wallet.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WalletsComponent {
+export class WalletComponent {
 	constructor(
 		private readonly _wallets: WalletsService,
 		private readonly _dialog: MatDialog,
 		private readonly _prompt: PromptService
 	) {}
 
-	wallets$: Observable<IWallet[]> = this._wallets.getAll();
+	@Input('wallet') wallet: IWallet;
+	@Input('show-actions') showActions: boolean = false;
 
-	deleteWallet(wallet: IWallet) {
-		this._wallets.delete(wallet);
+	deleteWallet() {
+		this._wallets.delete(this.wallet);
 	}
 
-	updateName(wallet: IWallet) {
+	updateName() {
 		const name$ = this._prompt.open({
 			title: 'Zmiana nazwy portfela',
 			label: 'Nowa nazwa',
-			value: wallet.name,
+			value: this.wallet.name,
 		});
 
 		name$.pipe(take(1)).subscribe(name => {
-			if (name && name !== wallet.name) this._wallets.updateName(wallet, name);
+			if (name && name !== this.wallet.name)
+				this._wallets.updateName(this.wallet, name);
 		});
 	}
 
@@ -45,9 +48,5 @@ export class WalletsComponent {
 			.toPromise();
 
 		if (data) this._wallets.create(data);
-	}
-
-	trackById(index: number, wallet: IWallet) {
-		return wallet.id;
 	}
 }
