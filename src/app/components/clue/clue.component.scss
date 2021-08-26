@@ -1,0 +1,23 @@
+:host {
+	display: block;
+}
+
+.clue-wrapper {
+	margin: 0px auto;
+	width: fit-content;
+}
+
+.clue-image {
+	width: 15rem;
+	height: 15rem;
+	margin: 0px auto;
+
+	img {
+		width: 100%;
+		height: auto;
+	}
+}
+
+.clue-text {
+	margin-top: 3rem;
+}
