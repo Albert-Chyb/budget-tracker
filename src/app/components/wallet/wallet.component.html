@@ -16,7 +16,7 @@
 			mat-icon-button
 			color="accent"
 			matTooltip="Zmień nazwę"
-			(click)="updateName()"
+			(click)="onWalletEdit.emit(wallet)"
 		>
 			<mat-icon>edit</mat-icon>
 		</button>
@@ -25,7 +25,7 @@
 			mat-icon-button
 			color="warn"
 			matTooltip="Usuń portfel"
-			(click)="deleteWallet()"
+			(click)="onWalletDelete.emit(wallet)"
 		>
 			<mat-icon>delete</mat-icon>
 		</button>

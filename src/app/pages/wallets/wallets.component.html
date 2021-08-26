@@ -14,6 +14,8 @@
 			*ngFor="let wallet of wallets; trackBy: trackById"
 			[wallet]="wallet"
 			[show-actions]="true"
+			(onWalletDelete)="deleteWallet(wallet)"
+			(onWalletEdit)="updateName(wallet)"
 		></wallet>
 	</div>
 </section>
