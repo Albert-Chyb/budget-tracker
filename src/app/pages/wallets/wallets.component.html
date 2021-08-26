@@ -1,15 +1,15 @@
+<div class="wallets-actions">
+	<h1>Twoje portfele</h1>
+
+	<div class="spacer"></div>
+
+	<button mat-button color="accent" (click)="createWallet()">
+		Dodaj portfel
+	</button>
+</div>
+
 <section *ngIf="wallets$ | async as wallets">
-	<div class="wallets-actions">
-		<h1>Twoje portfele</h1>
-
-		<div class="spacer"></div>
-
-		<button mat-button color="accent" (click)="createWallet()">
-			Dodaj portfel
-		</button>
-	</div>
-
-	<div class="wallets">
+	<div class="wallets" *ngIf="wallets.length > 0; else noWalletsInfo">
 		<wallet
 			*ngFor="let wallet of wallets; trackBy: trackById"
 			[wallet]="wallet"
@@ -19,3 +19,9 @@
 		></wallet>
 	</div>
 </section>
+
+<ng-template #noWalletsInfo>
+	<clue img="assets/icons/empty-wallet.svg">
+		Nie posiadasz żadnych portfeli
+	</clue>
+</ng-template>
