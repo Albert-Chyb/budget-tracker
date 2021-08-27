@@ -1,10 +1,11 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Output,
 	EventEmitter,
+	Output,
 } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoadingService } from 'src/app/services/loading/loading.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -16,12 +17,14 @@ import { UserService } from 'src/app/services/user/user.service';
 export class MainNavbarComponent {
 	constructor(
 		private readonly _auth: AuthService,
-		private readonly _user: UserService
+		private readonly _user: UserService,
+		private readonly _loading: LoadingService
 	) {}
 
 	@Output('onHamburgerClick') onHamburgerClick = new EventEmitter();
 
 	isLoggedIn$ = this._user.isLoggedIn$;
+	shouldDisplayLoader$ = this._loading.isLoading$;
 
 	logout() {
 		this._auth.logout();

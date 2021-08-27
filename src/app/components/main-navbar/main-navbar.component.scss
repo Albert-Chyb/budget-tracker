@@ -10,3 +10,14 @@
 .spacer {
 	flex: 1 1 0;
 }
+
+.main-navbar-wrapper {
+	position: relative;
+}
+
+.mat-progress-bar {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}

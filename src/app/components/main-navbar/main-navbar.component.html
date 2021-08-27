@@ -1,32 +1,40 @@
-<mat-toolbar color="primary" role="heading">
-	<button mat-icon-button (click)="onHamburgerClick.emit()">
-		<mat-icon>menu</mat-icon>
-	</button>
+<div class="main-navbar-wrapper">
+	<mat-toolbar color="primary" role="heading">
+		<button mat-icon-button (click)="onHamburgerClick.emit()">
+			<mat-icon>menu</mat-icon>
+		</button>
 
-	<nav>
-		<a mat-button routerLink="/">Monitor budżetu</a>
-	</nav>
+		<nav>
+			<a mat-button routerLink="/">Monitor budżetu</a>
+		</nav>
 
-	<div class="spacer"></div>
+		<div class="spacer"></div>
 
-	<button
-		mat-icon-button
-		matTooltip="Wyloguj się"
-		*ngIf="isLoggedIn$ | async; else login"
-		(click)="logout()"
-		aria-label="Wyloguj się"
-	>
-		<mat-icon>logout</mat-icon>
-	</button>
-
-	<ng-template #login>
-		<a
+		<button
 			mat-icon-button
-			matTooltip="Zaloguj się"
-			routerLink="/login"
-			aria-label="Zaloguj się"
+			matTooltip="Wyloguj się"
+			*ngIf="isLoggedIn$ | async; else login"
+			(click)="logout()"
+			aria-label="Wyloguj się"
 		>
-			<mat-icon>login</mat-icon>
-		</a>
-	</ng-template>
-</mat-toolbar>
+			<mat-icon>logout</mat-icon>
+		</button>
+
+		<ng-template #login>
+			<a
+				mat-icon-button
+				matTooltip="Zaloguj się"
+				routerLink="/login"
+				aria-label="Zaloguj się"
+			>
+				<mat-icon>login</mat-icon>
+			</a>
+		</ng-template>
+	</mat-toolbar>
+
+	<mat-progress-bar
+		*ngIf="shouldDisplayLoader$ | async"
+		mode="indeterminate"
+		color="accent"
+	></mat-progress-bar>
+</div>
