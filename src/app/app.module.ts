@@ -77,7 +77,7 @@ const UserInitializerProvider: Provider = {
 		PromptDialogComponent,
 		SelectOnFocusDirective,
 		WalletComponent,
-  ClueComponent,
+		ClueComponent,
 	],
 	imports: [
 		BrowserModule,
