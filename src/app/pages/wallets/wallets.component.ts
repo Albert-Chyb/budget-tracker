@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { INewWallet, IWallet } from 'src/app/common/interfaces/wallet';
 import { NewWalletDialogComponent } from 'src/app/components/new-wallet-dialog/new-wallet-dialog.component';
+import { LoadingService } from 'src/app/services/loading/loading.service';
 import { PromptService } from 'src/app/services/prompt/prompt.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
@@ -16,13 +16,14 @@ export class WalletsComponent {
 	constructor(
 		private readonly _wallets: WalletsService,
 		private readonly _dialog: MatDialog,
-		private readonly _prompt: PromptService
+		private readonly _prompt: PromptService,
+		private readonly _loading: LoadingService
 	) {}
 
-	wallets$: Observable<IWallet[]> = this._wallets.getAll();
+	wallets$ = this._loading.add(this._wallets.getAll());
 
 	deleteWallet(wallet: IWallet) {
-		this._wallets.delete(wallet);
+		this._loading.add(this._wallets.delete(wallet));
 	}
 
 	updateName(wallet: IWallet) {
@@ -33,7 +34,8 @@ export class WalletsComponent {
 		});
 
 		name$.pipe(take(1)).subscribe(name => {
-			if (name && name !== wallet.name) this._wallets.updateName(wallet, name);
+			if (name && name !== wallet.name)
+				this._loading.add(this._wallets.updateName(wallet, name));
 		});
 	}
 
@@ -44,7 +46,7 @@ export class WalletsComponent {
 			.pipe(take(1))
 			.toPromise();
 
-		if (data) this._wallets.create(data);
+		if (data) this._loading.add(this._wallets.create(data));
 	}
 
 	trackById(index: number, wallet: IWallet) {
