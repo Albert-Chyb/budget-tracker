@@ -35,6 +35,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
 import { SelectOnFocusDirective } from './directives/select-on-focus/select-on-focus.directive';
 import { WalletComponent } from './components/wallet/wallet.component';
 import { ClueComponent } from './components/clue/clue.component';
+import { MoneyAmountValidatorDirective } from './directives/money-amount-validator/money-amount-validator.directive';
 
 // TODO: Add Progressive Web App
 
@@ -78,6 +79,7 @@ const UserInitializerProvider: Provider = {
 		SelectOnFocusDirective,
 		WalletComponent,
 		ClueComponent,
+		MoneyAmountValidatorDirective,
 	],
 	imports: [
 		BrowserModule,

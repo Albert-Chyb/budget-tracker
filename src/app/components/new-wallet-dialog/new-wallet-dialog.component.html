@@ -35,13 +35,15 @@
 			<mat-form-field>
 				<input
 					matInput
-					type="number"
+					type="text"
 					name="balance"
 					[(ngModel)]="wallet.balance"
 					#balance="ngModel"
 					inputmode="numeric"
 					required
 					min="0"
+					step="0.25"
+					money-amount-validator
 				/>
 				<mat-label>Wartość</mat-label>
 				<mat-icon matPrefix>paid</mat-icon>
@@ -52,6 +54,9 @@
 				</mat-error>
 				<mat-error *ngIf="balance.hasError('min')">
 					Balans <strong>nie może</strong> być ujemny
+				</mat-error>
+				<mat-error *ngIf="balance.hasError('invalidMoneyFormat')">
+					Podaj <strong>poprawnie</strong> sformatowaną wartość.
 				</mat-error>
 			</mat-form-field>
 		</div>
