@@ -11,4 +11,8 @@ export class NewWalletDialogComponent {
 		name: '',
 		balance: 0,
 	};
+
+	processForm(wallet: INewWallet) {
+		return { ...wallet, balance: Number(wallet.balance) };
+	}
 }
