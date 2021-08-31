@@ -5,6 +5,7 @@ import {
 	redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
 import { RouterModule, Routes } from '@angular/router';
+import { CategoriesComponent } from './pages/categories/categories.component';
 import { HomeComponent } from './pages/home/home.component';
 
 import { LoginComponent } from './pages/login/login.component';
@@ -33,6 +34,14 @@ const routes: Routes = [
 	{
 		path: 'wallets',
 		component: WalletsComponent,
+		canActivate: [AngularFireAuthGuard],
+		data: {
+			authGuardPipe: redirectLoggedOutToLogin,
+		},
+	},
+	{
+		path: 'categories',
+		component: CategoriesComponent,
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,

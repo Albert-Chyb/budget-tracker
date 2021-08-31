@@ -36,6 +36,7 @@ import { SelectOnFocusDirective } from './directives/select-on-focus/select-on-f
 import { WalletComponent } from './components/wallet/wallet.component';
 import { ClueComponent } from './components/clue/clue.component';
 import { MoneyAmountValidatorDirective } from './directives/money-amount-validator/money-amount-validator.directive';
+import { CategoriesComponent } from './pages/categories/categories.component';
 
 // TODO: Add Progressive Web App
 
@@ -80,6 +81,7 @@ const UserInitializerProvider: Provider = {
 		WalletComponent,
 		ClueComponent,
 		MoneyAmountValidatorDirective,
+		CategoriesComponent,
 	],
 	imports: [
 		BrowserModule,
