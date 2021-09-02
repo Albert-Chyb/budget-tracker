@@ -1,3 +1,13 @@
+@use '../../sass/components/containers';
+
 :host {
-  display: block;
+	display: block;
+
+	.mat-list-avatar {
+		border-radius: 0px;
+	}
+}
+
+.mat-list {
+	@include containers.apply('sm');
 }

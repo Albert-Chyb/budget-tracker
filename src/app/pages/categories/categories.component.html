@@ -1,1 +1,25 @@
-<p>categories works!</p>
+<mat-list role="list" *ngIf="categories$ | async as categories">
+	<mat-list-item
+		role="listitem"
+		*ngFor="let category of categories; trackBy: trackById"
+	>
+		<img [src]="category.icon" mat-list-avatar />
+
+		<span mat-line>{{ category.name }}</span>
+		<button mat-icon-button [mat-menu-trigger-for]="menu">
+			<mat-icon>more_vert</mat-icon>
+		</button>
+
+		<mat-menu #menu="matMenu">
+			<button mat-menu-item>
+				<mat-icon>edit</mat-icon>
+				<span>Edytuj</span>
+			</button>
+
+			<button mat-menu-item>
+				<mat-icon>delete</mat-icon>
+				<span>Usuń</span>
+			</button>
+		</mat-menu>
+	</mat-list-item>
+</mat-list>
