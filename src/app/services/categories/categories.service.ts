@@ -49,12 +49,20 @@ export class CategoriesService {
 	async update(id: string, category: Partial<INewCategory>) {
 		const uid = await this._user.getUid();
 
-		return this._afStore.doc(`users/${uid}/categories/${id}`).update(category);
+		return this._afStore
+			.doc<ICategory>(`users/${uid}/categories/${id}`)
+			.update(category);
 	}
 
 	async delete(id: string) {
 		const uid = await this._user.getUid();
+		const categoryRef = this._afStore.doc<ICategory>(
+			`users/${uid}/categories/${id}`
+		);
 
-		return this._afStore.doc(`users/${uid}/categories/${id}`).delete();
+		// TODO: Check if transactions collection has a transaction with passed category.
+		// If there are none delete the category otherwise, set its isHidden property to true.
+
+		return categoryRef.update({ isHidden: true });
 	}
 }
