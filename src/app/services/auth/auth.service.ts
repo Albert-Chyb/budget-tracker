@@ -76,7 +76,7 @@ export class AuthService {
 
 			this._router.navigateByUrl('/');
 		} catch (ex) {
-			error = new FirebaseError(ex);
+			error = new FirebaseError(ex as any);
 			this._errorHandler.handleError(error);
 		}
 
