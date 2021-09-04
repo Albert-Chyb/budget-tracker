@@ -21,7 +21,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
 
 const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
-	appearance: 'fill',
+	appearance: 'outline',
 };
 
 @NgModule({
