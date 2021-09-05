@@ -1,0 +1,36 @@
+@use '../../sass/components/responsive-square' as square;
+
+$border-color: #6f6f6f;
+
+:host {
+	display: block;
+	@include square.wrapper();
+
+	color: rgba(255, 255, 255, 0.7);
+}
+
+// TODO: Add styles when input is focused
+
+.file-input {
+	@include square.content();
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	border: 0.1rem solid $border-color;
+	border-radius: 0.3rem;
+	user-select: none;
+
+	&:focus-within,
+	&:hover {
+		border-color: #7b1fa2;
+		border-width: 0.2rem;
+		outline: none;
+		background-color: hsla(282, 68%, 38%, 0.05);
+
+		.mat-icon {
+			color: #7b1fa2;
+		}
+	}
+}

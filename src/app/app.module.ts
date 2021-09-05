@@ -37,6 +37,7 @@ import { WalletComponent } from './components/wallet/wallet.component';
 import { ClueComponent } from './components/clue/clue.component';
 import { MoneyAmountValidatorDirective } from './directives/money-amount-validator/money-amount-validator.directive';
 import { CategoriesComponent } from './pages/categories/categories.component';
+import { FileInputComponent } from './components/file-input/file-input.component';
 
 // TODO: Add Progressive Web App
 
@@ -82,6 +83,7 @@ const UserInitializerProvider: Provider = {
 		ClueComponent,
 		MoneyAmountValidatorDirective,
 		CategoriesComponent,
+  FileInputComponent,
 	],
 	imports: [
 		BrowserModule,

@@ -1,0 +1,16 @@
+/*
+    Uses the trick with padding set in percentages to create a responsive square.
+*/
+
+@mixin wrapper() {
+	position: relative;
+	padding-top: 100%;
+}
+
+@mixin content() {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
