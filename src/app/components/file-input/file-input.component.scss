@@ -1,36 +1,77 @@
 @use '../../sass/components/responsive-square' as square;
 
 $border-color: #6f6f6f;
+$disabled-border-color: #4f4f4f;
+$color: rgba(255, 255, 255, 0.7);
+$disabled-color: rgba(255, 255, 255, 0.5);
 
 :host {
 	display: block;
 	@include square.wrapper();
-
-	color: rgba(255, 255, 255, 0.7);
 }
-
-// TODO: Add styles when input is focused
 
 .file-input {
 	@include square.content();
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	box-shadow: inset 0px 0px 0px 0.1rem $border-color;
+	color: $color;
 	cursor: pointer;
-	border: 0.1rem solid $border-color;
-	border-radius: 0.3rem;
+	border-radius: 0.4rem;
 	user-select: none;
+	transition: box-shadow 100ms linear, background-color 100ms linear;
 
 	&:focus-within,
 	&:hover {
-		border-color: #7b1fa2;
-		border-width: 0.2rem;
 		outline: none;
-		background-color: hsla(282, 68%, 38%, 0.05);
+		box-shadow: inset 0px 0px 0px 0.3rem hsl(282, 68%, 38%);
+		color: hsl(282, 68%, 38%);
+	}
 
-		.mat-icon {
-			color: #7b1fa2;
+	&:hover {
+		background-color: hsla(282, 68%, 38%, 0.1);
+	}
+
+	&--disabled {
+		color: $disabled-color;
+		border-color: $disabled-border-color;
+		pointer-events: none;
+	}
+
+	&__overlay {
+		display: none;
+		position: absolute;
+		justify-content: center;
+		align-items: center;
+
+		z-index: 20;
+		inset: 0rem;
+
+		&--always-shown {
+			display: flex;
 		}
+
+		&--backdrop {
+			background-color: hsla(0, 0%, 0%, 0.2);
+		}
+	}
+
+	&:hover &__overlay {
+		display: flex;
+	}
+
+	&__preview-wrapper {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		height: calc(100% - 0.6rem);
+		width: calc(100% - 0.6rem);
+	}
+
+	&__preview {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
 	}
 }

@@ -1,5 +1,35 @@
-<label class="file-input" mat-ripple>
-	<input type="file" class="cdk-visually-hidden" />
+<label
+	class="file-input"
+	[ngClass]="{
+		'file-input--without-preview': !hasPreview,
+		'file-input--disabled': isDisabled
+	}"
+	mat-ripple
+	[matRippleDisabled]="isDisabled"
+>
+	<input
+		type="file"
+		class="cdk-visually-hidden"
+		#vanillaInput
+		(change)="handleFileChange()"
+		[disabled]="isDisabled"
+		[accept]="accept"
+	/>
 
-	<mat-icon>add_a_photo</mat-icon>
+	<div class="file-input__preview-wrapper">
+		<img
+			*ngIf="hasPreview"
+			#filePreview
+			class="file-input__preview"
+			alt="file preview"
+		/>
+	</div>
+
+	<span
+		[class.file-input__overlay--always-shown]="!hasPreview"
+		[class.file-input__overlay--backdrop]="hasPreview"
+		class="file-input__overlay"
+	>
+		<mat-icon>add_photo_alternate</mat-icon>
+	</span>
 </label>

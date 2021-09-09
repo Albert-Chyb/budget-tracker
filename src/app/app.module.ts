@@ -83,7 +83,7 @@ const UserInitializerProvider: Provider = {
 		ClueComponent,
 		MoneyAmountValidatorDirective,
 		CategoriesComponent,
-  FileInputComponent,
+		FileInputComponent,
 	],
 	imports: [
 		BrowserModule,
