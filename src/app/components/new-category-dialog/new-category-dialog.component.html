@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>{{ editMode ? 'Edytuj kategorię' : 'Nowa kategoria' }}</h2>
+
+<form #categoryForm="ngForm">
+	<mat-form-field>
+		<input
+			name="name"
+			matInput
+			type="text"
+			[(ngModel)]="category.name"
+			#catName="ngModel"
+			minlength="3"
+			maxlength="64"
+			required
+		/>
+		<mat-label>Nazwa</mat-label>
+
+		<mat-error *ngIf="catName.hasError('minlength')">
+			Nazwa <strong>nie może być krótsza</strong> niż 3 znaki.
+		</mat-error>
+
+		<mat-error *ngIf="catName.hasError('maxlength')">
+			Nazwa <strong>nie może być dłuższa</strong> niż 64 znaki.
+		</mat-error>
+
+		<mat-error *ngIf="catName.hasError('required')">
+			Kategoria <strong>musi mieć</strong> nazwę.
+		</mat-error>
+	</mat-form-field>
+
+	<section>
+		<file-input
+			name="icon"
+			accept=".svg"
+			[required]="!editMode"
+			[preview]="categoryIconPreview"
+			[(ngModel)]="category.icon"
+		></file-input>
+
+		<mat-hint>Tylko zdjęcia w formacie .svg</mat-hint>
+	</section>
+
+	<section class="actions">
+		<button
+			mat-raised-button
+			color="accent"
+			[mat-dialog-close]="category"
+			[disabled]="categoryForm.invalid"
+		>
+			OK
+		</button>
+
+		<button
+			type="button"
+			mat-raised-button
+			color="warn"
+			[mat-dialog-close]="null"
+		>
+			Anuluj
+		</button>
+	</section>
+</form>

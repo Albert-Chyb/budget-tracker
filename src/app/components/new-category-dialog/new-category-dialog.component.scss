@@ -1,0 +1,24 @@
+:host {
+	display: block;
+}
+
+file-input {
+	margin-bottom: 1rem;
+}
+
+.mat-form-field {
+	width: 100%;
+}
+
+section:not(:last-child) {
+	margin-bottom: 1.4rem;
+}
+
+.actions {
+	display: flex;
+	justify-content: flex-end;
+
+	.mat-raised-button:not(:last-child) {
+		margin-right: 1rem;
+	}
+}

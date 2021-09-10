@@ -38,6 +38,7 @@ import { ClueComponent } from './components/clue/clue.component';
 import { MoneyAmountValidatorDirective } from './directives/money-amount-validator/money-amount-validator.directive';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
+import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
 
 // TODO: Add Progressive Web App
 
@@ -84,6 +85,7 @@ const UserInitializerProvider: Provider = {
 		MoneyAmountValidatorDirective,
 		CategoriesComponent,
 		FileInputComponent,
+  NewCategoryDialogComponent,
 	],
 	imports: [
 		BrowserModule,
