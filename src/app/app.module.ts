@@ -18,7 +18,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GlobalErrorHandler } from './common/global-error-handler';
@@ -39,6 +38,8 @@ import { MoneyAmountValidatorDirective } from './directives/money-amount-validat
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
 import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import firebase from 'firebase/app';
 
 // TODO: Add Progressive Web App
 
@@ -85,7 +86,7 @@ const UserInitializerProvider: Provider = {
 		MoneyAmountValidatorDirective,
 		CategoriesComponent,
 		FileInputComponent,
-  NewCategoryDialogComponent,
+		NewCategoryDialogComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -95,6 +96,7 @@ const UserInitializerProvider: Provider = {
 		AngularFireModule.initializeApp(environment.firestore),
 		AngularFireAuthModule,
 		FormsModule,
+		AngularFireStorageModule,
 	],
 	providers: [
 		PolishLocaleProvider,
@@ -109,5 +111,10 @@ const UserInitializerProvider: Provider = {
 export class AppModule {
 	constructor() {
 		registerLocaleData(localePL, 'pl-PL');
+
+		if (environment.firestoreEmulators.useEmulators) {
+			const [host, port] = environment.firestoreEmulators.storage;
+			firebase.storage().useEmulator(<string>host, <number>port);
+		}
 	}
 }

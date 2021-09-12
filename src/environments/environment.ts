@@ -16,6 +16,7 @@ export const environment = {
 		useEmulators: true,
 		firestore: ['localhost', 8080],
 		auth: ['localhost', 9099],
+		storage: ['localhost', 9199],
 	},
 };
 
