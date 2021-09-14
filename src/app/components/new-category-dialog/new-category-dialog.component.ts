@@ -2,6 +2,13 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ICategory, INewCategory } from 'src/app/common/interfaces/category';
 
+export interface INewCategoryDialogResult {
+	/** Name of the category */
+	name: string;
+	/** Icon of the category. It contains null value if none were selected. */
+	icon: File | null;
+}
+
 @Component({
 	templateUrl: './new-category-dialog.component.html',
 	styleUrls: ['./new-category-dialog.component.scss'],
@@ -23,5 +30,12 @@ export class NewCategoryDialogComponent {
 
 	get editMode() {
 		return !!this._category;
+	}
+
+	processForm(formValue: any) {
+		return {
+			name: formValue.name,
+			icon: formValue.icon instanceof File ? formValue.icon : null,
+		};
 	}
 }
