@@ -15,9 +15,10 @@ export class CategoriesService {
 
 	async create(category: INewCategory): Promise<DocumentReference<ICategory>> {
 		const uid = await this._user.getUid();
-		const cat = { ...category, isHidden: false };
 
-		return this._afStore.collection(`users/${uid}/categories`).add(cat) as any;
+		return this._afStore
+			.collection(`users/${uid}/categories`)
+			.add(category) as any;
 	}
 
 	read(id: string) {
@@ -38,9 +39,7 @@ export class CategoriesService {
 			.pipe(
 				switchMap(uid =>
 					this._afStore
-						.collection<ICategory>(`users/${uid}/categories`, query =>
-							query.where('isHidden', '==', false)
-						)
+						.collection<ICategory>(`users/${uid}/categories`)
 						.valueChanges({ idField: 'id' })
 				)
 			);
@@ -55,14 +54,12 @@ export class CategoriesService {
 	}
 
 	async delete(id: string) {
-		const uid = await this._user.getUid();
-		const categoryRef = this._afStore.doc<ICategory>(
-			`users/${uid}/categories/${id}`
-		);
+		// TODO: Write a cloud function that checks if a category is referenced by a transaction.
+		/*
+			If a category is referenced by at least by a one transaction, it cannot be removed.
+			If not it can be safely removed from collection.
+		*/
 
-		// TODO: Check if transactions collection has a transaction with passed category.
-		// If there are none delete the category otherwise, set its isHidden property to true.
-
-		return categoryRef.update({ isHidden: true });
+		throw new Error('Deleting categories is not implemented yet.');
 	}
 }
