@@ -20,6 +20,7 @@ export class NewCategoryDialogComponent {
 	private readonly rawCategory: INewCategory = {
 		name: '',
 		icon: null,
+		iconPath: null,
 	};
 
 	category = this.editMode ? { ...this._category } : this.rawCategory;

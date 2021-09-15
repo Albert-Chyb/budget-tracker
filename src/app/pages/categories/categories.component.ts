@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
+import { filter, first, map, take } from 'rxjs/operators';
 import { ICategory, INewCategory } from 'src/app/common/interfaces/category';
 import {
 	INewCategoryDialogResult,
@@ -68,14 +68,18 @@ export class CategoriesComponent {
 		category: INewCategoryDialogResult
 	): Promise<INewCategory> {
 		let iconUrl: string;
+		let iconPath: string;
 
 		if (category.icon instanceof File) {
-			iconUrl = await this._loading.add(this._uploadIcon(category.icon));
+			const upload = await this._loading.add(this._uploadIcon(category.icon));
+			iconUrl = await upload.URL;
+			iconPath = await upload.path;
 		}
 
 		const payload: INewCategory = {
 			name: category.name,
 			icon: iconUrl,
+			iconPath,
 		};
 
 		if (!iconUrl) {
@@ -117,9 +121,22 @@ export class CategoriesComponent {
 	 * @param icon Icon that will be uploaded to the storage.
 	 * @returns Url to the file.
 	 */
-	private async _uploadIcon(icon: File): Promise<string> {
+	private async _uploadIcon(
+		icon: File
+	): Promise<{ URL: Promise<string>; path: Promise<string> }> {
 		const upload = await this._storage.upload('categories-icons', icon);
+		const URL = upload.getURL$.toPromise();
+		const path = upload.snapshot$
+			.pipe(
+				filter(snap => snap.bytesTransferred === snap.totalBytes),
+				map(snap => snap.ref.fullPath),
+				take(1)
+			)
+			.toPromise();
 
-		return upload.getURL$.toPromise();
+		return {
+			URL,
+			path,
+		};
 	}
 }
