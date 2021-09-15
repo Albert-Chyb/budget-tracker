@@ -67,10 +67,11 @@ export class CategoriesComponent {
 	private async _buildCategory(
 		category: INewCategoryDialogResult
 	): Promise<INewCategory> {
+		const iconChanged = category.icon instanceof File;
 		let iconUrl: string;
 		let iconPath: string;
 
-		if (category.icon instanceof File) {
+		if (iconChanged) {
 			const upload = await this._loading.add(this._uploadIcon(category.icon));
 			iconUrl = await upload.URL;
 			iconPath = await upload.path;
@@ -82,11 +83,9 @@ export class CategoriesComponent {
 			iconPath,
 		};
 
-		if (!iconUrl) {
-			// Firestore cannot add an object that contains a property with null value.
-			// It may happen when user updated category data but left icon the same.
-			// Therefore the icon property is removed entirely.
+		if (!iconChanged) {
 			delete payload.icon;
+			delete payload.iconPath;
 		}
 
 		return payload;

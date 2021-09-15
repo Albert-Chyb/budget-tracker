@@ -6,7 +6,7 @@
 			name="name"
 			matInput
 			type="text"
-			[(ngModel)]="category.name"
+			[(ngModel)]="result.name"
 			#catName="ngModel"
 			minlength="3"
 			maxlength="64"
@@ -34,7 +34,7 @@
 			accept=".svg"
 			[required]="!editMode"
 			[preview]="categoryIconPreview"
-			[(ngModel)]="category.icon"
+			[(ngModel)]="result.icon"
 		></file-input>
 
 		<mat-hint>Tylko zdjęcia w formacie .svg</mat-hint>
@@ -45,7 +45,7 @@
 			type="submit"
 			mat-raised-button
 			color="accent"
-			[mat-dialog-close]="processForm(category)"
+			[mat-dialog-close]="processForm()"
 			[disabled]="categoryForm.invalid"
 		>
 			OK
