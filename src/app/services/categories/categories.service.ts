@@ -39,7 +39,9 @@ export class CategoriesService {
 			.pipe(
 				switchMap(uid =>
 					this._afStore
-						.collection<ICategory>(`users/${uid}/categories`)
+						.collection<ICategory>(`users/${uid}/categories`, query =>
+							query.orderBy('name', 'asc')
+						)
 						.valueChanges({ idField: 'id' })
 				)
 			);
