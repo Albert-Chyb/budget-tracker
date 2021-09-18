@@ -1,0 +1,24 @@
+:host {
+	@extend .loading-indicator;
+
+	display: block;
+}
+
+.loading-indicator {
+	position: relative;
+
+	&__content {
+		z-index: 1;
+	}
+
+	&__overlay {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		background-color: rgba(0, 0, 0, 0.2);
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}

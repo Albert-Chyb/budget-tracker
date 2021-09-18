@@ -40,6 +40,7 @@ import { FileInputComponent } from './components/file-input/file-input.component
 import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import firebase from 'firebase/app';
+import { LoadingIndicatorComponent } from './components/loading-indicator/loading-indicator.component';
 
 // TODO: Add Progressive Web App
 
@@ -87,6 +88,7 @@ const UserInitializerProvider: Provider = {
 		CategoriesComponent,
 		FileInputComponent,
 		NewCategoryDialogComponent,
+  LoadingIndicatorComponent,
 	],
 	imports: [
 		BrowserModule,
