@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { INewWallet, IWallet } from 'src/app/common/interfaces/wallet';
+import { LoadingIndicatorComponent } from 'src/app/components/loading-indicator/loading-indicator.component';
 import { NewWalletDialogComponent } from 'src/app/components/new-wallet-dialog/new-wallet-dialog.component';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { PromptService } from 'src/app/services/prompt/prompt.service';
@@ -23,10 +24,10 @@ export class WalletsComponent {
 	wallets$ = this._loading.add(this._wallets.getAll());
 
 	deleteWallet(wallet: IWallet) {
-		this._loading.add(this._wallets.delete(wallet));
+		return this._wallets.delete(wallet);
 	}
 
-	updateName(wallet: IWallet) {
+	updateName(wallet: IWallet, loading: LoadingIndicatorComponent) {
 		const name$ = this._prompt.open({
 			title: 'Zmiana nazwy portfela',
 			label: 'Nowa nazwa',
@@ -35,7 +36,7 @@ export class WalletsComponent {
 
 		name$.pipe(take(1)).subscribe(name => {
 			if (name && name !== wallet.name)
-				this._loading.add(this._wallets.updateName(wallet, name));
+				loading.pending(this._wallets.updateName(wallet, name));
 		});
 	}
 

@@ -10,13 +10,17 @@
 
 <section *ngIf="wallets$ | async as wallets">
 	<div class="wallets" *ngIf="wallets.length > 0; else noWalletsInfo">
-		<wallet
+		<loading-indicator
+			#loading
 			*ngFor="let wallet of wallets; trackBy: trackById"
-			[wallet]="wallet"
-			[show-actions]="true"
-			(onWalletDelete)="deleteWallet(wallet)"
-			(onWalletEdit)="updateName(wallet)"
-		></wallet>
+		>
+			<wallet
+				[wallet]="wallet"
+				[show-actions]="true"
+				(onWalletDelete)="loading.pending(deleteWallet(wallet))"
+				(onWalletEdit)="updateName(wallet, loading)"
+			></wallet>
+		</loading-indicator>
 	</div>
 </section>
 
