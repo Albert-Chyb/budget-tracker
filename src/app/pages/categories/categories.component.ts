@@ -7,6 +7,7 @@ import {
 	INewCategoryDialogResult,
 	NewCategoryDialogComponent,
 } from 'src/app/components/new-category-dialog/new-category-dialog.component';
+import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -15,6 +16,12 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 	templateUrl: './categories.component.html',
 	styleUrls: ['./categories.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [
+		{
+			provide: DEFAULT_CLUE_NAME,
+			useValue: 'noCategories',
+		},
+	],
 })
 export class CategoriesComponent {
 	constructor(

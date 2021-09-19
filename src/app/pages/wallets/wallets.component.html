@@ -9,7 +9,7 @@
 </div>
 
 <section *ngIf="wallets$ | async as wallets">
-	<div class="wallets" *ngIf="wallets.length > 0; else noWalletsInfo">
+	<div class="wallets" *clueIf="wallets.length === 0">
 		<loading-indicator
 			#loading
 			*ngFor="let wallet of wallets; trackBy: trackById"
@@ -23,9 +23,3 @@
 		</loading-indicator>
 	</div>
 </section>
-
-<ng-template #noWalletsInfo>
-	<clue img="assets/icons/empty-wallet.svg">
-		Nie posiadasz żadnych portfeli
-	</clue>
-</ng-template>

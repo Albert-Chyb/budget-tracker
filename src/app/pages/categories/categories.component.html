@@ -8,7 +8,7 @@
 	</header>
 
 	<mat-list role="list" *ngIf="categories$ | async as categories">
-		<ng-container *ngIf="categories.length > 0; else noCategories">
+		<ng-container *clueIf="categories.length === 0">
 			<mat-list-item
 				role="listitem"
 				*ngFor="let category of categories; trackBy: trackById"
@@ -36,7 +36,3 @@
 		</ng-container>
 	</mat-list>
 </section>
-
-<ng-template #noCategories>
-	<clue img="assets/icons/folder.svg">Nie znaleziono żadnych kategorii</clue>
-</ng-template>

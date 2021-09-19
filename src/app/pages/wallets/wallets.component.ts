@@ -4,6 +4,7 @@ import { take } from 'rxjs/operators';
 import { INewWallet, IWallet } from 'src/app/common/interfaces/wallet';
 import { LoadingIndicatorComponent } from 'src/app/components/loading-indicator/loading-indicator.component';
 import { NewWalletDialogComponent } from 'src/app/components/new-wallet-dialog/new-wallet-dialog.component';
+import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { PromptService } from 'src/app/services/prompt/prompt.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
@@ -12,6 +13,12 @@ import { WalletsService } from 'src/app/services/wallets/wallets.service';
 	templateUrl: './wallets.component.html',
 	styleUrls: ['./wallets.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [
+		{
+			provide: DEFAULT_CLUE_NAME,
+			useValue: 'noWallets',
+		},
+	],
 })
 export class WalletsComponent {
 	constructor(

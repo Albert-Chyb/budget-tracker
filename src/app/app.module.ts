@@ -14,33 +14,39 @@ import {
 	USE_EMULATOR as USE_AUTH_EMULATOR,
 } from '@angular/fire/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
-import { FormsModule } from '@angular/forms';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GlobalErrorHandler } from './common/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
+import { ClueComponent } from './components/clue/clue.component';
+import { FileInputComponent } from './components/file-input/file-input.component';
+import { LoadingIndicatorComponent } from './components/loading-indicator/loading-indicator.component';
 import { MainNavbarComponent } from './components/main-navbar/main-navbar.component';
+import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
+import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
+import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { WalletComponent } from './components/wallet/wallet.component';
+import {
+	ClueIfDirective,
+	CLUES_DATASETS,
+} from './directives/clue-if/clue-if.directive';
+import { MoneyAmountValidatorDirective } from './directives/money-amount-validator/money-amount-validator.directive';
+import { SelectOnFocusDirective } from './directives/select-on-focus/select-on-focus.directive';
 import { MatModule } from './mat.module';
+import { CategoriesComponent } from './pages/categories/categories.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { UserService } from './services/user/user.service';
-import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
-import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
-import { SelectOnFocusDirective } from './directives/select-on-focus/select-on-focus.directive';
-import { WalletComponent } from './components/wallet/wallet.component';
-import { ClueComponent } from './components/clue/clue.component';
-import { MoneyAmountValidatorDirective } from './directives/money-amount-validator/money-amount-validator.directive';
-import { CategoriesComponent } from './pages/categories/categories.component';
-import { FileInputComponent } from './components/file-input/file-input.component';
-import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
-import { AngularFireStorageModule } from '@angular/fire/storage';
-import firebase from 'firebase/app';
-import { LoadingIndicatorComponent } from './components/loading-indicator/loading-indicator.component';
+import { cluesDatasets } from './common/clues-datasets';
 
 // TODO: Add Progressive Web App
 
@@ -70,6 +76,10 @@ const UserInitializerProvider: Provider = {
 	deps: [UserService],
 	multi: true,
 };
+const CluesDatasetsProvider: Provider = {
+	provide: CLUES_DATASETS,
+	useValue: new Map(Object.entries(cluesDatasets)),
+};
 
 @NgModule({
 	declarations: [
@@ -88,7 +98,8 @@ const UserInitializerProvider: Provider = {
 		CategoriesComponent,
 		FileInputComponent,
 		NewCategoryDialogComponent,
-  LoadingIndicatorComponent,
+		LoadingIndicatorComponent,
+		ClueIfDirective,
 	],
 	imports: [
 		BrowserModule,
@@ -107,6 +118,7 @@ const UserInitializerProvider: Provider = {
 		FirestoreEmulatorProvider,
 		ErrorHandlerProvider,
 		UserInitializerProvider,
+		CluesDatasetsProvider,
 	],
 	bootstrap: [AppComponent],
 })

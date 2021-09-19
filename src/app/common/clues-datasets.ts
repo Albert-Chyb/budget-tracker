@@ -1,0 +1,12 @@
+import { IClueData } from '../directives/clue-if/clue-if.directive';
+
+export const cluesDatasets: { [prop: string]: IClueData } = {
+	noWallets: {
+		message: 'Nie posiadasz żadnych portfeli',
+		img: 'assets/icons/empty-wallet.svg',
+	},
+	noCategories: {
+		message: 'Nie posiadasz żadnych kategorii.',
+		img: 'assets/icons/folder.svg',
+	},
+};
