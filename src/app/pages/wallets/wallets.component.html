@@ -1,14 +1,4 @@
-<div class="wallets-actions">
-	<h1>Twoje portfele</h1>
-
-	<div class="spacer"></div>
-
-	<button mat-button color="accent" (click)="createWallet()">
-		Dodaj portfel
-	</button>
-</div>
-
-<section *ngIf="wallets$ | async as wallets">
+<ng-container *ngIf="wallets$ | async as wallets">
 	<div class="wallets" *clueIf="wallets.length === 0">
 		<loading-indicator
 			#loading
@@ -22,4 +12,15 @@
 			></wallet>
 		</loading-indicator>
 	</div>
-</section>
+</ng-container>
+
+<floating-action-button>
+	<button
+		type="button"
+		mat-fab
+		(click)="createWallet()"
+		aria-label="Dodaj portfel"
+	>
+		<mat-icon>add</mat-icon>
+	</button>
+</floating-action-button>

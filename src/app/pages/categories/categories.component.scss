@@ -11,15 +11,3 @@
 .mat-list {
 	@include containers.apply('sm');
 }
-
-header {
-	display: flex;
-}
-
-h1 {
-	margin: 0px;
-}
-
-.spacer {
-	flex: 1 1 auto;
-}
