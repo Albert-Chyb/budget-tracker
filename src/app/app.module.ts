@@ -47,7 +47,6 @@ import { LoginComponent } from './pages/login/login.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { UserService } from './services/user/user.service';
 import { cluesDatasets } from './common/clues-datasets';
-import { FloatingActionButtonComponent } from './components/floating-action-button/floating-action-button.component';
 
 // TODO: Add Progressive Web App
 
@@ -101,7 +100,6 @@ const CluesDatasetsProvider: Provider = {
 		NewCategoryDialogComponent,
 		LoadingIndicatorComponent,
 		ClueIfDirective,
-  FloatingActionButtonComponent,
 	],
 	imports: [
 		BrowserModule,
