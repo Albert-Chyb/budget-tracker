@@ -1,3 +1,5 @@
+@import '~@angular/material/theming';
+
 // Angular material toolbar height on wider screens.
 $mat-toolbar-desktop-height: 64px;
 // Angular material toolbar height on narrower screens.
@@ -8,3 +10,10 @@ $mat-toolbar-size-change-breakpoint: 599px;
 $global-spacing: 1rem;
 
 $global-container-width: 1440px;
+
+// Material palettes of the currently used theme. In case of a theme change, these should be updated.
+$primary-palette: mat-palette($mat-purple);
+$accent-palette: mat-palette($mat-green, 'A200', 'A100', 'A400');
+$warn-pallette: mat-palette($mat-red);
+$primary-color: mat-color($primary-palette);
+$accent-color: mat-color($accent-palette);
