@@ -1,11 +1,5 @@
 <section>
-	<header>
-		<h1>Kategorie</h1>
-		<div class="spacer"></div>
-		<button mat-button color="accent" (click)="addCategory()">
-			Dodaj kategorię
-		</button>
-	</header>
+	<h1>Kategorie</h1>
 
 	<mat-list role="list" *ngIf="categories$ | async as categories">
 		<ng-container *clueIf="categories.length === 0">
@@ -36,3 +30,13 @@
 		</ng-container>
 	</mat-list>
 </section>
+
+<button
+	type="button"
+	mat-fab
+	*global-fab
+	(click)="addCategory()"
+	aria-label="Dodaj kategorię"
+>
+	<mat-icon>add</mat-icon>
+</button>
