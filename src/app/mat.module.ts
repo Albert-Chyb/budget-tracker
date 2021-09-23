@@ -20,6 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRippleModule } from '@angular/material/core';
+import { PortalModule } from '@angular/cdk/portal';
 
 const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 	appearance: 'outline',
@@ -45,6 +46,7 @@ const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 		MatProgressBarModule,
 		MatMenuModule,
 		MatRippleModule,
+		PortalModule,
 	],
 	providers: [
 		{

@@ -47,6 +47,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { UserService } from './services/user/user.service';
 import { cluesDatasets } from './common/clues-datasets';
+import { GlobalFabDirective } from './directives/global-fab/global-fab.directive';
+import { GlobalFabComponent } from './components/global-fab/global-fab.component';
 
 // TODO: Add Progressive Web App
 
@@ -100,6 +102,8 @@ const CluesDatasetsProvider: Provider = {
 		NewCategoryDialogComponent,
 		LoadingIndicatorComponent,
 		ClueIfDirective,
+  GlobalFabDirective,
+  GlobalFabComponent,
 	],
 	imports: [
 		BrowserModule,
