@@ -16,35 +16,18 @@
 	<mat-divider></mat-divider>
 
 	<mat-nav-list>
-		<mat-list-item routerLink="/">
-			<mat-icon mat-list-icon>home</mat-icon>
+		<mat-list-item
+			[routerLink]="item.routerLink"
+			*ngFor="let item of sidenavItems"
+			routerLinkActive="activated-route"
+			[routerLinkActiveOptions]="{ exact: true }"
+		>
+			<mat-icon mat-list-icon>{{ item.icon }}</mat-icon>
 
-			<a mat-line>Strona główna</a>
+			<a mat-line>{{ item.text }}</a>
 		</mat-list-item>
 
-		<mat-list-item>
-			<mat-icon mat-list-icon>add_circle</mat-icon>
-
-			<a mat-line>Dodaj transakcje</a>
-		</mat-list-item>
-
-		<mat-list-item>
-			<mat-icon mat-list-icon>analytics</mat-icon>
-
-			<a mat-line>Statystyki</a>
-		</mat-list-item>
-
-		<mat-list-item routerLink="/wallets">
-			<mat-icon mat-list-icon>account_balance_wallet</mat-icon>
-
-			<a mat-line>Portfele</a>
-		</mat-list-item>
-
-		<mat-list-item routerLink="/categories">
-			<mat-icon mat-list-icon>category</mat-icon>
-
-			<a mat-line>Kategorie</a>
-		</mat-list-item>
+		<div class="activated-route-indicator"></div>
 	</mat-nav-list>
 </ng-container>
 
