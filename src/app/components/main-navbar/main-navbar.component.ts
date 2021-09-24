@@ -4,6 +4,7 @@ import {
 	EventEmitter,
 	Output,
 } from '@angular/core';
+import { debounceTime } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { UserService } from 'src/app/services/user/user.service';
@@ -24,7 +25,7 @@ export class MainNavbarComponent {
 	@Output('onHamburgerClick') onHamburgerClick = new EventEmitter();
 
 	isLoggedIn$ = this._user.isLoggedIn$;
-	shouldDisplayLoader$ = this._loading.isLoading$;
+	shouldDisplayLoader$ = this._loading.isLoading$.pipe(debounceTime(50));
 
 	logout() {
 		this._auth.logout();
