@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { switchMap } from 'rxjs/operators';
 import { ICategory, INewCategory } from 'src/app/common/interfaces/category';
+
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -13,12 +14,20 @@ export class CategoriesService {
 		private readonly _user: UserService
 	) {}
 
-	async create(category: INewCategory): Promise<DocumentReference<ICategory>> {
+	async create(category: INewCategory, id?: string): Promise<void> {
 		const uid = await this._user.getUid();
+		const docID = id ?? this._afStore.createId();
+		const docRef = await this._afStore
+			.doc(`users/${uid}/categories/${docID}`)
+			.ref.get();
 
-		return this._afStore
-			.collection(`users/${uid}/categories`)
-			.add(category) as any;
+		if (docRef.exists) {
+			throw new Error(
+				`A category with this id ${id} already exists in the firestore.`
+			);
+		}
+
+		return docRef.ref.set(category);
 	}
 
 	read(id: string) {
