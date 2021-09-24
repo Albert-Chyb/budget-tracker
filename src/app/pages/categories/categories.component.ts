@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { filter, first, map, take } from 'rxjs/operators';
@@ -28,7 +29,8 @@ export class CategoriesComponent {
 		private readonly _categories: CategoriesService,
 		private readonly _loading: LoadingService,
 		private readonly _dialog: MatDialog,
-		private readonly _storage: StorageService
+		private readonly _storage: StorageService,
+		private readonly _afStore: AngularFirestore
 	) {}
 
 	categories$: Observable<ICategory[]> = this._loading.add(
@@ -40,8 +42,10 @@ export class CategoriesComponent {
 	 */
 	addCategory() {
 		this._openDialog().subscribe(async result => {
+			const id = this._afStore.createId();
+
 			this._loading.add(
-				this._categories.create(await this._buildCategory(result))
+				this._categories.create(await this._buildCategory(result, id), id)
 			);
 		});
 	}
@@ -52,7 +56,7 @@ export class CategoriesComponent {
 	 */
 	editCategory(category: ICategory) {
 		this._openDialog(category).subscribe(async result => {
-			const newCategory = await this._buildCategory(result);
+			const newCategory = await this._buildCategory(result, category.id);
 
 			this._loading.add(this._categories.update(category.id, newCategory));
 		});
@@ -72,16 +76,22 @@ export class CategoriesComponent {
 	 * Builds a category object with data returned from the dialog. If icon is available it is uploaded to the storage.
 	 */
 	private async _buildCategory(
-		category: INewCategoryDialogResult
+		category: INewCategoryDialogResult,
+		id: string
 	): Promise<INewCategory> {
 		const iconChanged = category.icon instanceof File;
 		let iconUrl: string;
 		let iconPath: string;
 
 		if (iconChanged) {
-			const upload = await this._loading.add(this._uploadIcon(category.icon));
-			iconUrl = await upload.URL;
-			iconPath = await upload.path;
+			const { URL, path } = await this._loading.add(
+				this._uploadIcon(category.icon, id)
+			);
+
+			const [url, filePath] = await Promise.all([URL, path]);
+
+			iconUrl = url;
+			iconPath = filePath;
 		}
 
 		const payload: INewCategory = {
@@ -128,9 +138,10 @@ export class CategoriesComponent {
 	 * @returns Url to the file.
 	 */
 	private async _uploadIcon(
-		icon: File
+		icon: File,
+		id: string
 	): Promise<{ URL: Promise<string>; path: Promise<string> }> {
-		const upload = await this._storage.upload('categories-icons', icon);
+		const upload = await this._storage.upload('categories-icons', icon, id);
 		const URL = upload.getURL$.toPromise();
 		const path = upload.snapshot$
 			.pipe(
