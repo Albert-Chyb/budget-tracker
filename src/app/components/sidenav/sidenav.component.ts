@@ -21,7 +21,7 @@ export class SidenavComponent implements OnInit {
 		{
 			icon: 'add_circle',
 			text: 'Dodaj transakcje',
-			routerLink: '/add-transaction',
+			routerLink: '/transaction',
 		},
 		{
 			icon: 'analytics',

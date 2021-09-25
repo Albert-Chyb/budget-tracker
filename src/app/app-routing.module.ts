@@ -9,6 +9,7 @@ import { CategoriesComponent } from './pages/categories/categories.component';
 import { HomeComponent } from './pages/home/home.component';
 
 import { LoginComponent } from './pages/login/login.component';
+import { TransactionComponent } from './pages/transaction/transaction.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 
 const redirectLoggedInToHome = () => redirectLoggedInTo(['/']);
@@ -42,6 +43,14 @@ const routes: Routes = [
 	{
 		path: 'categories',
 		component: CategoriesComponent,
+		canActivate: [AngularFireAuthGuard],
+		data: {
+			authGuardPipe: redirectLoggedOutToLogin,
+		},
+	},
+	{
+		path: 'transaction',
+		component: TransactionComponent,
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
