@@ -1,13 +1,29 @@
-<form>
+<form #transactionForm="ngForm">
 	<mat-form-field>
 		<mat-label>Kwota</mat-label>
-		<input matInput type="text" name="amount" />
+		<input
+			matInput
+			type="text"
+			name="amount"
+			required
+			[(ngModel)]="formValue.amount"
+			#name="ngModel"
+			money-amount-validator
+		/>
 		<mat-icon matPrefix>paid</mat-icon>
 	</mat-form-field>
 
 	<mat-form-field>
 		<mat-label>Data</mat-label>
-		<input matInput type="text" name="date" [matDatepicker]="datepicker" />
+		<input
+			matInput
+			type="text"
+			name="date"
+			[matDatepicker]="datepicker"
+			required
+			[(ngModel)]="formValue.date"
+			#date="ngModel"
+		/>
 		<mat-icon matPrefix>today</mat-icon>
 
 		<mat-datepicker-toggle matSuffix [for]="datepicker">
@@ -18,7 +34,12 @@
 
 	<mat-form-field>
 		<mat-label>Kategoria</mat-label>
-		<mat-select name="category">
+		<mat-select
+			name="category"
+			required
+			[(ngModel)]="formValue.category"
+			#category="ngModel"
+		>
 			<mat-option value="1">Codzienne zakupy</mat-option>
 			<mat-option value="2">Paliwo</mat-option>
 			<mat-option value="3">Imprezy</mat-option>
@@ -28,7 +49,12 @@
 
 	<mat-form-field>
 		<mat-label>Portfel</mat-label>
-		<mat-select name="wallet">
+		<mat-select
+			name="wallet"
+			required
+			[(ngModel)]="formValue.wallet"
+			#wallet="ngModel"
+		>
 			<mat-option value="1">Konto oszczędnościowe</mat-option>
 			<mat-option value="2">Konto bankowe</mat-option>
 			<mat-option value="3">Portfel</mat-option>
@@ -38,12 +64,30 @@
 
 	<mat-form-field>
 		<mat-label>Opis</mat-label>
-		<input matInput type="text" name="description" />
+		<input
+			matInput
+			type="text"
+			name="description"
+			minlength="3"
+			maxlength="128"
+			[(ngModel)]="formValue.description"
+			#description="ngModel"
+		/>
 		<mat-icon matPrefix>description</mat-icon>
 	</mat-form-field>
 
 	<div class="form-actions">
-		<button type="submit" mat-flat-button color="accent">Dodaj</button>
+		<button
+			type="submit"
+			mat-flat-button
+			color="accent"
+			[disabled]="transactionForm.invalid"
+		>
+			Dodaj
+		</button>
+
 		<button type="reset" mat-flat-button color="warn">Wyczyść</button>
 	</div>
 </form>
+
+{{ formValue | json }}
