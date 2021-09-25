@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 interface ITransactionFormValue {
 	amount: string;
@@ -14,6 +15,10 @@ interface ITransactionFormValue {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionComponent {
+	constructor(private readonly _route: ActivatedRoute) {}
+
+	isInEditState = !!this._route.snapshot.paramMap.get('id');
+
 	formValue: ITransactionFormValue = {
 		amount: undefined,
 		date: new Date(),
@@ -21,4 +26,16 @@ export class TransactionComponent {
 		wallet: undefined,
 		description: undefined,
 	};
+
+	create() {
+		console.log('Creating a transaction');
+	}
+
+	update() {
+		console.log('Updating the transaction');
+	}
+
+	delete() {
+		console.log('Deleting the transaction');
+	}
 }

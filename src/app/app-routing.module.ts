@@ -56,6 +56,14 @@ const routes: Routes = [
 			authGuardPipe: redirectLoggedOutToLogin,
 		},
 	},
+	{
+		path: 'transaction/:id',
+		component: TransactionComponent,
+		canActivate: [AngularFireAuthGuard],
+		data: {
+			authGuardPipe: redirectLoggedOutToLogin,
+		},
+	},
 ];
 
 @NgModule({

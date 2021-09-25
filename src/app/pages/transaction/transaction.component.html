@@ -1,4 +1,7 @@
-<form #transactionForm="ngForm">
+<form
+	#transactionForm="ngForm"
+	(ngSubmit)="isInEditState ? update() : create()"
+>
 	<mat-form-field>
 		<mat-label>Kwota</mat-label>
 		<input
@@ -109,11 +112,24 @@
 			color="accent"
 			[disabled]="transactionForm.invalid"
 		>
-			Dodaj
+			{{ isInEditState ? 'Zapisz' : 'Dodaj' }}
 		</button>
 
-		<button type="reset" mat-flat-button color="warn">Wyczyść</button>
+		<button
+			type="reset"
+			mat-flat-button
+			color="warn"
+			*ngIf="!isInEditState; else deleteTransactionButton"
+		>
+			Wyczyść
+		</button>
 	</div>
 </form>
+
+<ng-template #deleteTransactionButton>
+	<button type="button" mat-flat-button color="warn" (click)="delete()">
+		Usuń
+	</button>
+</ng-template>
 
 {{ formValue | json }}
