@@ -11,6 +11,11 @@
 			money-amount-validator
 		/>
 		<mat-icon matPrefix>paid</mat-icon>
+
+		<mat-error *ngIf="name.hasError('required')">Kwota jest wymagana</mat-error>
+		<mat-error *ngIf="name.hasError('invalidMoneyFormat')">
+			Podaj <strong>poprawnie sformatowaną</strong> kwotę
+		</mat-error>
 	</mat-form-field>
 
 	<mat-form-field>
@@ -30,6 +35,10 @@
 			<mat-icon matDatepickerToggleIcon>expand_more</mat-icon>
 		</mat-datepicker-toggle>
 		<mat-datepicker #datepicker></mat-datepicker>
+
+		<mat-error *ngIf="date.hasError('required')">
+			Data jest <strong>wymagana</strong> w formacie dd.mm.yyyy
+		</mat-error>
 	</mat-form-field>
 
 	<mat-form-field>
@@ -45,6 +54,10 @@
 			<mat-option value="3">Imprezy</mat-option>
 		</mat-select>
 		<mat-icon matPrefix>category</mat-icon>
+
+		<mat-error *ngIf="category.hasError('required')">
+			Kategoria jest wymagana
+		</mat-error>
 	</mat-form-field>
 
 	<mat-form-field>
@@ -60,6 +73,10 @@
 			<mat-option value="3">Portfel</mat-option>
 		</mat-select>
 		<mat-icon matPrefix>account_balance_wallet</mat-icon>
+
+		<mat-error *ngIf="wallet.hasError('required')">
+			Portfel jest wymagany
+		</mat-error>
 	</mat-form-field>
 
 	<mat-form-field>
@@ -74,6 +91,15 @@
 			#description="ngModel"
 		/>
 		<mat-icon matPrefix>description</mat-icon>
+
+		<mat-error *ngIf="description.hasError('minlength')">
+			Opis <strong>musi posiadać</strong> przynjamniej
+			{{ description.getError('minlength').requiredLength }} znaków
+		</mat-error>
+		<mat-error *ngIf="description.hasError('maxlength')">
+			Opis <strong>nie może posiadać</strong> więcej niż
+			{{ description.getError('maxlength').requiredLength }} znaków
+		</mat-error>
 	</mat-form-field>
 
 	<div class="form-actions">
