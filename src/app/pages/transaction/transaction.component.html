@@ -1,6 +1,7 @@
 <form
 	#transactionForm="ngForm"
 	(ngSubmit)="isInEditState ? update() : create()"
+	*ngIf="data$ | async as data"
 >
 	<mat-form-field>
 		<mat-label>Kwota</mat-label>
@@ -51,10 +52,14 @@
 			required
 			[(ngModel)]="formValue.category"
 			#category="ngModel"
+			[disabled]="data.categories.length === 0"
 		>
-			<mat-option value="1">Codzienne zakupy</mat-option>
-			<mat-option value="2">Paliwo</mat-option>
-			<mat-option value="3">Imprezy</mat-option>
+			<mat-option
+				*ngFor="let category of data.categories"
+				[value]="category.id"
+			>
+				{{ category.name }}
+			</mat-option>
 		</mat-select>
 		<mat-icon matPrefix>category</mat-icon>
 
@@ -63,6 +68,10 @@
 		</mat-error>
 	</mat-form-field>
 
+	<ng-container
+		*ngIf="data.categories.length === 0; then noCategoriesInfo"
+	></ng-container>
+
 	<mat-form-field>
 		<mat-label>Portfel</mat-label>
 		<mat-select
@@ -70,10 +79,11 @@
 			required
 			[(ngModel)]="formValue.wallet"
 			#wallet="ngModel"
+			[disabled]="data.wallets.length === 0"
 		>
-			<mat-option value="1">Konto oszczędnościowe</mat-option>
-			<mat-option value="2">Konto bankowe</mat-option>
-			<mat-option value="3">Portfel</mat-option>
+			<mat-option *ngFor="let wallet of data.wallets" [value]="wallet.id">
+				{{ wallet.name }}
+			</mat-option>
 		</mat-select>
 		<mat-icon matPrefix>account_balance_wallet</mat-icon>
 
@@ -81,6 +91,10 @@
 			Portfel jest wymagany
 		</mat-error>
 	</mat-form-field>
+
+	<ng-container
+		*ngIf="data.wallets.length === 0; then noWalletsInfo"
+	></ng-container>
 
 	<mat-form-field>
 		<mat-label>Opis</mat-label>
@@ -130,6 +144,23 @@
 	<button type="button" mat-flat-button color="warn" (click)="delete()">
 		Usuń
 	</button>
+</ng-template>
+
+<ng-template #noCategoriesInfo>
+	<a
+		mat-flat-button
+		routerLink="/categories"
+		color="warn"
+		class="no-content-info"
+	>
+		Utwórz kategorię, aby kontynuować.
+	</a>
+</ng-template>
+
+<ng-template #noWalletsInfo>
+	<a mat-flat-button routerLink="/wallets" color="warn" class="no-content-info">
+		Utwórz portfel, aby kontynuować.
+	</a>
 </ng-template>
 
 {{ formValue | json }}
