@@ -21,6 +21,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRippleModule } from '@angular/material/core';
 import { PortalModule } from '@angular/cdk/portal';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
+import { MatNativeDateModule } from '@angular/material/core';
 
 const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 	appearance: 'outline',
@@ -47,6 +50,9 @@ const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 		MatMenuModule,
 		MatRippleModule,
 		PortalModule,
+		MatDatepickerModule,
+		MatSelectModule,
+		MatNativeDateModule,
 	],
 	providers: [
 		{

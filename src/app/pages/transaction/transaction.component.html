@@ -1,1 +1,49 @@
-<p>transaction works!</p>
+<form>
+	<mat-form-field>
+		<mat-label>Kwota</mat-label>
+		<input matInput type="text" name="amount" />
+		<mat-icon matPrefix>paid</mat-icon>
+	</mat-form-field>
+
+	<mat-form-field>
+		<mat-label>Data</mat-label>
+		<input matInput type="text" name="date" [matDatepicker]="datepicker" />
+		<mat-icon matPrefix>today</mat-icon>
+
+		<mat-datepicker-toggle matSuffix [for]="datepicker">
+			<mat-icon matDatepickerToggleIcon>expand_more</mat-icon>
+		</mat-datepicker-toggle>
+		<mat-datepicker #datepicker></mat-datepicker>
+	</mat-form-field>
+
+	<mat-form-field>
+		<mat-label>Kategoria</mat-label>
+		<mat-select name="category">
+			<mat-option value="1">Codzienne zakupy</mat-option>
+			<mat-option value="2">Paliwo</mat-option>
+			<mat-option value="3">Imprezy</mat-option>
+		</mat-select>
+		<mat-icon matPrefix>category</mat-icon>
+	</mat-form-field>
+
+	<mat-form-field>
+		<mat-label>Portfel</mat-label>
+		<mat-select name="wallet">
+			<mat-option value="1">Konto oszczędnościowe</mat-option>
+			<mat-option value="2">Konto bankowe</mat-option>
+			<mat-option value="3">Portfel</mat-option>
+		</mat-select>
+		<mat-icon matPrefix>account_balance_wallet</mat-icon>
+	</mat-form-field>
+
+	<mat-form-field>
+		<mat-label>Opis</mat-label>
+		<input matInput type="text" name="description" />
+		<mat-icon matPrefix>description</mat-icon>
+	</mat-form-field>
+
+	<div class="form-actions">
+		<button type="submit" mat-flat-button color="accent">Dodaj</button>
+		<button type="reset" mat-flat-button color="warn">Wyczyść</button>
+	</div>
+</form>
