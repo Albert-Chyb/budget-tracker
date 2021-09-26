@@ -11,13 +11,15 @@
 			name="amount"
 			required
 			[(ngModel)]="formValue.amount"
-			#name="ngModel"
+			#amount="ngModel"
 			money-amount-validator
 		/>
 		<mat-icon matPrefix>paid</mat-icon>
 
-		<mat-error *ngIf="name.hasError('required')">Kwota jest wymagana</mat-error>
-		<mat-error *ngIf="name.hasError('invalidMoneyFormat')">
+		<mat-error *ngIf="amount.hasError('required')">
+			Kwota jest wymagana
+		</mat-error>
+		<mat-error *ngIf="amount.hasError('invalidMoneyFormat')">
 			Podaj <strong>poprawnie sformatowaną</strong> kwotę
 		</mat-error>
 	</mat-form-field>
