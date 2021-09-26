@@ -45,14 +45,13 @@
 		</mat-error>
 	</mat-form-field>
 
-	<mat-form-field>
+	<mat-form-field [class.no-content]="data.categories.length === 0">
 		<mat-label>Kategoria</mat-label>
 		<mat-select
 			name="category"
 			required
 			[(ngModel)]="formValue.category"
 			#category="ngModel"
-			[disabled]="data.categories.length === 0"
 		>
 			<mat-option
 				*ngFor="let category of data.categories"
@@ -72,14 +71,13 @@
 		*ngIf="data.categories.length === 0; then noCategoriesInfo"
 	></ng-container>
 
-	<mat-form-field>
+	<mat-form-field [class.no-content]="data.categories.length === 0">
 		<mat-label>Portfel</mat-label>
 		<mat-select
 			name="wallet"
 			required
 			[(ngModel)]="formValue.wallet"
 			#wallet="ngModel"
-			[disabled]="data.wallets.length === 0"
 		>
 			<mat-option *ngFor="let wallet of data.wallets" [value]="wallet.id">
 				{{ wallet.name }}

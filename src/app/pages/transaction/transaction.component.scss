@@ -12,6 +12,10 @@
 	.mat-icon[matprefix] {
 		margin-right: 0.5rem;
 	}
+
+	&.no-content {
+		display: none;
+	}
 }
 
 .form-actions {
