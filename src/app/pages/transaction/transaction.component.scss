@@ -40,6 +40,19 @@
 
 .mat-radio-group {
 	display: flex;
-	margin-bottom: 2.35rem;
 	justify-content: space-evenly;
+	margin-bottom: 2rem;
+
+	&.ng-touched.ng-invalid {
+		margin-bottom: 0rem;
+	}
+}
+
+.mat-radio-group-errors {
+	font-size: 1.1rem;
+	margin: {
+		bottom: 2rem;
+		top: 1rem;
+	}
+	padding: 0 1em;
 }

@@ -26,10 +26,18 @@
 		aria-label="Wybierz typ transakcji"
 		name="type"
 		[(ngModel)]="formValue.type"
+		#type="ngModel"
+		required
 	>
 		<mat-radio-button value="expense">Wydatek</mat-radio-button>
 		<mat-radio-button value="income">Przychód</mat-radio-button>
 	</mat-radio-group>
+
+	<div class="mat-radio-group-errors mat-small" *ngIf="type.touched">
+		<mat-error *ngIf="type.hasError('required')">
+			Typ transakcji jest <strong>wymagany</strong>.
+		</mat-error>
+	</div>
 
 	<mat-form-field>
 		<mat-label>Data</mat-label>
