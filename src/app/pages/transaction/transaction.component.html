@@ -22,6 +22,15 @@
 		</mat-error>
 	</mat-form-field>
 
+	<mat-radio-group
+		aria-label="Wybierz typ transakcji"
+		name="type"
+		[(ngModel)]="formValue.type"
+	>
+		<mat-radio-button value="expense">Wydatek</mat-radio-button>
+		<mat-radio-button value="income">Przychód</mat-radio-button>
+	</mat-radio-group>
+
 	<mat-form-field>
 		<mat-label>Data</mat-label>
 		<input

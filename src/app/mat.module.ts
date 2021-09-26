@@ -24,6 +24,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatRadioModule } from '@angular/material/radio';
 
 const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 	appearance: 'outline',
@@ -53,6 +54,7 @@ const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 		MatDatepickerModule,
 		MatSelectModule,
 		MatNativeDateModule,
+		MatRadioModule,
 	],
 	providers: [
 		{

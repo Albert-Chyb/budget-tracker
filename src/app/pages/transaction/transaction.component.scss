@@ -35,7 +35,11 @@
 
 .no-content-info {
 	display: block;
-	margin: {
-		bottom: 2.35rem;
-	}
+	margin-bottom: 2.35rem;
+}
+
+.mat-radio-group {
+	display: flex;
+	margin-bottom: 2.35rem;
+	justify-content: space-evenly;
 }

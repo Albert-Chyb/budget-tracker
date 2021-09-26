@@ -10,6 +10,7 @@ import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
 interface ITransactionFormValue {
 	amount: string;
+	type: 'expense' | 'income';
 	date: Date;
 	category: string;
 	wallet: string;
@@ -32,6 +33,7 @@ export class TransactionComponent implements OnInit {
 	isInEditState = !!this._route.snapshot.paramMap.get('id');
 	formValue: ITransactionFormValue = {
 		amount: undefined,
+		type: 'expense',
 		date: new Date(),
 		category: undefined,
 		wallet: undefined,
