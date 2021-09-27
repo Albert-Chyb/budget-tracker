@@ -32,8 +32,7 @@
 		<mat-radio-group
 			aria-label="Wybierz typ transakcji"
 			name="type"
-			[ngModel]="formValue.type"
-			(ngModelChange)="setType($event)"
+			[(ngModel)]="formValue.type"
 			#type="ngModel"
 			required
 		>

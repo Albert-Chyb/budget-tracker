@@ -17,7 +17,16 @@ import {
 	],
 })
 export class MaxValidatorDirective implements Validator {
-	@Input('max') max: number = Infinity;
+	private _onChange: () => void;
+	private _max: number = Infinity;
+
+	@Input('max') set max(value: number) {
+		this._max = value ?? Infinity;
+		this._onChange?.();
+	}
+	get max() {
+		return this._max;
+	}
 
 	validate(control: AbstractControl): ValidationErrors {
 		const number = Number(control.value);
@@ -30,6 +39,10 @@ export class MaxValidatorDirective implements Validator {
 		const isValid = number <= max;
 
 		return isValid ? null : { max: { max } };
+	}
+
+	registerOnValidatorChange(fn: () => void) {
+		this._onChange = fn;
 	}
 
 	private _isNullish(value: any) {

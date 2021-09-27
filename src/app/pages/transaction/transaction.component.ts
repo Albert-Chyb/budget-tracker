@@ -1,6 +1,5 @@
 import {
 	ChangeDetectionStrategy,
-	ChangeDetectorRef,
 	Component,
 	OnInit,
 	ViewChild,
@@ -34,8 +33,7 @@ export class TransactionComponent implements OnInit {
 		private readonly _route: ActivatedRoute,
 		private readonly _categories: CategoriesService,
 		private readonly _wallets: WalletsService,
-		private readonly _loading: LoadingService,
-		private readonly _changeDetector: ChangeDetectorRef
+		private readonly _loading: LoadingService
 	) {}
 
 	@ViewChild('transactionForm') transactionForm: NgForm;
@@ -79,12 +77,6 @@ export class TransactionComponent implements OnInit {
 	setWallet(wallet: IWallet) {
 		this.formValue.wallet = wallet?.id ?? null;
 		this.selectedWallet = wallet;
-		this._updateAmountValidity();
-	}
-
-	setType(type: 'expense' | 'income') {
-		this.formValue.type = type;
-		this._updateAmountValidity();
 	}
 
 	findWallet(wallets: IWallet[], id: string) {
@@ -95,10 +87,5 @@ export class TransactionComponent implements OnInit {
 		return this.formValue.type === 'expense'
 			? this.selectedWallet?.balance
 			: null;
-	}
-
-	private _updateAmountValidity() {
-		this._changeDetector.detectChanges();
-		this.transactionForm.controls.amount.updateValueAndValidity();
 	}
 }
