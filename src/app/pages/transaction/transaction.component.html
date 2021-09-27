@@ -13,6 +13,7 @@
 			[(ngModel)]="formValue.amount"
 			#amount="ngModel"
 			money-amount-validator
+			[max]="maxAmount"
 		/>
 		<mat-icon matPrefix>paid</mat-icon>
 
@@ -22,12 +23,16 @@
 		<mat-error *ngIf="amount.hasError('invalidMoneyFormat')">
 			Podaj <strong>poprawnie sformatowaną</strong> kwotę
 		</mat-error>
+		<mat-error *ngIf="amount.hasError('max')">
+			Wybrany portfel <strong>nie posiada wystarczających środków</strong>.
+		</mat-error>
 	</mat-form-field>
 
 	<mat-radio-group
 		aria-label="Wybierz typ transakcji"
 		name="type"
-		[(ngModel)]="formValue.type"
+		[ngModel]="formValue.type"
+		(ngModelChange)="setType($event)"
 		#type="ngModel"
 		required
 	>
@@ -95,7 +100,8 @@
 		<mat-select
 			name="wallet"
 			required
-			[(ngModel)]="formValue.wallet"
+			[ngModel]="formValue.wallet"
+			(ngModelChange)="setWallet(findWallet(data.wallets, $event))"
 			#wallet="ngModel"
 		>
 			<mat-option *ngFor="let wallet of data.wallets" [value]="wallet.id">
@@ -180,4 +186,4 @@
 	</a>
 </ng-template>
 
-{{ formValue | json }}
+<pre>{{ formValue | json }}</pre>

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	Component,
+	OnInit,
+	ViewChild,
+} from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -27,19 +34,23 @@ export class TransactionComponent implements OnInit {
 		private readonly _route: ActivatedRoute,
 		private readonly _categories: CategoriesService,
 		private readonly _wallets: WalletsService,
-		private readonly _loading: LoadingService
+		private readonly _loading: LoadingService,
+		private readonly _changeDetector: ChangeDetectorRef
 	) {}
+
+	@ViewChild('transactionForm') transactionForm: NgForm;
+
+	selectedWallet: IWallet;
 
 	isInEditState = !!this._route.snapshot.paramMap.get('id');
 	formValue: ITransactionFormValue = {
-		amount: undefined,
+		amount: null,
 		type: 'expense',
 		date: new Date(),
-		category: undefined,
-		wallet: undefined,
-		description: undefined,
+		category: null,
+		wallet: null,
+		description: null,
 	};
-
 	data$: Observable<{
 		categories: ICategory[];
 		wallets: IWallet[];
@@ -63,5 +74,31 @@ export class TransactionComponent implements OnInit {
 
 	delete() {
 		console.log('Deleting the transaction');
+	}
+
+	setWallet(wallet: IWallet) {
+		this.formValue.wallet = wallet?.id ?? null;
+		this.selectedWallet = wallet;
+		this._updateAmountValidity();
+	}
+
+	setType(type: 'expense' | 'income') {
+		this.formValue.type = type;
+		this._updateAmountValidity();
+	}
+
+	findWallet(wallets: IWallet[], id: string) {
+		return wallets.find(wallet => wallet.id === id);
+	}
+
+	get maxAmount(): number | null {
+		return this.formValue.type === 'expense'
+			? this.selectedWallet?.balance
+			: null;
+	}
+
+	private _updateAmountValidity() {
+		this._changeDetector.detectChanges();
+		this.transactionForm.controls.amount.updateValueAndValidity();
 	}
 }
