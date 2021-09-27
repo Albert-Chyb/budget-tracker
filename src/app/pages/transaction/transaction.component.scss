@@ -38,21 +38,20 @@
 	margin-bottom: 2.35rem;
 }
 
-.mat-radio-group {
-	display: flex;
-	justify-content: space-evenly;
-	margin-bottom: 2rem;
-
-	&.ng-touched.ng-invalid {
-		margin-bottom: 0rem;
+.transaction-type {
+	margin: {
+		top: 0.25rem;
+		bottom: 2rem;
 	}
 }
 
-.mat-radio-group-errors {
+.transaction-type-errors {
 	font-size: 1.1rem;
-	margin: {
-		bottom: 2rem;
-		top: 1rem;
-	}
 	padding: 0 1em;
+	margin-top: 0.25rem;
+}
+
+.mat-radio-group {
+	display: flex;
+	justify-content: space-evenly;
 }

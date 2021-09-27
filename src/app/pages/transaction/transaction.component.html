@@ -28,22 +28,24 @@
 		</mat-error>
 	</mat-form-field>
 
-	<mat-radio-group
-		aria-label="Wybierz typ transakcji"
-		name="type"
-		[ngModel]="formValue.type"
-		(ngModelChange)="setType($event)"
-		#type="ngModel"
-		required
-	>
-		<mat-radio-button value="expense">Wydatek</mat-radio-button>
-		<mat-radio-button value="income">Przychód</mat-radio-button>
-	</mat-radio-group>
+	<div class="transaction-type">
+		<mat-radio-group
+			aria-label="Wybierz typ transakcji"
+			name="type"
+			[ngModel]="formValue.type"
+			(ngModelChange)="setType($event)"
+			#type="ngModel"
+			required
+		>
+			<mat-radio-button value="expense">Wydatek</mat-radio-button>
+			<mat-radio-button value="income">Przychód</mat-radio-button>
+		</mat-radio-group>
 
-	<div class="mat-radio-group-errors mat-small" *ngIf="type.touched">
-		<mat-error *ngIf="type.hasError('required')">
-			Typ transakcji jest <strong>wymagany</strong>.
-		</mat-error>
+		<div class="transaction-type-errors mat-small" *ngIf="type.touched">
+			<mat-error *ngIf="type.hasError('required')">
+				Typ transakcji jest <strong>wymagany</strong>.
+			</mat-error>
+		</div>
 	</div>
 
 	<mat-form-field>
