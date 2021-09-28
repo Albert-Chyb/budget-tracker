@@ -1,18 +1,18 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	OnInit,
-	ViewChild,
-} from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest, Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { ICategory } from 'src/app/common/interfaces/category';
+import {
+	INewTransaction,
+	ITransaction,
+} from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
+import { TransactionsService } from 'src/app/services/transactions/transactions.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
+import firebase from 'firebase/app';
 
 interface ITransactionFormValue {
 	amount: string;
@@ -22,6 +22,8 @@ interface ITransactionFormValue {
 	wallet: string;
 	description: string;
 }
+
+// TODO: Transaction amount cannot be 0 - create a validator for that.
 
 @Component({
 	templateUrl: './transaction.component.html',
@@ -33,14 +35,15 @@ export class TransactionComponent implements OnInit {
 		private readonly _route: ActivatedRoute,
 		private readonly _categories: CategoriesService,
 		private readonly _wallets: WalletsService,
-		private readonly _loading: LoadingService
+		private readonly _loading: LoadingService,
+		private readonly _transactions: TransactionsService,
+		private readonly _router: Router
 	) {}
 
-	@ViewChild('transactionForm') transactionForm: NgForm;
+	readonly transactionId = this._route.snapshot.paramMap.get('id');
+	readonly isInEditMode = !!this.transactionId;
 
 	selectedWallet: IWallet;
-
-	isInEditState = !!this._route.snapshot.paramMap.get('id');
 	formValue: ITransactionFormValue = {
 		amount: null,
 		type: 'expense',
@@ -52,26 +55,45 @@ export class TransactionComponent implements OnInit {
 	data$: Observable<{
 		categories: ICategory[];
 		wallets: IWallet[];
+		transaction: ITransaction | null;
 	}>;
 
 	ngOnInit() {
+		const transaction$: Observable<ITransaction> = this.isInEditMode
+			? this._transactions.read(this.transactionId)
+			: of(null);
+
 		this.data$ = this._loading.add(
-			combineLatest([this._categories.readAll(), this._wallets.getAll()]).pipe(
-				map(([categories, wallets]) => ({ categories, wallets }))
+			combineLatest([
+				this._categories.readAll(),
+				this._wallets.getAll(),
+				transaction$,
+			]).pipe(
+				map(([categories, wallets, transaction]) => ({
+					categories,
+					wallets,
+					transaction,
+				})),
+				tap(({ transaction }) => {
+					if (transaction)
+						this.formValue = this._transactionToFormValue(transaction);
+				})
 			)
 		);
 	}
 
-	create() {
-		console.log('Creating a transaction');
+	async create() {
+		await this._transactions.create(this._processForm());
+		return this._router.navigateByUrl('/');
 	}
 
-	update() {
-		console.log('Updating the transaction');
+	async update() {
+		await this._transactions.update(this.transactionId, this._processForm());
 	}
 
-	delete() {
-		console.log('Deleting the transaction');
+	async delete() {
+		await this._transactions.delete(this.transactionId);
+		return this._router.navigateByUrl('/transaction');
 	}
 
 	setWallet(wallet: IWallet) {
@@ -87,5 +109,42 @@ export class TransactionComponent implements OnInit {
 		return this.formValue.type === 'expense'
 			? this.selectedWallet?.balance
 			: null;
+	}
+
+	private _processForm(): INewTransaction {
+		const transaction = {
+			...this.formValue,
+			amount: Number(this.formValue.amount),
+		};
+		const isDescriptionFieldEmpty =
+			this._isNullish(transaction.description) ||
+			transaction.description?.length === 0;
+
+		if (isDescriptionFieldEmpty) {
+			if (this.isInEditMode) {
+				transaction.description = firebase.firestore.FieldValue.delete() as any;
+			} else {
+				delete transaction.description;
+			}
+		}
+
+		return transaction;
+	}
+
+	private _isNullish(value: any) {
+		return value === null || value === undefined;
+	}
+
+	private _transactionToFormValue(
+		transaction: ITransaction
+	): ITransactionFormValue {
+		return {
+			amount: String(transaction.amount),
+			type: transaction.type,
+			date: transaction.date,
+			category: transaction.category,
+			wallet: transaction.wallet,
+			description: transaction.description,
+		};
 	}
 }
