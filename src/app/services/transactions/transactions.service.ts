@@ -73,9 +73,9 @@ export class TransactionsService {
 	 * Transforms firestore timestamp to a Date object.
 	 */
 	private _transformTimestampToDate(transaction: ITransaction) {
-		const timestamp: firebase.firestore.Timestamp = transaction.date as any;
+		const timestamp: firebase.firestore.Timestamp = transaction?.date as any;
 
-		transaction.date = timestamp.toDate();
+		transaction.date = timestamp?.toDate();
 
 		return transaction;
 	}
