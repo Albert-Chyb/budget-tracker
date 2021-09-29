@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { map, switchMap, takeWhile } from 'rxjs/operators';
 import {
-	ITransactionBase,
+	IRawFirestoreTransaction,
 	ITransaction,
+	ITransactionBase,
 } from 'src/app/common/interfaces/transaction';
-import firebase from 'firebase/app';
+
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -17,11 +19,13 @@ export class TransactionsService {
 		private readonly _afStore: AngularFirestore
 	) {}
 
-	read(transactionId: string) {
+	read(transactionId: string): Observable<ITransaction> {
 		return this._user.getUid$().pipe(
 			switchMap(uid =>
 				this._afStore
-					.doc<ITransaction>(`users/${uid}/transactions/${transactionId}`)
+					.doc<IRawFirestoreTransaction>(
+						`users/${uid}/transactions/${transactionId}`
+					)
 					.snapshotChanges()
 					.pipe(
 						takeWhile(snap => snap.payload.exists),
@@ -32,11 +36,11 @@ export class TransactionsService {
 		);
 	}
 
-	readAll() {
+	readAll(): Observable<ITransaction[]> {
 		return this._user.getUid$().pipe(
 			switchMap(uid =>
 				this._afStore
-					.collection<ITransaction>(`users/${uid}/transactions`)
+					.collection<IRawFirestoreTransaction>(`users/${uid}/transactions`)
 					.valueChanges({ idField: 'id' })
 					.pipe(
 						map(transactions =>
@@ -51,7 +55,7 @@ export class TransactionsService {
 		const uid = await this._user.getUid();
 
 		return this._afStore
-			.collection<ITransaction>(`users/${uid}/transactions`)
+			.collection<IRawFirestoreTransaction>(`users/${uid}/transactions`)
 			.add(transaction as any);
 	}
 
@@ -59,7 +63,9 @@ export class TransactionsService {
 		const uid = await this._user.getUid();
 
 		return this._afStore
-			.doc<ITransaction>(`users/${uid}/transactions/${transactionId}`)
+			.doc<IRawFirestoreTransaction>(
+				`users/${uid}/transactions/${transactionId}`
+			)
 			.update(transaction as any);
 	}
 
@@ -67,26 +73,31 @@ export class TransactionsService {
 		const uid = await this._user.getUid();
 
 		return this._afStore
-			.doc<ITransactionBase>(`users/${uid}/transactions/${transactionId}`)
-			.set(transaction);
+			.doc<IRawFirestoreTransaction>(
+				`users/${uid}/transactions/${transactionId}`
+			)
+			.set(transaction as any);
 	}
 
 	async delete(transactionId: string) {
 		const uid = await this._user.getUid();
 
 		return this._afStore
-			.doc<ITransaction>(`users/${uid}/transactions/${transactionId}`)
+			.doc<IRawFirestoreTransaction>(
+				`users/${uid}/transactions/${transactionId}`
+			)
 			.delete();
 	}
 
 	/**
 	 * Transforms firestore timestamp to a Date object.
 	 */
-	private _transformTimestampToDate(transaction: ITransaction) {
-		const timestamp: firebase.firestore.Timestamp = transaction.date as any;
-
-		transaction.date = timestamp.toDate();
-
-		return transaction;
+	private _transformTimestampToDate(
+		transaction: IRawFirestoreTransaction & { id: string }
+	): ITransaction {
+		return {
+			...transaction,
+			date: transaction.date.toDate(),
+		};
 	}
 }
