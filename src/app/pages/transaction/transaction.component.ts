@@ -23,8 +23,6 @@ interface ITransactionFormValue {
 	description: string;
 }
 
-// TODO: Transaction amount cannot be 0 - create a validator for that.
-
 @Component({
 	templateUrl: './transaction.component.html',
 	styleUrls: ['./transaction.component.scss'],
