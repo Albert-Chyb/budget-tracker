@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, takeWhile } from 'rxjs/operators';
 import {
 	ITransactionBase,
 	ITransaction,
@@ -18,16 +18,18 @@ export class TransactionsService {
 	) {}
 
 	read(transactionId: string) {
-		return this._user
-			.getUid$()
-			.pipe(
-				switchMap(uid =>
-					this._afStore
-						.doc<ITransaction>(`users/${uid}/transactions/${transactionId}`)
-						.valueChanges({ idField: 'id' })
-						.pipe(map(this._transformTimestampToDate))
-				)
-			);
+		return this._user.getUid$().pipe(
+			switchMap(uid =>
+				this._afStore
+					.doc<ITransaction>(`users/${uid}/transactions/${transactionId}`)
+					.snapshotChanges()
+					.pipe(
+						takeWhile(snap => snap.payload.exists),
+						map(snap => ({ id: snap.payload.id, ...snap.payload.data() })),
+						map(this._transformTimestampToDate)
+					)
+			)
+		);
 	}
 
 	readAll() {
@@ -73,9 +75,9 @@ export class TransactionsService {
 	 * Transforms firestore timestamp to a Date object.
 	 */
 	private _transformTimestampToDate(transaction: ITransaction) {
-		const timestamp: firebase.firestore.Timestamp = transaction?.date as any;
+		const timestamp: firebase.firestore.Timestamp = transaction.date as any;
 
-		transaction.date = timestamp?.toDate();
+		transaction.date = timestamp.toDate();
 
 		return transaction;
 	}
