@@ -63,6 +63,14 @@ export class TransactionsService {
 			.update(transaction as any);
 	}
 
+	async put(transactionId: string, transaction: ITransactionBase) {
+		const uid = await this._user.getUid();
+
+		return this._afStore
+			.doc<ITransactionBase>(`users/${uid}/transactions/${transactionId}`)
+			.set(transaction);
+	}
+
 	async delete(transactionId: string) {
 		const uid = await this._user.getUid();
 

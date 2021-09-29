@@ -4,24 +4,15 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ICategory } from 'src/app/common/interfaces/category';
 import {
-	ITransactionBase,
 	ITransaction,
+	ITransactionBase,
+	TTransactionType,
 } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { TransactionsService } from 'src/app/services/transactions/transactions.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
-import firebase from 'firebase/app';
-
-interface ITransactionFormValue {
-	amount: string;
-	type: 'expense' | 'income';
-	date: Date;
-	category: string;
-	wallet: string;
-	description: string;
-}
 
 @Component({
 	templateUrl: './transaction.component.html',
@@ -81,12 +72,17 @@ export class TransactionComponent implements OnInit {
 	}
 
 	async create() {
-		await this._transactions.create(this._processForm());
+		await this._transactions.create(
+			Object.assign({}, new TransactionDTO(this.formValue))
+		);
 		return this._router.navigateByUrl('/');
 	}
 
 	async update() {
-		await this._transactions.update(this.transactionId, this._processForm());
+		await this._transactions.put(
+			this.transactionId,
+			Object.assign({}, new TransactionDTO(this.formValue))
+		);
 	}
 
 	async delete() {
@@ -109,30 +105,6 @@ export class TransactionComponent implements OnInit {
 			: null;
 	}
 
-	private _processForm(): ITransactionBase {
-		const transaction = {
-			...this.formValue,
-			amount: Number(this.formValue.amount),
-		};
-		const isDescriptionFieldEmpty =
-			this._isNullish(transaction.description) ||
-			transaction.description?.length === 0;
-
-		if (isDescriptionFieldEmpty) {
-			if (this.isInEditMode) {
-				transaction.description = firebase.firestore.FieldValue.delete() as any;
-			} else {
-				delete transaction.description;
-			}
-		}
-
-		return transaction;
-	}
-
-	private _isNullish(value: any) {
-		return value === null || value === undefined;
-	}
-
 	private _transactionToFormValue(
 		transaction: ITransaction
 	): ITransactionFormValue {
@@ -145,4 +117,37 @@ export class TransactionComponent implements OnInit {
 			description: transaction.description,
 		};
 	}
+}
+
+interface ITransactionFormValue {
+	amount: string;
+	type: TTransactionType;
+	date: Date;
+	category: string;
+	wallet: string;
+	description: string;
+}
+
+/** Class that converts raw form value into a valid transaction object that can be used in the service. */
+class TransactionDTO implements ITransactionBase {
+	constructor(formValue: ITransactionFormValue) {
+		const { amount, type, date, category, wallet, description } = formValue;
+
+		this.amount = Number(amount);
+		this.type = type;
+		this.date = date;
+		this.category = category;
+		this.wallet = wallet;
+
+		// The description field is optional. It should not be present at all if it has nullish value or is an empty string.
+		// In case when the user entered a value and then removed it, ngModel assigns an empty string. This is why we check for an empty string.
+
+		!description || Object.assign(this, { description });
+	}
+
+	amount: number;
+	type: TTransactionType;
+	date: Date;
+	category: string;
+	wallet: string;
 }
