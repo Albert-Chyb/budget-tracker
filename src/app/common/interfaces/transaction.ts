@@ -1,6 +1,10 @@
 export type TTransactionType = 'expense' | 'income';
 
-export interface INewTransaction {
+/**
+ * Interface that represents a transaction object stored in the database.
+ */
+
+export interface ITransactionBase {
 	amount: number;
 	type: TTransactionType;
 	date: Date;
@@ -9,6 +13,8 @@ export interface INewTransaction {
 	description?: string;
 }
 
-export interface ITransaction extends INewTransaction {
+/** Interface that represents a transaction that is exposed to the app. */
+
+export interface ITransaction extends ITransactionBase {
 	id: string;
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { map, switchMap } from 'rxjs/operators';
 import {
-	INewTransaction,
+	ITransactionBase,
 	ITransaction,
 } from 'src/app/common/interfaces/transaction';
 import firebase from 'firebase/app';
@@ -45,7 +45,7 @@ export class TransactionsService {
 		);
 	}
 
-	async create(transaction: INewTransaction) {
+	async create(transaction: ITransactionBase) {
 		const uid = await this._user.getUid();
 
 		return this._afStore
@@ -53,7 +53,7 @@ export class TransactionsService {
 			.add(transaction as any);
 	}
 
-	async update(transactionId: string, transaction: Partial<INewTransaction>) {
+	async update(transactionId: string, transaction: Partial<ITransactionBase>) {
 		const uid = await this._user.getUid();
 
 		return this._afStore

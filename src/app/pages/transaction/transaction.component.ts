@@ -4,7 +4,7 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ICategory } from 'src/app/common/interfaces/category';
 import {
-	INewTransaction,
+	ITransactionBase,
 	ITransaction,
 } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
@@ -111,7 +111,7 @@ export class TransactionComponent implements OnInit {
 			: null;
 	}
 
-	private _processForm(): INewTransaction {
+	private _processForm(): ITransactionBase {
 		const transaction = {
 			...this.formValue,
 			amount: Number(this.formValue.amount),
