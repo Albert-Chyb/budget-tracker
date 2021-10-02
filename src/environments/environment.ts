@@ -17,6 +17,7 @@ export const environment = {
 		firestore: ['localhost', 8080],
 		auth: ['localhost', 9099],
 		storage: ['localhost', 9199],
+		functions: ['localhost', 5001],
 	},
 };
 

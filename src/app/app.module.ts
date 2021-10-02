@@ -20,7 +20,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
-
+import {
+	AngularFireFunctionsModule,
+	USE_EMULATOR as USE_CLOUD_FUNCTIONS_EMULATOR,
+	REGION,
+} from '@angular/fire/functions';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GlobalErrorHandler } from './common/global-error-handler';
@@ -71,6 +75,14 @@ const FirebaseAuthEmulatorProvider: Provider = {
 	provide: USE_AUTH_EMULATOR,
 	useValue: environment.firestoreEmulators.auth,
 };
+const FirebaseCloudFunctionsEmulatorsProvider: Provider = {
+	provide: USE_CLOUD_FUNCTIONS_EMULATOR,
+	useValue: environment.firestoreEmulators.functions,
+};
+const FirebaseRegionProvider: Provider = {
+	provide: REGION,
+	useValue: 'us-central1',
+};
 const ErrorHandlerProvider: Provider = {
 	provide: ErrorHandler,
 	useClass: GlobalErrorHandler,
@@ -105,11 +117,11 @@ const CluesDatasetsProvider: Provider = {
 		NewCategoryDialogComponent,
 		LoadingIndicatorComponent,
 		ClueIfDirective,
-  GlobalFabDirective,
-  GlobalFabComponent,
-  TransactionComponent,
-  MaxValidatorDirective,
-  BlackListValidatorDirective,
+		GlobalFabDirective,
+		GlobalFabComponent,
+		TransactionComponent,
+		MaxValidatorDirective,
+		BlackListValidatorDirective,
 	],
 	imports: [
 		BrowserModule,
@@ -120,6 +132,7 @@ const CluesDatasetsProvider: Provider = {
 		AngularFireAuthModule,
 		FormsModule,
 		AngularFireStorageModule,
+		AngularFireFunctionsModule,
 	],
 	providers: [
 		PolishLocaleProvider,
@@ -129,6 +142,8 @@ const CluesDatasetsProvider: Provider = {
 		ErrorHandlerProvider,
 		UserInitializerProvider,
 		CluesDatasetsProvider,
+		FirebaseCloudFunctionsEmulatorsProvider,
+		FirebaseRegionProvider,
 	],
 	bootstrap: [AppComponent],
 })
