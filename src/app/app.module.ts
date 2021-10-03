@@ -56,6 +56,7 @@ import { GlobalFabComponent } from './components/global-fab/global-fab.component
 import { TransactionComponent } from './pages/transaction/transaction.component';
 import { MaxValidatorDirective } from './directives/max-validator/max-validator.directive';
 import { BlackListValidatorDirective } from './directives/black-list-validator/black-list-validator.directive';
+import { AlertComponent } from './components/alert/alert.component';
 
 // TODO: Add Progressive Web App
 
@@ -122,6 +123,7 @@ const CluesDatasetsProvider: Provider = {
 		TransactionComponent,
 		MaxValidatorDirective,
 		BlackListValidatorDirective,
+		AlertComponent,
 	],
 	imports: [
 		BrowserModule,

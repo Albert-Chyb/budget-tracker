@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { switchMap } from 'rxjs/operators';
+import { AngularFireFunctions } from '@angular/fire/functions';
+import { EMPTY, throwError } from 'rxjs';
+import { catchError, first, map, switchMap, take } from 'rxjs/operators';
 import { INewWallet, IWallet } from 'src/app/common/interfaces/wallet';
 import { UserService } from '../user/user.service';
 
@@ -10,7 +12,8 @@ import { UserService } from '../user/user.service';
 export class WalletsService {
 	constructor(
 		private readonly _user: UserService,
-		private readonly _afStore: AngularFirestore
+		private readonly _afStore: AngularFirestore,
+		private readonly _afFunctions: AngularFireFunctions
 	) {}
 
 	getAll() {
@@ -43,12 +46,21 @@ export class WalletsService {
 	}
 
 	async delete(wallet: string | IWallet) {
-		const walletId = this._getWalletId(wallet);
-		const userId = await this._user.getUid();
+		const deleteWallet = this._afFunctions.httpsCallable('deleteWallet');
+		const res$ = deleteWallet({ id: this._getWalletId(wallet) });
 
-		return this._afStore
-			.doc<IWallet>(`users/${userId}/wallets/${walletId}`)
-			.delete();
+		return res$
+			.pipe(
+				first(),
+				map(res => {
+					if (res.result === 'error') {
+						throw res;
+					}
+
+					return null;
+				})
+			)
+			.toPromise();
 	}
 
 	private _getWalletId(wallet: IWallet | string): string {
