@@ -44,8 +44,8 @@ export class UserService {
 	 *
 	 * @returns Observable of currently logged in user.
 	 */
-	getUid$() {
-		return from(this.getUid());
+	getUid$(): Observable<string | null> {
+		return this._afAuth.authState.pipe(map(user => user?.uid));
 	}
 
 	/**
