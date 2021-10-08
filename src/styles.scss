@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import './app/sass/variables';
-@import './app/sass/components/containers';
+@use './app/sass/variables' as vars;
 
 html {
 	font-size: 62.5%;
@@ -19,11 +18,13 @@ body {
 
 * {
 	// Scroll padding that contains fixed navbar height and some additional space.
-	scroll-padding-top: calc(#{$mat-toolbar-desktop-height} + #{$global-spacing});
+	scroll-padding-top: calc(
+		#{vars.$mat-toolbar-desktop-height} + #{vars.$global-spacing}
+	);
 
-	@media (max-width: $mat-toolbar-size-change-breakpoint) {
+	@media (max-width: vars.$mat-toolbar-size-change-breakpoint) {
 		scroll-padding-top: calc(
-			#{$mat-toolbar-mobile-height} + #{$global-spacing}
+			#{vars.$mat-toolbar-mobile-height} + #{vars.$global-spacing}
 		);
 	}
 }
@@ -31,11 +32,11 @@ body {
 // Adds margin equal to the mat-toolbar height.
 .with-fixed-mat-toolbar {
 	// Angular material toolbar height, on screens wider than 599px.
-	padding-top: $mat-toolbar-desktop-height;
+	padding-top: vars.$mat-toolbar-desktop-height;
 
-	@media (max-width: $mat-toolbar-size-change-breakpoint) {
+	@media (max-width: vars.$mat-toolbar-size-change-breakpoint) {
 		// Angular material toolbar height, on screens narrower than 599px.
-		padding-top: $mat-toolbar-mobile-height;
+		padding-top: vars.$mat-toolbar-mobile-height;
 	}
 }
 
