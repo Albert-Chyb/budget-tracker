@@ -5,6 +5,7 @@ import {
 	ValidationErrors,
 	Validator,
 } from '@angular/forms';
+import { maxValidator } from 'src/app/common/validators/max-validator';
 
 @Directive({
 	selector: 'input[type="text"][max]',
@@ -20,7 +21,8 @@ export class MaxValidatorDirective implements Validator {
 	private _onChange: () => void;
 	private _max: number = Infinity;
 
-	@Input('max') set max(value: number) {
+	@Input('max')
+	set max(value: number) {
 		this._max = value ?? Infinity;
 		this._onChange?.();
 	}
@@ -29,23 +31,10 @@ export class MaxValidatorDirective implements Validator {
 	}
 
 	validate(control: AbstractControl): ValidationErrors {
-		const number = Number(control.value);
-		const max = this.max ?? Infinity;
-
-		if (this._isNullish(control.valid) || isNaN(number) || control.invalid) {
-			return null;
-		}
-
-		const isValid = number <= max;
-
-		return isValid ? null : { max: { max } };
+		return maxValidator(this.max)(control);
 	}
 
 	registerOnValidatorChange(fn: () => void) {
 		this._onChange = fn;
-	}
-
-	private _isNullish(value: any) {
-		return value === null || value === undefined;
 	}
 }
