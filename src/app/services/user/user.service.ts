@@ -3,8 +3,15 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 import { from, Observable, of } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
-import { IUser } from 'src/app/common/interfaces/user';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import {
+	IUser,
+	IUserBase,
+	IUserCreatePayload,
+	IUserReadPayload,
+	IUserUpdatePayload,
+} from 'src/app/common/interfaces/user';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,6 +28,7 @@ export class UserService {
 			switchMap(user =>
 				user ? this._getUserFromDatabase(user.uid) : of(null)
 			),
+			tap(user => (environment.production ? null : console.log(user))),
 			shareReplay(1)
 		);
 	}
@@ -32,7 +40,7 @@ export class UserService {
 	 *
 	 * @returns Promise of currently logged in user.
 	 */
-	async getUid() {
+	async getUid(): Promise<string | null> {
 		const user = await this._afAuth.currentUser;
 
 		return user?.uid;
@@ -44,7 +52,7 @@ export class UserService {
 	 * @returns Observable of currently logged in user.
 	 */
 	getUid$(): Observable<string | null> {
-		return this._afAuth.authState.pipe(map(user => user?.uid));
+		return this.user$.pipe(map(user => user?.uid));
 	}
 
 	/**
@@ -54,26 +62,28 @@ export class UserService {
 	 */
 	private async _updateOrCreateUserData(
 		user: firebase.User
-	): Promise<firebase.User> {
-		const userData: IUser = {
+	): Promise<typeof user> {
+		const userData: IUserBase = {
 			displayName: user.displayName || '',
 			email: user.email || '',
 			emailVerified: user.emailVerified,
 			isAnonymous: user.isAnonymous,
 			photoURL: user.photoURL || '',
-			createdAt: firebase.firestore.FieldValue.serverTimestamp(),
 		};
-
-		const userDocRef = this._afFirestore.doc<IUser>(`users/${user.uid}`);
+		const userDocRef = this._afFirestore.doc(`users/${user.uid}`);
 		const userDoc = await userDocRef.get().toPromise();
 
 		if (userDoc.exists) {
-			// If user data exists in database, the createdAt field should not be updated.
-			delete (userData as any).createdAt;
+			const updatePayload: IUserUpdatePayload = userData;
 
-			await userDoc.ref.update(userData);
+			await userDoc.ref.update(updatePayload);
 		} else {
-			await userDoc.ref.set(userData);
+			const createPayload: IUserCreatePayload = {
+				...userData,
+				createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+			};
+
+			await userDoc.ref.set(createPayload);
 		}
 
 		return user;
@@ -86,13 +96,18 @@ export class UserService {
 	 */
 	private _getUserFromDatabase(uid: string): Observable<IUser> {
 		const userRef = this._afFirestore
-			.doc<IUser>(`users/${uid}`)
+			.doc<IUserReadPayload>(`users/${uid}`)
 			.snapshotChanges();
 
 		return userRef.pipe(
 			map(user => {
 				if (user.payload.exists) {
-					return user.payload.data();
+					const data = user.payload.data();
+					return {
+						...data,
+						uid,
+						createdAt: data.createdAt.toDate(),
+					};
 				} else {
 					throw new Error('User data does not exists in Firestore !');
 				}
