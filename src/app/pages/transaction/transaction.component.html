@@ -13,9 +13,10 @@
 				type="text"
 				name="amount"
 				required
+				[pattern]="moneyAmountPattern"
+				inputmode="numeric"
 				[(ngModel)]="formValue.amount"
 				#amount="ngModel"
-				money-amount-validator
 				[max]="maxAmount"
 				black-list="0"
 			/>
@@ -24,7 +25,7 @@
 			<mat-error *ngIf="amount.hasError('required')">
 				Kwota jest wymagana.
 			</mat-error>
-			<mat-error *ngIf="amount.hasError('invalidMoneyFormat')">
+			<mat-error *ngIf="amount.hasError('pattern')">
 				Podaj <strong>poprawnie sformatowaną</strong> kwotę.
 			</mat-error>
 			<mat-error *ngIf="amount.hasError('max')">

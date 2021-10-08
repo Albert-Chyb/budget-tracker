@@ -14,23 +14,27 @@ import {
 	USE_EMULATOR as USE_AUTH_EMULATOR,
 } from '@angular/fire/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
+import {
+	AngularFireFunctionsModule,
+	REGION,
+	USE_EMULATOR as USE_CLOUD_FUNCTIONS_EMULATOR,
+} from '@angular/fire/functions';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
-import {
-	AngularFireFunctionsModule,
-	USE_EMULATOR as USE_CLOUD_FUNCTIONS_EMULATOR,
-	REGION,
-} from '@angular/fire/functions';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { cluesDatasets } from './common/clues-datasets';
 import { GlobalErrorHandler } from './common/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
+import { AlertComponent } from './components/alert/alert.component';
 import { ClueComponent } from './components/clue/clue.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
+import { GlobalFabComponent } from './components/global-fab/global-fab.component';
 import { LoadingIndicatorComponent } from './components/loading-indicator/loading-indicator.component';
 import { MainNavbarComponent } from './components/main-navbar/main-navbar.component';
 import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
@@ -38,25 +42,21 @@ import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wal
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { WalletComponent } from './components/wallet/wallet.component';
+import { BlackListValidatorDirective } from './directives/black-list-validator/black-list-validator.directive';
 import {
 	ClueIfDirective,
 	CLUES_DATASETS,
 } from './directives/clue-if/clue-if.directive';
-import { MoneyAmountValidatorDirective } from './directives/money-amount-validator/money-amount-validator.directive';
+import { GlobalFabDirective } from './directives/global-fab/global-fab.directive';
+import { MaxValidatorDirective } from './directives/max-validator/max-validator.directive';
 import { SelectOnFocusDirective } from './directives/select-on-focus/select-on-focus.directive';
 import { MatModule } from './mat.module';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
+import { TransactionComponent } from './pages/transaction/transaction.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { UserService } from './services/user/user.service';
-import { cluesDatasets } from './common/clues-datasets';
-import { GlobalFabDirective } from './directives/global-fab/global-fab.directive';
-import { GlobalFabComponent } from './components/global-fab/global-fab.component';
-import { TransactionComponent } from './pages/transaction/transaction.component';
-import { MaxValidatorDirective } from './directives/max-validator/max-validator.directive';
-import { BlackListValidatorDirective } from './directives/black-list-validator/black-list-validator.directive';
-import { AlertComponent } from './components/alert/alert.component';
 
 // TODO: Add Progressive Web App
 
@@ -112,7 +112,6 @@ const CluesDatasetsProvider: Provider = {
 		SelectOnFocusDirective,
 		WalletComponent,
 		ClueComponent,
-		MoneyAmountValidatorDirective,
 		CategoriesComponent,
 		FileInputComponent,
 		NewCategoryDialogComponent,

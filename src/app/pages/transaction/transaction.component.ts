@@ -9,6 +9,7 @@ import {
 	TTransactionType,
 } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
+import { moneyAmountPattern } from 'src/app/common/validators/money-amount-pattern';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { TransactionsService } from 'src/app/services/transactions/transactions.service';
@@ -31,6 +32,7 @@ export class TransactionComponent implements OnInit {
 
 	readonly transactionId = this._route.snapshot.paramMap.get('id');
 	readonly isInEditMode = !!this.transactionId;
+	readonly moneyAmountPattern = moneyAmountPattern;
 
 	selectedWallet: IWallet;
 	formValue: ITransactionFormValue = {
