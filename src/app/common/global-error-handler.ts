@@ -1,8 +1,6 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import firebase from 'firebase/app';
 import { ErrorsService } from '../services/errors/errors.service';
-
 import { FirebaseError } from './errors/firebase-errors';
 
 @Injectable({
