@@ -1,4 +1,4 @@
-import firebase from 'firebase/app';
+import { FieldValue, Timestamp } from './firestore';
 
 /**
  * Contains fields that are present in all payloads.
@@ -23,7 +23,7 @@ export interface IUser extends IUserBase {
  * Shape of an user object that is required when the client wants to create a new user.
  */
 export interface IUserCreatePayload extends IUserBase {
-	createdAt: firebase.firestore.FieldValue;
+	createdAt: FieldValue;
 }
 
 /**
@@ -35,5 +35,5 @@ export interface IUserUpdatePayload extends Partial<IUserBase> {}
  * Shape of an user object that is returned from the database.
  */
 export interface IUserReadPayload extends IUserBase {
-	createdAt: firebase.firestore.Timestamp;
+	createdAt: Timestamp;
 }

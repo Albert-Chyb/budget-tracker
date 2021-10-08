@@ -1,4 +1,4 @@
-import firebase from 'firebase/app';
+import { Timestamp } from './firestore';
 
 export type TTransactionType = 'expense' | 'income';
 
@@ -20,7 +20,7 @@ export interface ITransactionBase {
  */
 export interface IRawFirestoreTransaction
 	extends Omit<ITransactionBase, 'date'> {
-	date: firebase.firestore.Timestamp;
+	date: Timestamp;
 }
 
 /**
