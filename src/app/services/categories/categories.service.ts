@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { switchMap } from 'rxjs/operators';
-import { ICategory, INewCategory } from 'src/app/common/interfaces/category';
+import { ICategory, ICategoryBase } from 'src/app/common/interfaces/category';
 
 import { UserService } from '../user/user.service';
 
@@ -14,7 +14,7 @@ export class CategoriesService {
 		private readonly _user: UserService
 	) {}
 
-	async create(category: INewCategory, id?: string): Promise<void> {
+	async create(category: ICategoryBase, id?: string): Promise<void> {
 		const uid = await this._user.getUid();
 		const docID = id ?? this._afStore.createId();
 		const docRef = await this._afStore
@@ -56,7 +56,7 @@ export class CategoriesService {
 			);
 	}
 
-	async update(id: string, category: Partial<INewCategory>) {
+	async update(id: string, category: Partial<ICategoryBase>) {
 		const uid = await this._user.getUid();
 
 		return this._afStore

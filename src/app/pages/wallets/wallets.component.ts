@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
-import { INewWallet, IWallet } from 'src/app/common/interfaces/wallet';
+import { IWalletBase, IWallet } from 'src/app/common/interfaces/wallet';
 import { LoadingIndicatorComponent } from 'src/app/components/loading-indicator/loading-indicator.component';
 import { NewWalletDialogComponent } from 'src/app/components/new-wallet-dialog/new-wallet-dialog.component';
 import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
@@ -54,7 +54,7 @@ export class WalletsComponent {
 	}
 
 	async createWallet() {
-		const data: INewWallet = await this._dialog
+		const data: IWalletBase = await this._dialog
 			.open(NewWalletDialogComponent)
 			.afterClosed()
 			.pipe(take(1))

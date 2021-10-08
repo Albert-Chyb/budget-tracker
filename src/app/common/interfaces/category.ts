@@ -1,3 +1,6 @@
+/**
+ * Represents object that is returned from a service.
+ */
 export interface ICategory {
 	id: string;
 	name: string;
@@ -5,7 +8,10 @@ export interface ICategory {
 	iconPath: string;
 }
 
-export interface INewCategory {
+/**
+ * Represents object that is stored in the database.
+ */
+export interface ICategoryBase {
 	name: string;
 	icon: string;
 	iconPath: string;

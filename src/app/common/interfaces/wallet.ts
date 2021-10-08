@@ -1,8 +1,14 @@
-export interface INewWallet {
+/**
+ * Represents object in the database.
+ */
+export interface IWalletBase {
 	name: string;
 	balance: number;
 }
 
-export interface IWallet extends INewWallet {
+/**
+ * Represents object that is returned from a service.
+ */
+export interface IWallet extends IWalletBase {
 	id: string;
 }

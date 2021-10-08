@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireFunctions } from '@angular/fire/functions';
-import { EMPTY, throwError } from 'rxjs';
-import { catchError, first, map, switchMap, take } from 'rxjs/operators';
-import { INewWallet, IWallet } from 'src/app/common/interfaces/wallet';
+import { first, map, switchMap } from 'rxjs/operators';
+import { IWalletBase, IWallet } from 'src/app/common/interfaces/wallet';
+
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -37,7 +37,7 @@ export class WalletsService {
 			.update({ name });
 	}
 
-	async create(newWallet: INewWallet) {
+	async create(newWallet: IWalletBase) {
 		const userId = await this._user.getUid();
 
 		return this._afStore

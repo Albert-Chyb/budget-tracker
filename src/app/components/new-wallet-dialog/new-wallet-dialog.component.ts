@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { INewWallet } from 'src/app/common/interfaces/wallet';
+import { IWalletBase } from 'src/app/common/interfaces/wallet';
 import { moneyAmountPattern } from 'src/app/common/validators/money-amount-pattern';
 
 @Component({
@@ -8,14 +8,14 @@ import { moneyAmountPattern } from 'src/app/common/validators/money-amount-patte
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewWalletDialogComponent {
-	wallet: INewWallet = {
+	wallet: IWalletBase = {
 		name: '',
 		balance: 0,
 	};
 
 	readonly moneyAmountPattern = moneyAmountPattern;
 
-	processForm(wallet: INewWallet) {
+	processForm(wallet: IWalletBase) {
 		return { ...wallet, balance: Number(wallet.balance) };
 	}
 }

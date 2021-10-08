@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { filter, first, map, take } from 'rxjs/operators';
-import { ICategory, INewCategory } from 'src/app/common/interfaces/category';
+import { ICategory, ICategoryBase } from 'src/app/common/interfaces/category';
 import {
 	INewCategoryDialogResult,
 	NewCategoryDialogComponent,
@@ -78,7 +78,7 @@ export class CategoriesComponent {
 	private async _buildCategory(
 		category: INewCategoryDialogResult,
 		id: string
-	): Promise<INewCategory> {
+	): Promise<ICategoryBase> {
 		const iconChanged = category.icon instanceof File;
 		let iconUrl: string;
 		let iconPath: string;
@@ -94,7 +94,7 @@ export class CategoriesComponent {
 			iconPath = filePath;
 		}
 
-		const payload: INewCategory = {
+		const payload: ICategoryBase = {
 			name: category.name,
 			icon: iconUrl,
 			iconPath,
