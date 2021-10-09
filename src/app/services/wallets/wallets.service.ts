@@ -1,10 +1,29 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import firebase from 'firebase/app';
 import { first, map, switchMap } from 'rxjs/operators';
-import { IWalletBase, IWallet } from 'src/app/common/interfaces/wallet';
-
+import { IWallet, IWalletBase } from 'src/app/common/interfaces/wallet';
 import { UserService } from '../user/user.service';
+
+class FirestoreWalletConverter
+	implements firebase.firestore.FirestoreDataConverter<IWalletBase>
+{
+	toFirestore(wallet: IWalletBase): IWalletBase {
+		wallet.balance = ~~(wallet.balance * 100);
+
+		return wallet;
+	}
+
+	fromFirestore(
+		snapshot: firebase.firestore.QueryDocumentSnapshot<IWalletBase>,
+		options: firebase.firestore.SnapshotOptions
+	): IWallet {
+		const data = snapshot.data();
+
+		return { ...data, id: snapshot.id, balance: data.balance / 100 };
+	}
+}
 
 @Injectable({
 	providedIn: 'root',
@@ -16,33 +35,37 @@ export class WalletsService {
 		private readonly _afFunctions: AngularFireFunctions
 	) {}
 
+	private readonly _converter = new FirestoreWalletConverter();
+
 	getAll() {
-		return this._user
-			.getUid$()
-			.pipe(
-				switchMap(uid =>
-					this._afStore
-						.collection<IWallet>(`users/${uid}/wallets`)
-						.valueChanges({ idField: 'id' })
-				)
-			);
+		return this._user.getUid$().pipe(
+			switchMap(uid => {
+				const walletsRef = this._afStore
+					.collection<IWallet>(`users/${uid}/wallets`)
+					.ref.withConverter(this._converter);
+
+				return this._afStore.collection<IWallet>(walletsRef).valueChanges();
+			})
+		);
 	}
 
 	async updateName(wallet: IWallet | string, name: string) {
 		const walletId = this._getWalletId(wallet);
 		const userId = await this._user.getUid();
-
-		return this._afStore
+		const walletRef = this._afStore
 			.doc<IWallet>(`users/${userId}/wallets/${walletId}`)
-			.update({ name });
+			.ref.withConverter(this._converter);
+
+		return this._afStore.doc<IWallet>(walletRef).update({ name });
 	}
 
 	async create(newWallet: IWalletBase) {
 		const userId = await this._user.getUid();
-
-		return this._afStore
+		const walletsRef = this._afStore
 			.collection<IWallet>(`users/${userId}/wallets`)
-			.add(newWallet as any);
+			.ref.withConverter(this._converter);
+
+		return this._afStore.collection<IWallet>(walletsRef).add(newWallet as any);
 	}
 
 	async delete(wallet: string | IWallet) {
