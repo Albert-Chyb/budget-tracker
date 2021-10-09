@@ -43,7 +43,7 @@
 					inputmode="numeric"
 					required
 					min="0"
-					step="0.25"
+					[max]="1000000"
 				/>
 				<mat-label>Wartość</mat-label>
 				<mat-icon matPrefix>paid</mat-icon>
@@ -57,6 +57,9 @@
 				</mat-error>
 				<mat-error *ngIf="balance.hasError('pattern')">
 					Podaj <strong>poprawnie</strong> sformatowaną wartość.
+				</mat-error>
+				<mat-error *ngIf="balance.hasError('max')">
+					Maksymalna wartość portfela wynosi 1 milion.
 				</mat-error>
 			</mat-form-field>
 		</div>
