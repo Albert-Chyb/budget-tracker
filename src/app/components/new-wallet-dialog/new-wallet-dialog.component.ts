@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MAX_MONEY_AMOUNT_VALUE } from 'src/app/common/constants';
 import { IWalletBase } from 'src/app/common/interfaces/wallet';
 import { moneyAmountPattern } from 'src/app/common/validators/money-amount-pattern';
 
@@ -14,6 +15,7 @@ export class NewWalletDialogComponent {
 	};
 
 	readonly moneyAmountPattern = moneyAmountPattern;
+	readonly maxMoneyAmount = MAX_MONEY_AMOUNT_VALUE;
 
 	processForm(wallet: IWalletBase) {
 		return { ...wallet, balance: Number(wallet.balance) };
