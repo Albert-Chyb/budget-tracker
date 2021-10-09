@@ -28,8 +28,11 @@
 			<mat-error *ngIf="amount.hasError('pattern')">
 				Podaj <strong>poprawnie sformatowaną</strong> kwotę.
 			</mat-error>
-			<mat-error *ngIf="amount.hasError('max')">
+			<mat-error *ngIf="amount.hasError('max') && type.value === 'expense'">
 				Wybrany portfel <strong>nie posiada wystarczających środków</strong>.
+			</mat-error>
+			<mat-error *ngIf="amount.hasError('max') && type.value === 'income'">
+				Portfel <strong>nie może przechowywać</strong> więcej niż 1 milion.
 			</mat-error>
 			<mat-error *ngIf="amount.hasError('hasBlackListedValue')">
 				Wartość transakcji <strong>nie może</strong> być równa 0.
@@ -114,7 +117,7 @@
 				#wallet="ngModel"
 			>
 				<mat-option *ngFor="let wallet of data.wallets" [value]="wallet.id">
-					{{ wallet.name }}
+					{{ wallet.name }} ({{ wallet.balance | currency }})
 				</mat-option>
 			</mat-select>
 			<mat-icon matPrefix>account_balance_wallet</mat-icon>

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { MAX_MONEY_AMOUNT_VALUE } from 'src/app/common/constants';
 import { ICategory } from 'src/app/common/interfaces/category';
 import {
 	ITransaction,
@@ -104,7 +105,10 @@ export class TransactionComponent implements OnInit {
 	get maxAmount(): number | null {
 		return this.formValue.type === 'expense'
 			? this.selectedWallet?.balance
-			: null;
+			: Math.max(
+					MAX_MONEY_AMOUNT_VALUE - (this.selectedWallet?.balance ?? 0),
+					0
+			  );
 	}
 
 	private _transactionToFormValue(
