@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { switchMap } from 'rxjs/operators';
+import { AngularFireFunctions } from '@angular/fire/functions';
+import { first, switchMap } from 'rxjs/operators';
+import { FirebaseCallableFunctionsNames } from 'src/app/common/firebase-callable-functions';
 import { ICategory, ICategoryBase } from 'src/app/common/interfaces/category';
-
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -11,7 +12,8 @@ import { UserService } from '../user/user.service';
 export class CategoriesService {
 	constructor(
 		private readonly _afStore: AngularFirestore,
-		private readonly _user: UserService
+		private readonly _user: UserService,
+		private readonly _afFunctions: AngularFireFunctions
 	) {}
 
 	async create(category: ICategoryBase, id?: string): Promise<void> {
@@ -64,13 +66,16 @@ export class CategoriesService {
 			.update(category);
 	}
 
-	async delete(id: string) {
-		// TODO: Write a cloud function that checks if a category is referenced by a transaction.
-		/*
-			If a category is referenced by at least by a one transaction, it cannot be removed.
-			If not it can be safely removed from collection.
-		*/
+	async delete(id: string): Promise<any> {
+		const deleteCategory = this._afFunctions.httpsCallable(
+			FirebaseCallableFunctionsNames.DeleteCategory
+		);
+		const res = await deleteCategory({ id }).pipe(first()).toPromise();
 
-		throw new Error('Deleting categories is not implemented yet.');
+		if (res.result === 'success') {
+			return Promise.resolve();
+		} else {
+			throw res;
+		}
 	}
 }

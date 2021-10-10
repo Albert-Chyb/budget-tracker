@@ -9,6 +9,7 @@ import {
 	NewCategoryDialogComponent,
 } from 'src/app/components/new-category-dialog/new-category-dialog.component';
 import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
+import { AlertService } from 'src/app/services/alert/alert.service';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -30,7 +31,8 @@ export class CategoriesComponent {
 		private readonly _loading: LoadingService,
 		private readonly _dialog: MatDialog,
 		private readonly _storage: StorageService,
-		private readonly _afStore: AngularFirestore
+		private readonly _afStore: AngularFirestore,
+		private readonly _alert: AlertService
 	) {}
 
 	categories$: Observable<ICategory[]> = this._loading.add(
@@ -63,8 +65,12 @@ export class CategoriesComponent {
 	}
 
 	/** Deletes a category. */
-	deleteCategory(category: ICategory) {
-		this._loading.add(this._categories.delete(category.id));
+	async deleteCategory(category: ICategory) {
+		try {
+			await this._loading.add(this._categories.delete(category.id));
+		} catch (error) {
+			this._handleError(error);
+		}
 	}
 
 	/** Function for ngFor directive. */
@@ -155,5 +161,14 @@ export class CategoriesComponent {
 			URL,
 			path,
 		};
+	}
+
+	private _handleError(error: any) {
+		if (error.code === 'is-referenced') {
+			this._alert.open(
+				'Przynajmniej jedna transakcja znajduję się w tej kategorii.',
+				'Błąd podczas usuwania kategorii.'
+			);
+		}
 	}
 }
