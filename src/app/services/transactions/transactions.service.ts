@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
 import { map, switchMap, takeWhile } from 'rxjs/operators';
 import {
-	IRawFirestoreTransaction,
 	ITransaction,
 	ITransactionBase,
+	ITransactionCreatePayload,
+	ITransactionReadPayload,
+	ITransactionUpdatePayload,
 } from 'src/app/common/interfaces/transaction';
 import { UserService } from '../user/user.service';
 
 class FirestoreTransactionConverter
 	implements firebase.firestore.FirestoreDataConverter<ITransactionBase>
 {
-	toFirestore(transaction: ITransactionBase): ITransactionBase {
+	toFirestore(transaction: ITransaction): firebase.firestore.DocumentData {
 		const docData = {
 			amount: ~~(transaction.amount * 100),
 			type: transaction.type,
@@ -30,7 +32,7 @@ class FirestoreTransactionConverter
 	}
 
 	fromFirestore(
-		snapshot: firebase.firestore.QueryDocumentSnapshot<IRawFirestoreTransaction>,
+		snapshot: firebase.firestore.QueryDocumentSnapshot<ITransactionReadPayload>,
 		options: firebase.firestore.SnapshotOptions
 	): ITransaction {
 		const data = snapshot.data();
@@ -63,74 +65,68 @@ export class TransactionsService {
 					.ref.withConverter(this._converter);
 
 				return this._afStore
-					.doc(transactionRef)
+					.doc<any>(transactionRef)
 					.snapshotChanges()
 					.pipe(
 						takeWhile(snap => snap.payload.exists),
 						map(snap => snap.payload.data())
 					);
 			})
-		) as any;
+		);
 	}
 
 	readAll(): Observable<ITransaction[]> {
 		return this._user.getUid$().pipe(
 			switchMap(uid => {
 				const transactionsRef = this._afStore
-					.collection<IRawFirestoreTransaction>(`users/${uid}/transactions`)
+					.collection(`users/${uid}/transactions`)
 					.ref.withConverter(this._converter);
 
-				return this._afStore
-					.collection<IRawFirestoreTransaction>(transactionsRef)
-					.valueChanges();
+				return this._afStore.collection<any>(transactionsRef).valueChanges();
 			})
-		) as any;
+		);
 	}
 
-	async create(transaction: ITransactionBase) {
+	async create(
+		transaction: ITransactionCreatePayload
+	): Promise<DocumentReference<ITransactionReadPayload>> {
 		const uid = await this._user.getUid();
 		const transactionsRef = this._afStore
-			.collection<IRawFirestoreTransaction>(`users/${uid}/transactions`)
+			.collection(`users/${uid}/transactions`)
 			.ref.withConverter(this._converter);
 
-		return this._afStore
-			.collection<IRawFirestoreTransaction>(transactionsRef)
-			.add(transaction as any);
+		return this._afStore.collection<any>(transactionsRef).add(transaction);
 	}
 
-	async update(transactionId: string, transaction: Partial<ITransactionBase>) {
+	async update(
+		transactionId: string,
+		transaction: ITransactionUpdatePayload
+	): Promise<void> {
 		const uid = await this._user.getUid();
 		const transactionRef = this._afStore
-			.doc<IRawFirestoreTransaction>(
-				`users/${uid}/transactions/${transactionId}`
-			)
+			.doc(`users/${uid}/transactions/${transactionId}`)
 			.ref.withConverter(this._converter);
 
-		return this._afStore
-			.doc<IRawFirestoreTransaction>(transactionRef)
-			.update(transaction as any);
+		return this._afStore.doc<any>(transactionRef).update(transaction);
 	}
 
-	async put(transactionId: string, transaction: ITransactionBase) {
+	async put(
+		transactionId: string,
+		transaction: ITransactionCreatePayload
+	): Promise<void> {
 		const uid = await this._user.getUid();
 		const transactionRef = this._afStore
-			.doc<IRawFirestoreTransaction>(
-				`users/${uid}/transactions/${transactionId}`
-			)
+			.doc(`users/${uid}/transactions/${transactionId}`)
 			.ref.withConverter(this._converter);
 
-		return this._afStore
-			.doc<IRawFirestoreTransaction>(transactionRef)
-			.set(transaction as any);
+		return this._afStore.doc<any>(transactionRef).set(transaction);
 	}
 
-	async delete(transactionId: string) {
+	async delete(transactionId: string): Promise<void> {
 		const uid = await this._user.getUid();
 
 		return this._afStore
-			.doc<IRawFirestoreTransaction>(
-				`users/${uid}/transactions/${transactionId}`
-			)
+			.doc(`users/${uid}/transactions/${transactionId}`)
 			.delete();
 	}
 }

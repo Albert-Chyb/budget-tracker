@@ -6,7 +6,7 @@ import { MAX_MONEY_AMOUNT_VALUE } from 'src/app/common/constants';
 import { ICategory } from 'src/app/common/interfaces/category';
 import {
 	ITransaction,
-	ITransactionBase,
+	ITransactionCreatePayload,
 	TTransactionType,
 } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
@@ -135,7 +135,7 @@ interface ITransactionFormValue {
 }
 
 /** Class that converts raw form value into a valid transaction object that can be used in the service. */
-class TransactionDTO implements ITransactionBase {
+class TransactionDTO implements ITransactionCreatePayload {
 	constructor(formValue: ITransactionFormValue) {
 		const { amount, type, date, category, wallet, description } = formValue;
 
