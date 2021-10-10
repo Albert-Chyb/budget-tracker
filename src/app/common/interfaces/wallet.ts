@@ -7,7 +7,7 @@ export interface IWalletBase {
 }
 
 /**
- * Represents object that is returned from a service.
+ * Represents a wallet object that is returned from a service.
  */
 export interface IWallet extends IWalletBase {
 	id: string;

@@ -1,7 +1,7 @@
 import { FieldValue, Timestamp } from './firestore';
 
 /**
- * Contains fields that are present in all payloads.
+ * Represents a general user object.
  */
 export interface IUserBase {
 	displayName: string;
@@ -12,7 +12,7 @@ export interface IUserBase {
 }
 
 /**
- * User object that is returned from a service.
+ * Represents an user object that is returned from a service.
  */
 export interface IUser extends IUserBase {
 	uid: string;
@@ -20,19 +20,19 @@ export interface IUser extends IUserBase {
 }
 
 /**
- * Shape of an user object that is required when the client wants to create a new user.
+ * Represents an object that aims to create a new user in the database.
  */
 export interface IUserCreatePayload extends IUserBase {
 	createdAt: FieldValue;
 }
 
 /**
- * Shape of an user object that is required when the client wants to update an user.
+ * Represents an object that aims to update already existing user in the database.
  */
 export interface IUserUpdatePayload extends Partial<IUserBase> {}
 
 /**
- * Shape of an user object that is returned from the database.
+ * Represents a raw user object that is returned from the database.
  */
 export interface IUserReadPayload extends IUserBase {
 	createdAt: Timestamp;

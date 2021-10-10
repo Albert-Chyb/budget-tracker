@@ -3,7 +3,7 @@ import { Timestamp } from './firestore';
 export type TTransactionType = 'expense' | 'income';
 
 /**
- * General shape of a transaction object.
+ * Represents a general transaction object.
  */
 export interface ITransactionBase {
 	amount: number;
@@ -15,7 +15,7 @@ export interface ITransactionBase {
 }
 
 /**
- * Represents an object that is returned from a service.
+ * Represents a transaction object that is returned from a service.
  */
 export interface ITransaction extends ITransactionBase {
 	id: string;
@@ -37,7 +37,7 @@ export interface ITransactionUpdatePayload extends Partial<ITransactionBase> {
 }
 
 /**
- * Represents a raw object that is returned from the database.
+ * Represents a raw transaction object that is returned from the database.
  */
 export interface ITransactionReadPayload extends ITransactionBase {
 	date: Timestamp;

@@ -1,5 +1,5 @@
 /**
- * Represents object that is returned from a service.
+ * Represents a transaction object that is returned from a service.
  */
 export interface ICategory {
 	id: string;
@@ -9,7 +9,7 @@ export interface ICategory {
 }
 
 /**
- * Represents object that is stored in the database.
+ * Represents a general category object.
  */
 export interface ICategoryBase {
 	name: string;
@@ -17,8 +17,17 @@ export interface ICategoryBase {
 	iconPath: string;
 }
 
+/**
+ * Represents an object that aims to create a new category in the database.
+ */
 export interface ICategoryCreatePayload extends ICategoryBase {}
 
+/**
+ * Represents an object that aims to update already existing category in the database.
+ */
 export interface ICategoryUpdatePayload extends Partial<ICategoryBase> {}
 
+/**
+ * Represents a raw category object that is returned from the database.
+ */
 export interface ICategoryReadPayload extends ICategoryBase {}
