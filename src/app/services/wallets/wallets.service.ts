@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import firebase from 'firebase/app';
 import { first, map, switchMap } from 'rxjs/operators';
+import { FirebaseCallableFunctionsNames } from 'src/app/common/firebase-callable-functions';
 import { IWallet, IWalletBase } from 'src/app/common/interfaces/wallet';
 import { UserService } from '../user/user.service';
 
@@ -69,7 +70,9 @@ export class WalletsService {
 	}
 
 	async delete(wallet: string | IWallet) {
-		const deleteWallet = this._afFunctions.httpsCallable('deleteWallet');
+		const deleteWallet = this._afFunctions.httpsCallable(
+			FirebaseCallableFunctionsNames.DeleteWallet
+		);
 		const res$ = deleteWallet({ id: this._getWalletId(wallet) });
 
 		return res$
