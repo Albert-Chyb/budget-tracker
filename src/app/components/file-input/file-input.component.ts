@@ -88,7 +88,11 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
 
 		if (file) {
 			// In order to display the preview of a file inside the img tag, it must be converted to a string.
-			this._reader.readAsDataURL(file);
+			if (file.type.startsWith('image/')) {
+				this._reader.readAsDataURL(file);
+			} else {
+				this._setPreview('assets/icons/file.svg');
+			}
 		} else {
 			// Remove preview image if no file was selected.
 			this._removePreview();
