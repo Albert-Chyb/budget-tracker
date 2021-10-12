@@ -1,19 +1,19 @@
-<div class="main-navbar-wrapper">
+<div class="main-navbar-wrapper" *ngIf="data$ | async as data">
 	<mat-toolbar color="primary" role="heading">
 		<button mat-icon-button (click)="onHamburgerClick.emit()">
 			<mat-icon>menu</mat-icon>
 		</button>
 
-		<nav>
-			<a mat-button routerLink="/">Monitor budżetu</a>
-		</nav>
+		<ng-container>
+			<a mat-button routerLink="/">{{ data.routeName }}</a>
+		</ng-container>
 
 		<div class="spacer"></div>
 
 		<button
 			mat-icon-button
 			matTooltip="Wyloguj się"
-			*ngIf="isLoggedIn$ | async; else login"
+			*ngIf="data.isLoggedIn; else login"
 			(click)="logout()"
 			aria-label="Wyloguj się"
 		>
@@ -33,7 +33,7 @@
 	</mat-toolbar>
 
 	<mat-progress-bar
-		*ngIf="shouldDisplayLoader$ | async"
+		*ngIf="data.shouldDisplayLoader"
 		mode="indeterminate"
 		color="accent"
 	></mat-progress-bar>

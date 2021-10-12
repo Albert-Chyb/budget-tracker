@@ -7,7 +7,6 @@ import {
 import { RouterModule, Routes } from '@angular/router';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { HomeComponent } from './pages/home/home.component';
-
 import { LoginComponent } from './pages/login/login.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
@@ -22,6 +21,7 @@ const routes: Routes = [
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
+			name: 'Strona główna',
 		},
 	},
 	{
@@ -30,6 +30,7 @@ const routes: Routes = [
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedInToHome,
+			name: 'Zaloguj się',
 		},
 	},
 	{
@@ -38,6 +39,7 @@ const routes: Routes = [
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
+			name: 'Portfele',
 		},
 	},
 	{
@@ -46,6 +48,7 @@ const routes: Routes = [
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
+			name: 'Kategorie',
 		},
 	},
 	{
@@ -54,6 +57,7 @@ const routes: Routes = [
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
+			name: 'Nowa transakcja',
 		},
 	},
 	{
@@ -62,6 +66,7 @@ const routes: Routes = [
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
+			name: 'Edytuj transakcję',
 		},
 	},
 ];
