@@ -3,6 +3,21 @@
 		<mat-card-title>
 			<h2>{{ wallet.name }}</h2>
 		</mat-card-title>
+
+		<div *ngIf="showActions">
+			<button type="button" mat-icon-button [mat-menu-trigger-for]="menu">
+				<mat-icon>more_vert</mat-icon>
+			</button>
+
+			<mat-menu #menu>
+				<button mat-menu-item (click)="onWalletEdit.emit(wallet)">
+					Zmień nazwę
+				</button>
+				<button mat-menu-item (click)="onWalletDelete.emit(wallet)">
+					Usuń
+				</button>
+			</mat-menu>
+		</div>
 	</mat-card-header>
 
 	<mat-card-content>
@@ -10,24 +25,4 @@
 			{{ wallet.balance | currency }}
 		</p>
 	</mat-card-content>
-
-	<mat-card-actions *ngIf="showActions">
-		<button
-			mat-icon-button
-			color="accent"
-			matTooltip="Zmień nazwę"
-			(click)="onWalletEdit.emit(wallet)"
-		>
-			<mat-icon>edit</mat-icon>
-		</button>
-
-		<button
-			mat-icon-button
-			color="warn"
-			matTooltip="Usuń portfel"
-			(click)="onWalletDelete.emit(wallet)"
-		>
-			<mat-icon>delete</mat-icon>
-		</button>
-	</mat-card-actions>
 </mat-card>

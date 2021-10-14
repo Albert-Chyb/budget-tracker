@@ -20,6 +20,14 @@
 	justify-content: flex-end;
 }
 
+.mat-card-header {
+	justify-content: space-between;
+}
+
+.mat-card-content {
+	padding-bottom: 1.6rem;
+}
+
 // Remove margin from the mat-card-header. Without an avatar the header text is not align with the body text what makes it look ugly.
 :host ::ng-deep .mat-card-header-text {
 	margin-left: 0px;
