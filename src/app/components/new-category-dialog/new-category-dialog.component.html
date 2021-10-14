@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>{{ editMode ? 'Edytuj kategorię' : 'Nowa kategoria' }}</h2>
 
-<form #categoryForm="ngForm">
+<form mat-dialog-content #categoryForm="ngForm" id="category-form">
 	<mat-form-field>
 		<input
 			name="name"
@@ -29,6 +29,25 @@
 	</mat-form-field>
 
 	<section>
+		<h3>Domyślny typ transakcji</h3>
+		<p class="mat-small mat-hint">
+			Po wyborze tej kategorii, typ transakcji zostanie automatycznie zaznaczony
+			na wybrany poniżej.
+		</p>
+
+		<div class="default-transactions-type">
+			<mat-button-toggle-group
+				value="expense"
+				name="defaultTransactionsType"
+				[(ngModel)]="result.defaultTransactionsType"
+			>
+				<mat-button-toggle value="expense">Wydatki</mat-button-toggle>
+				<mat-button-toggle value="income">Przychód</mat-button-toggle>
+			</mat-button-toggle-group>
+		</div>
+	</section>
+
+	<section>
 		<file-input
 			name="icon"
 			accept=".svg"
@@ -37,27 +56,28 @@
 			[(ngModel)]="result.icon"
 		></file-input>
 
-		<mat-hint>Tylko zdjęcia w formacie .svg</mat-hint>
-	</section>
-
-	<section class="actions">
-		<button
-			type="submit"
-			mat-raised-button
-			color="accent"
-			[mat-dialog-close]="processForm()"
-			[disabled]="categoryForm.invalid"
-		>
-			OK
-		</button>
-
-		<button
-			type="button"
-			mat-raised-button
-			color="warn"
-			[mat-dialog-close]="null"
-		>
-			Anuluj
-		</button>
+		<mat-hint class="mat-small">Tylko zdjęcia w formacie .svg</mat-hint>
 	</section>
 </form>
+
+<section mat-dialog-actions class="actions">
+	<button
+		type="submit"
+		form="category-form"
+		mat-raised-button
+		color="accent"
+		[mat-dialog-close]="processForm()"
+		[disabled]="categoryForm.invalid"
+	>
+		OK
+	</button>
+
+	<button
+		type="button"
+		mat-raised-button
+		color="warn"
+		[mat-dialog-close]="null"
+	>
+		Anuluj
+	</button>
+</section>

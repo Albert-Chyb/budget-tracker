@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ICategory } from 'src/app/common/interfaces/category';
+import { TTransactionType } from 'src/app/common/interfaces/transaction';
 
 export interface INewCategoryDialogResult {
 	/** Name of the category */
 	name: string;
 	/** Icon of the category. It contains null value if none were selected. */
 	icon: File | null;
+	defaultTransactionsType: TTransactionType;
 }
 
 @Component({
@@ -27,15 +29,16 @@ export class NewCategoryDialogComponent {
 		return {
 			name: this.result.name,
 			icon: this.result.icon instanceof File ? this.result.icon : null,
+			defaultTransactionsType: this.result.defaultTransactionsType,
 		};
 	}
 
 	private _buildFormValue(): INewCategoryDialogResult {
-		const name = this._category ? this._category.name : '';
-
 		return {
-			name,
+			name: this._category?.name ?? '',
 			icon: null,
+			defaultTransactionsType:
+				this._category?.defaultTransactionsType ?? 'expense',
 		};
 	}
 

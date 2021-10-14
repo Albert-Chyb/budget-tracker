@@ -1,11 +1,10 @@
+import { TTransactionType } from './transaction';
+
 /**
  * Represents a transaction object that is returned from a service.
  */
-export interface ICategory {
+export interface ICategory extends ICategoryBase {
 	id: string;
-	name: string;
-	icon: string;
-	iconPath: string;
 }
 
 /**
@@ -15,6 +14,7 @@ export interface ICategoryBase {
 	name: string;
 	icon: string;
 	iconPath: string;
+	defaultTransactionsType: TTransactionType;
 }
 
 /**

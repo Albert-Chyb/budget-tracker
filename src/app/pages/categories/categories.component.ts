@@ -102,6 +102,7 @@ export class CategoriesComponent {
 			name: category.name,
 			icon: iconUrl,
 			iconPath,
+			defaultTransactionsType: category.defaultTransactionsType,
 		};
 
 		if (!iconChanged) {
