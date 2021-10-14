@@ -1,7 +1,7 @@
 <section>
 	<h1>Kategorie</h1>
 
-	<mat-list role="list" *ngIf="categories$ | async as categories">
+	<mat-list role="list" *ngIf="categories$ | loading | async as categories">
 		<ng-container *clueIf="categories.length === 0">
 			<mat-list-item
 				role="listitem"

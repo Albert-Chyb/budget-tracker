@@ -12,7 +12,6 @@ import {
 import { IWallet } from 'src/app/common/interfaces/wallet';
 import { moneyAmountPattern } from 'src/app/common/validators/money-amount-pattern';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
 import { TransactionsService } from 'src/app/services/transactions/transactions.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
@@ -26,7 +25,6 @@ export class TransactionComponent implements OnInit {
 		private readonly _route: ActivatedRoute,
 		private readonly _categories: CategoriesService,
 		private readonly _wallets: WalletsService,
-		private readonly _loading: LoadingService,
 		private readonly _transactions: TransactionsService,
 		private readonly _router: Router
 	) {}
@@ -55,22 +53,20 @@ export class TransactionComponent implements OnInit {
 			? this._transactions.read(this.transactionId)
 			: of(null);
 
-		this.data$ = this._loading.add(
-			combineLatest([
-				this._categories.readAll(),
-				this._wallets.getAll(),
-				transaction$,
-			]).pipe(
-				map(([categories, wallets, transaction]) => ({
-					categories,
-					wallets,
-					transaction,
-				})),
-				tap(({ transaction }) => {
-					if (transaction)
-						this.formValue = this._transactionToFormValue(transaction);
-				})
-			)
+		this.data$ = combineLatest([
+			this._categories.readAll(),
+			this._wallets.getAll(),
+			transaction$,
+		]).pipe(
+			map(([categories, wallets, transaction]) => ({
+				categories,
+				wallets,
+				transaction,
+			})),
+			tap(({ transaction }) => {
+				if (transaction)
+					this.formValue = this._transactionToFormValue(transaction);
+			})
 		);
 	}
 

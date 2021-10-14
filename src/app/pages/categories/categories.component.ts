@@ -35,9 +35,7 @@ export class CategoriesComponent {
 		private readonly _alert: AlertService
 	) {}
 
-	categories$: Observable<ICategory[]> = this._loading.add(
-		this._categories.readAll()
-	);
+	categories$: Observable<ICategory[]> = this._categories.readAll();
 
 	/**
 	 * Opens the dialog to gather required information and after closing, it adds a category with returned data.

@@ -1,4 +1,4 @@
-<section *ngIf="wallets$ | async as wallets">
+<section *ngIf="wallets$ | loading | async as wallets">
 	<h1>Twoje portfele</h1>
 
 	<div class="wallets" *clueIf="wallets.length === 0">

@@ -4,7 +4,7 @@
 		(ngSubmit)="
 			isInEditMode ? loading.pending(update()) : loading.pending(create())
 		"
-		*ngIf="data$ | async as data"
+		*ngIf="data$ | loading | async as data"
 	>
 		<mat-form-field>
 			<mat-label>Kwota</mat-label>

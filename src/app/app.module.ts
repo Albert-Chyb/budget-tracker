@@ -57,6 +57,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { UserService } from './services/user/user.service';
+import { LoadingPipe } from './pipes/loading/loading.pipe';
 
 // TODO: Add Progressive Web App
 
@@ -123,6 +124,7 @@ const CluesDatasetsProvider: Provider = {
 		MaxValidatorDirective,
 		BlackListValidatorDirective,
 		AlertComponent,
+  LoadingPipe,
 	],
 	imports: [
 		BrowserModule,
