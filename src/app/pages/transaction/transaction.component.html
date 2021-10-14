@@ -86,7 +86,8 @@
 			<mat-select
 				name="category"
 				required
-				[(ngModel)]="formValue.category"
+				(ngModelChange)="setCategory(findCategory(data.categories, $event))"
+				[ngModel]="formValue.category"
 				#category="ngModel"
 			>
 				<mat-option

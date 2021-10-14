@@ -34,6 +34,7 @@ export class TransactionComponent implements OnInit {
 	readonly moneyAmountPattern = moneyAmountPattern;
 
 	selectedWallet: IWallet;
+	selectedCategory: ICategory;
 	formValue: ITransactionFormValue = {
 		amount: null,
 		type: 'expense',
@@ -96,6 +97,16 @@ export class TransactionComponent implements OnInit {
 
 	findWallet(wallets: IWallet[], id: string) {
 		return wallets.find(wallet => wallet.id === id);
+	}
+
+	setCategory(category: ICategory): void {
+		this.formValue.category = category.id;
+		this.selectedCategory = category;
+		this.formValue.type = category.defaultTransactionsType;
+	}
+
+	findCategory(categories: ICategory[], id: string): ICategory {
+		return categories.find(category => category.id === id);
 	}
 
 	get maxAmount(): number | null {
