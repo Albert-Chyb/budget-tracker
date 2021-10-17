@@ -12,8 +12,7 @@ import {
 	QueryDocumentSnapshot,
 } from '../interfaces/firestore';
 
-type CollectionDeclaration<T> = Observable<AngularFirestoreCollection<T>>;
-type FirestoreCollectionConstructor<T> = new (...args: any[]) => T;
+type Constructor<T> = new (...args: any[]) => T;
 
 export const ALL_MIXINS = [
 	CreateMixin,
@@ -79,6 +78,7 @@ export interface Delete {
 	delete(id: string): Observable<void>;
 }
 
+/** Default converter for firestore collection. It just appends ids to documents. */
 export class FirestoreConverter implements FirestoreDataConverter<unknown> {
 	toFirestore(modelObject: unknown): DocumentData;
 	toFirestore(modelObject: any, options?: any): DocumentData {
@@ -115,23 +115,24 @@ export class FirestoreCollection {
 			})
 		);
 	}
+
+	generateId(): string {
+		return this._afStore.createId();
+	}
 }
 
 /** Allows to create documents in the collection. */
-export function CreateMixin<TBase extends FirestoreCollectionConstructor<any>>(
+export function CreateMixin<TBase extends Constructor<FirestoreCollection>>(
 	Base: TBase
 ) {
 	return class extends Base implements Create<unknown> {
-		declare readonly collection$: CollectionDeclaration<unknown>;
-		declare readonly _afStore: AngularFirestore;
-
 		create(
 			data: DocumentData,
 			id?: string
 		): Observable<AngularFirestoreDocument<unknown>> {
 			return this.collection$.pipe(
 				switchMap(coll => {
-					const docId = id ?? this._afStore.createId();
+					const docId = id ?? this.generateId();
 					const docRef = coll.doc(docId);
 
 					return from(docRef.set(data)).pipe(mapTo(docRef));
@@ -142,13 +143,10 @@ export function CreateMixin<TBase extends FirestoreCollectionConstructor<any>>(
 }
 
 /** Allows to read a single document from the collection. */
-export function ReadMixin<TBase extends FirestoreCollectionConstructor<any>>(
+export function ReadMixin<TBase extends Constructor<FirestoreCollection>>(
 	Base: TBase
 ) {
 	return class extends Base implements Read<unknown> {
-		declare readonly collection$: CollectionDeclaration<unknown>;
-		declare readonly _afStore: AngularFirestore;
-
 		read(id: string, once = false): Observable<unknown> {
 			return this.collection$.pipe(
 				switchMap(coll => {
@@ -164,13 +162,10 @@ export function ReadMixin<TBase extends FirestoreCollectionConstructor<any>>(
 }
 
 /** Allows to read all documents in the collection. */
-export function ListMixin<TBase extends FirestoreCollectionConstructor<any>>(
+export function ListMixin<TBase extends Constructor<FirestoreCollection>>(
 	Base: TBase
 ) {
 	return class extends Base implements List<unknown> {
-		declare readonly collection$: CollectionDeclaration<unknown>;
-		declare readonly _afStore: AngularFirestore;
-
 		list(): Observable<unknown[]> {
 			return this.collection$.pipe(switchMap(coll => coll.valueChanges()));
 		}
@@ -178,13 +173,10 @@ export function ListMixin<TBase extends FirestoreCollectionConstructor<any>>(
 }
 
 /** Allows to update documents in the collection. */
-export function UpdateMixin<TBase extends FirestoreCollectionConstructor<any>>(
+export function UpdateMixin<TBase extends Constructor<FirestoreCollection>>(
 	Base: TBase
 ) {
 	return class extends Base implements Update<unknown> {
-		declare readonly collection$: CollectionDeclaration<unknown>;
-		declare readonly _afStore: AngularFirestore;
-
 		update(id: string, data: DocumentData): Observable<void> {
 			return this.collection$.pipe(
 				switchMap(coll =>
@@ -207,13 +199,10 @@ export function UpdateMixin<TBase extends FirestoreCollectionConstructor<any>>(
 }
 
 /** Allows to create or overwrite a document in the collection. */
-export function PutMixin<TBase extends FirestoreCollectionConstructor<any>>(
+export function PutMixin<TBase extends Constructor<FirestoreCollection>>(
 	Base: TBase
 ) {
 	return class extends Base implements Put<unknown> {
-		declare readonly collection$: CollectionDeclaration<unknown>;
-		declare readonly _afStore: AngularFirestore;
-
 		put(id: string, data: DocumentData): Observable<void> {
 			return this.collection$.pipe(
 				switchMap(coll => from(coll.doc(id).set(data)))
@@ -223,13 +212,10 @@ export function PutMixin<TBase extends FirestoreCollectionConstructor<any>>(
 }
 
 /** Allows to delete a document in the collection. */
-export function DeleteMixin<TBase extends FirestoreCollectionConstructor<any>>(
+export function DeleteMixin<TBase extends Constructor<FirestoreCollection>>(
 	Base: TBase
 ) {
 	return class Delete extends Base {
-		declare readonly collection$: CollectionDeclaration<unknown>;
-		declare readonly _afStore: AngularFirestore;
-
 		delete(id: string): Observable<void> {
 			return this.collection$.pipe(
 				switchMap(coll => from(coll.doc(id).delete()))
