@@ -15,6 +15,15 @@ import {
 type CollectionDeclaration<T> = Observable<AngularFirestoreCollection<T>>;
 type FirestoreCollectionConstructor<T> = new (...args: any[]) => T;
 
+export const ALL_MIXINS = [
+	CreateMixin,
+	ReadMixin,
+	ListMixin,
+	UpdateMixin,
+	DeleteMixin,
+	PutMixin,
+];
+
 /**
  * @template T Required object to create a document.
  * @template K Object that is present in the AngularFirestoreDocument.
