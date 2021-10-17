@@ -215,7 +215,7 @@ export function PutMixin<TBase extends Constructor<FirestoreCollection>>(
 export function DeleteMixin<TBase extends Constructor<FirestoreCollection>>(
 	Base: TBase
 ) {
-	return class Delete extends Base {
+	return class extends Base implements Delete {
 		delete(id: string): Observable<void> {
 			return this.collection$.pipe(
 				switchMap(coll => from(coll.doc(id).delete()))
