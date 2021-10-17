@@ -1,102 +1,62 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireFunctions } from '@angular/fire/functions';
-import firebase from 'firebase/app';
 import { Observable } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
+import { map, mapTo } from 'rxjs/operators';
 import { FirebaseCallableFunctionsNames } from 'src/app/common/firebase-callable-functions';
 import {
 	IWallet,
-	IWalletBase,
-	IWalletReadPayload,
+	IWalletCreatePayload,
+	IWalletUpdatePayload,
 } from 'src/app/common/interfaces/wallet';
+import {
+	ALL_MIXINS,
+	Collection,
+	Create,
+	Delete,
+	List,
+	Put,
+	Read,
+	Update,
+} from 'src/app/common/models/collection';
+import { FirestoreWalletConverter } from 'src/app/common/models/firestore-wallet-converter';
 import { UserService } from '../user/user.service';
 
-class FirestoreWalletConverter
-	implements firebase.firestore.FirestoreDataConverter<IWalletBase>
-{
-	toFirestore(wallet: IWalletBase): IWalletBase {
-		wallet.balance = ~~(wallet.balance * 100);
-
-		return wallet;
-	}
-
-	fromFirestore(
-		snapshot: firebase.firestore.QueryDocumentSnapshot<IWalletBase>,
-		options: firebase.firestore.SnapshotOptions
-	): IWallet {
-		const data = snapshot.data();
-
-		return { ...data, id: snapshot.id, balance: data.balance / 100 };
-	}
-}
+interface Methods
+	extends Create<IWalletCreatePayload, IWallet>,
+		Read<IWallet>,
+		List<IWallet>,
+		Update<IWalletUpdatePayload>,
+		Delete,
+		Put<IWalletCreatePayload> {}
 
 @Injectable({
 	providedIn: 'root',
 })
-export class WalletsService {
+export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 	constructor(
-		private readonly _user: UserService,
-		private readonly _afStore: AngularFirestore,
+		afStore: AngularFirestore,
+		user: UserService,
 		private readonly _afFunctions: AngularFireFunctions
-	) {}
-
-	private readonly _converter = new FirestoreWalletConverter();
-
-	getAll(): Observable<IWallet[]> {
-		return this._user.getUid$().pipe(
-			switchMap(uid => {
-				const walletsRef = this._afStore
-					.collection(`users/${uid}/wallets`)
-					.ref.withConverter(this._converter);
-
-				return this._afStore.collection<any>(walletsRef).valueChanges();
-			})
+	) {
+		super(
+			afStore,
+			user.getUid$().pipe(map(uid => `users/${uid}/wallets`)),
+			new FirestoreWalletConverter()
 		);
 	}
 
-	async updateName(wallet: IWallet | string, name: string): Promise<void> {
-		const walletId = this._getWalletId(wallet);
-		const userId = await this._user.getUid();
-		const walletRef = this._afStore
-			.doc(`users/${userId}/wallets/${walletId}`)
-			.ref.withConverter(this._converter);
-
-		return this._afStore.doc<any>(walletRef).update({ name });
-	}
-
-	async create(
-		newWallet: IWalletBase
-	): Promise<DocumentReference<IWalletReadPayload>> {
-		const userId = await this._user.getUid();
-		const walletsRef = this._afStore
-			.collection<IWallet>(`users/${userId}/wallets`)
-			.ref.withConverter(this._converter);
-
-		return this._afStore.collection<any>(walletsRef).add(newWallet);
-	}
-
-	async delete(wallet: string | IWallet): Promise<void> {
+	delete(id: string): Observable<void> {
 		const deleteWallet = this._afFunctions.httpsCallable(
 			FirebaseCallableFunctionsNames.DeleteWallet
 		);
-		const res$ = deleteWallet({ id: this._getWalletId(wallet) });
+		const res$ = deleteWallet({ id });
 
-		return res$
-			.pipe(
-				first(),
-				map(res => {
-					if (res.result === 'error') {
-						throw res;
-					}
-
-					return null;
-				})
-			)
-			.toPromise();
-	}
-
-	private _getWalletId(wallet: IWallet | string): string {
-		return typeof wallet === 'string' ? wallet : wallet.id;
+		return res$.pipe(
+			map(res => {
+				if (res.result === 'error') throw res;
+			}),
+			mapTo(null)
+		);
 	}
 }

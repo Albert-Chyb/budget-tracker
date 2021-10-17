@@ -35,7 +35,7 @@ export class CategoriesComponent {
 		private readonly _alert: AlertService
 	) {}
 
-	categories$: Observable<ICategory[]> = this._categories.readAll();
+	categories$: Observable<ICategory[]> = this._categories.list();
 
 	/**
 	 * Opens the dialog to gather required information and after closing, it adds a category with returned data.
@@ -44,9 +44,10 @@ export class CategoriesComponent {
 		this._openDialog().subscribe(async result => {
 			const id = this._afStore.createId();
 
-			this._loading.add(
-				this._categories.create(await this._buildCategory(result, id), id)
-			);
+			this._loading
+				.add(this._categories.create(await this._buildCategory(result, id), id))
+				.pipe(first())
+				.toPromise();
 		});
 	}
 
@@ -58,14 +59,20 @@ export class CategoriesComponent {
 		this._openDialog(category).subscribe(async result => {
 			const newCategory = await this._buildCategory(result, category.id);
 
-			this._loading.add(this._categories.update(category.id, newCategory));
+			this._loading
+				.add(this._categories.update(category.id, newCategory))
+				.pipe(first())
+				.toPromise();
 		});
 	}
 
 	/** Deletes a category. */
 	async deleteCategory(category: ICategory) {
 		try {
-			await this._loading.add(this._categories.delete(category.id));
+			await this._loading
+				.add(this._categories.delete(category.id))
+				.pipe(first())
+				.toPromise();
 		} catch (error) {
 			this._handleError(error);
 		}

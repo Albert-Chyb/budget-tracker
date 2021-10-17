@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { first, map, tap } from 'rxjs/operators';
 import { MAX_MONEY_AMOUNT_VALUE } from 'src/app/common/constants';
 import { ICategory } from 'src/app/common/interfaces/category';
 import {
@@ -55,8 +55,8 @@ export class TransactionComponent implements OnInit {
 			: of(null);
 
 		this.data$ = combineLatest([
-			this._categories.readAll(),
-			this._wallets.getAll(),
+			this._categories.list(),
+			this._wallets.list(),
 			transaction$,
 		]).pipe(
 			map(([categories, wallets, transaction]) => ({
@@ -72,21 +72,29 @@ export class TransactionComponent implements OnInit {
 	}
 
 	async create() {
-		await this._transactions.create(
-			Object.assign({}, new TransactionDTO(this.formValue))
-		);
+		await this._transactions
+			.create(Object.assign({}, new TransactionDTO(this.formValue)))
+			.pipe(first())
+			.toPromise();
+
 		return this._router.navigateByUrl('/');
 	}
 
 	async update() {
-		await this._transactions.put(
-			this.transactionId,
-			Object.assign({}, new TransactionDTO(this.formValue))
-		);
+		await this._transactions
+			.put(
+				this.transactionId,
+				Object.assign({}, new TransactionDTO(this.formValue))
+			)
+			.pipe(first())
+			.toPromise();
 	}
 
 	async delete() {
-		await this._transactions.delete(this.transactionId);
+		await this._transactions
+			.delete(this.transactionId)
+			.pipe(first())
+			.toPromise();
 		return this._router.navigateByUrl('/transaction');
 	}
 
