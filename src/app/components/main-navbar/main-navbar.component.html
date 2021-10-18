@@ -5,7 +5,10 @@
 		</button>
 
 		<ng-container>
-			<a mat-button routerLink="/">{{ data.routeName }}</a>
+			<a mat-button routerLink="/">
+				<span class="app-name">{{ data.routeNameChange.originalTitle }} -</span>
+				{{ data.routeNameChange.name }}
+			</a>
 		</ng-container>
 
 		<div class="spacer"></div>

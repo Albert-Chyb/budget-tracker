@@ -9,7 +9,10 @@ import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
-import { RouteNameService } from 'src/app/services/route-name/route-name.service';
+import {
+	RouteNameChange,
+	RouteNameService,
+} from 'src/app/services/route-name/route-name.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -32,7 +35,7 @@ export class MainNavbarComponent implements OnInit {
 	shouldDisplayLoader$ = this._loading.isLoading$.pipe(debounceTime(50));
 
 	data$: Observable<{
-		routeName: string;
+		routeNameChange: RouteNameChange;
 		isLoggedIn: boolean;
 		shouldDisplayLoader: boolean;
 	}>;
@@ -41,12 +44,12 @@ export class MainNavbarComponent implements OnInit {
 		this.data$ = combineLatest([
 			this._auth.isLoggedIn$,
 			this._loading.isLoading$,
-			this._routeName.pipe(map(change => change.title)),
+			this._routeName,
 		]).pipe(
-			map(([isLoggedIn, isLoading, routeName]) => ({
+			map(([isLoggedIn, isLoading, routeNameChange]) => ({
 				isLoggedIn,
 				shouldDisplayLoader: isLoading,
-				routeName,
+				routeNameChange,
 			}))
 		);
 	}
