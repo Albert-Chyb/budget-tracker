@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from 'firebase/app';
 import { from, Observable, of } from 'rxjs';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import {
 	IUser,
 	IUserBase,
@@ -11,7 +11,6 @@ import {
 	IUserReadPayload,
 	IUserUpdatePayload,
 } from 'src/app/common/interfaces/user';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
 	providedIn: 'root',
@@ -28,7 +27,6 @@ export class UserService {
 			switchMap(user =>
 				user ? this._getUserFromDatabase(user.uid) : of(null)
 			),
-			tap(user => (environment.production ? null : console.log(user))),
 			shareReplay(1)
 		);
 	}
