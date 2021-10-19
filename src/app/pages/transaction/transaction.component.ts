@@ -108,9 +108,9 @@ export class TransactionComponent implements OnInit {
 	}
 
 	setCategory(category: ICategory): void {
-		this.formValue.category = category.id;
+		this.formValue.category = category?.id;
 		this.selectedCategory = category;
-		this.formValue.type = category.defaultTransactionsType;
+		this.formValue.type = category?.defaultTransactionsType;
 	}
 
 	findCategory(categories: ICategory[], id: string): ICategory {
