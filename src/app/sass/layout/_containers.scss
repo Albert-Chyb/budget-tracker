@@ -1,8 +1,19 @@
 @use 'sass:map';
-@use './breakpoints' as bp;
+@use './breakpoints';
 
-@mixin make-container($screen-size) {
-	max-width: map.get(bp.$breakpoints, $screen-size);
-	margin-left: auto;
-	margin-right: auto;
+$containers-widths: (
+	sm: 540px,
+	md: 720px,
+	lg: 960px,
+	xl: 1140px,
+	xxl: 1320px,
+);
+
+@mixin make-container($size, $centered: true) {
+	max-width: map.get($containers-widths, $size);
+
+	@if $centered {
+		margin-left: auto;
+		margin-right: auto;
+	}
 }
