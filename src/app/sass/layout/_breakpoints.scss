@@ -1,0 +1,22 @@
+@use 'sass:map';
+
+$breakpoints: (
+	xs: 0,
+	sm: 576px,
+	md: 768px,
+	lg: 992px,
+	xl: 1200px,
+	xxl: 1400px,
+);
+
+@mixin breakpoint-up($screen-size) {
+	@media only screen and (min-width: map.get($breakpoints, $screen-size)) {
+		@content;
+	}
+}
+
+@mixin breakpoint-down($screen-size) {
+	@media only screen and (max-width: map.get($breakpoints, $screen-size)) {
+		@content;
+	}
+}
