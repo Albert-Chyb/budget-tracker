@@ -1,7 +1,7 @@
-@use '../../sass/components/containers';
+@use '../../sass/layout/containers';
 
 :host {
-	@include containers.apply('sm');
+	@include containers.make-container('sm');
 
 	display: block;
 }

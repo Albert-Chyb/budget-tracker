@@ -1,4 +1,4 @@
-@use '../../sass/components/containers';
+@use '../../sass/layout/containers';
 
 :host {
 	display: block;
@@ -9,7 +9,7 @@
 }
 
 .mat-list {
-	@include containers.apply('sm');
+	@include containers.make-container('sm');
 }
 
 header {
