@@ -1,9 +1,9 @@
-@use '../../sass/components/containers';
+@use '../../sass/layout/containers';
 
 $section-vertical-spacing: 1.2rem;
 
 :host {
-	@include containers.apply('sm');
+	@include containers.make-container('sm');
 
 	display: block;
 }
