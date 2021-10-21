@@ -154,7 +154,7 @@ class TransactionDTO implements ITransactionCreatePayload {
 	constructor(formValue: ITransactionFormValue) {
 		const { amount, type, date, category, wallet, description } = formValue;
 
-		this.amount = Number(amount);
+		this.amount = Number(amount.replace(',', '.'));
 		this.type = type;
 		this.date = date;
 		this.category = category;
