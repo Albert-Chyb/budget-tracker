@@ -54,8 +54,15 @@
 			[required]="!editMode"
 			[preview]="categoryIconPreview"
 			[(ngModel)]="result.icon"
+			[allowed-files]="['image/svg+xml']"
+			#icon="ngModel"
 		></file-input>
 
+		<mat-error
+			class="mat-small"
+			*ngIf="icon.touched && icon.hasError('invalidFileType')"
+			>Zdjęcie nie jest w formacie SVG.
+		</mat-error>
 		<mat-hint class="mat-small">Tylko zdjęcia w formacie .svg</mat-hint>
 	</section>
 </form>

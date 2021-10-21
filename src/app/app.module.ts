@@ -25,7 +25,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { cluesDatasets } from './common/clues-datasets';
@@ -47,6 +46,7 @@ import {
 	ClueIfDirective,
 	CLUES_DATASETS,
 } from './directives/clue-if/clue-if.directive';
+import { FileTypeValidatorDirective } from './directives/file-type-validator/file-type-validator.directive';
 import { GlobalFabDirective } from './directives/global-fab/global-fab.directive';
 import { MaxValidatorDirective } from './directives/max-validator/max-validator.directive';
 import { SelectOnFocusDirective } from './directives/select-on-focus/select-on-focus.directive';
@@ -56,8 +56,8 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
-import { UserService } from './services/user/user.service';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
+import { UserService } from './services/user/user.service';
 
 // TODO: Add Progressive Web App
 
@@ -124,7 +124,8 @@ const CluesDatasetsProvider: Provider = {
 		MaxValidatorDirective,
 		BlackListValidatorDirective,
 		AlertComponent,
-  LoadingPipe,
+		LoadingPipe,
+		FileTypeValidatorDirective,
 	],
 	imports: [
 		BrowserModule,
