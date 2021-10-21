@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ICategory } from 'src/app/common/interfaces/category';
 import { TTransactionType } from 'src/app/common/interfaces/transaction';
+import { KB } from 'src/app/common/validators/file-size-validator';
 
 export interface INewCategoryDialogResult {
 	/** Name of the category */
@@ -23,6 +24,7 @@ export class NewCategoryDialogComponent {
 		? this._category.icon
 		: null;
 
+	readonly maxFileSize: number = KB(32);
 	result: INewCategoryDialogResult = this._buildFormValue();
 
 	processForm() {

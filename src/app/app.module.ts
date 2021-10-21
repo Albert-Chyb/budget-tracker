@@ -46,6 +46,7 @@ import {
 	ClueIfDirective,
 	CLUES_DATASETS,
 } from './directives/clue-if/clue-if.directive';
+import { FileSizeValidatorDirective } from './directives/file-size-validator/file-size-validator.directive';
 import { FileTypeValidatorDirective } from './directives/file-type-validator/file-type-validator.directive';
 import { GlobalFabDirective } from './directives/global-fab/global-fab.directive';
 import { MaxValidatorDirective } from './directives/max-validator/max-validator.directive';
@@ -126,6 +127,7 @@ const CluesDatasetsProvider: Provider = {
 		AlertComponent,
 		LoadingPipe,
 		FileTypeValidatorDirective,
+		FileSizeValidatorDirective,
 	],
 	imports: [
 		BrowserModule,
