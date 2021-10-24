@@ -8,7 +8,7 @@ import {
 import { maxValidator } from 'src/app/common/validators/max-validator';
 
 @Directive({
-	selector: 'input[type="text"][max]',
+	selector: 'input[type="text"][textMax]',
 	providers: [
 		{
 			provide: NG_VALIDATORS,
@@ -21,7 +21,7 @@ export class MaxValidatorDirective implements Validator {
 	private _onChange: () => void;
 	private _max: number = Infinity;
 
-	@Input('max')
+	@Input('textMax')
 	set max(value: number) {
 		this._max = value ?? Infinity;
 		this._onChange?.();
