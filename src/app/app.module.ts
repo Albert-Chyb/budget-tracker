@@ -21,12 +21,14 @@ import {
 } from '@angular/fire/functions';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { FormsModule } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AppDateAdapter } from './common/app-date-adapter';
 import { cluesDatasets } from './common/clues-datasets';
 import { GlobalErrorHandler } from './common/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
@@ -100,6 +102,10 @@ const CluesDatasetsProvider: Provider = {
 	provide: CLUES_DATASETS,
 	useValue: new Map(Object.entries(cluesDatasets)),
 };
+const AppDateAdapterProvider: Provider = {
+	provide: DateAdapter,
+	useClass: AppDateAdapter,
+};
 
 @NgModule({
 	declarations: [
@@ -150,6 +156,7 @@ const CluesDatasetsProvider: Provider = {
 		CluesDatasetsProvider,
 		FirebaseCloudFunctionsEmulatorsProvider,
 		FirebaseRegionProvider,
+		AppDateAdapterProvider,
 	],
 	bootstrap: [AppComponent],
 })
