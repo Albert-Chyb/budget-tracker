@@ -32,6 +32,7 @@ export class TransactionComponent implements OnInit {
 	readonly transactionId = this._route.snapshot.paramMap.get('id');
 	readonly isInEditMode = !!this.transactionId;
 	readonly moneyAmountPattern = moneyAmountPattern;
+	readonly maxDatepickerDate = new Date();
 
 	selectedWallet: IWallet;
 	selectedCategory: ICategory;

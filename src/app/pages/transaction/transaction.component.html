@@ -64,6 +64,7 @@
 				matInput
 				type="text"
 				name="date"
+				[max]="maxDatepickerDate"
 				[matDatepicker]="datepicker"
 				required
 				[(ngModel)]="formValue.date"
@@ -76,8 +77,18 @@
 			</mat-datepicker-toggle>
 			<mat-datepicker #datepicker></mat-datepicker>
 
-			<mat-error *ngIf="date.hasError('required')">
-				Data jest <strong>wymagana</strong> w formacie dd.mm.yyyy
+			<mat-error
+				*ngIf="
+					date.hasError('required') && !date.hasError('matDatepickerParse')
+				"
+			>
+				Data jest <strong>wymagana</strong>
+			</mat-error>
+
+			<mat-error
+				*ngIf="date.hasError('required') && date.hasError('matDatepickerParse')"
+			>
+				Data ma zły format lub wskazuje na przyszłość
 			</mat-error>
 		</mat-form-field>
 
