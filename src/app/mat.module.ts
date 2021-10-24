@@ -1,5 +1,4 @@
 import { PortalModule } from '@angular/cdk/portal';
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -32,7 +31,6 @@ const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 
 @NgModule({
 	declarations: [],
-	imports: [CommonModule],
 	exports: [
 		MatToolbarModule,
 		MatButtonModule,
