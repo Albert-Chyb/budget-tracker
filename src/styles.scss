@@ -27,6 +27,8 @@ body {
 			#{vars.$mat-toolbar-mobile-height} + #{vars.$global-spacing}
 		);
 	}
+
+	box-sizing: border-box;
 }
 
 // Adds margin equal to the mat-toolbar height.
