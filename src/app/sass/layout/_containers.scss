@@ -9,8 +9,18 @@ $containers-widths: (
 	xxl: 1320px,
 );
 
-@mixin make-container($size, $centered: true) {
-	max-width: map.get($containers-widths, $size);
+@mixin make-container($size, $centered: true, $size-decrease: null) {
+	$container-width: map.get($containers-widths, $size);
+
+	@if $size-decrease != null {
+		@if $size-decrease >= $container-width {
+			@error 'The given size-decrease would make the width of the container equal 0 or less.';
+		}
+
+		max-width: $container-width - $size-decrease;
+	} @else {
+		max-width: $container-width;
+	}
 
 	@if $centered {
 		margin-left: auto;
