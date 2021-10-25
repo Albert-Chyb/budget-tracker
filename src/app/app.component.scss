@@ -32,15 +32,15 @@ main {
 	}
 
 	&.sidenav-opened {
-		@each $breakpoint, $size in breakpoints.$breakpoints {
-			@if $breakpoint != 'xs' {
-				@media only screen and (min-width: $size) {
-					@include containers.make-container(
-						$breakpoint,
-						false,
-						vars.$sidenav-width
-					);
-				}
+		@each $breakpoint in ('md', 'lg', 'xl', 'xxl') {
+			$size: map.get(breakpoints.$breakpoints, $breakpoint);
+
+			@media only screen and (min-width: $size) {
+				@include containers.make-container(
+					$breakpoint,
+					false,
+					vars.$sidenav-width
+				);
 			}
 		}
 

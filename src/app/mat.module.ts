@@ -1,3 +1,4 @@
+import { LayoutModule } from '@angular/cdk/layout';
 import { PortalModule } from '@angular/cdk/portal';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -54,6 +55,7 @@ const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 		MatNativeDateModule,
 		MatRadioModule,
 		MatButtonToggleModule,
+		LayoutModule,
 	],
 	providers: [
 		{

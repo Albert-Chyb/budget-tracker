@@ -1,15 +1,17 @@
-<main-navbar (onHamburgerClick)="sidenav.toggle()"></main-navbar>
+<ng-container *ngIf="sidenavMode$ | async as mode">
+	<main-navbar (onHamburgerClick)="sidenav.toggle()"></main-navbar>
 
-<mat-sidenav-container>
-	<mat-sidenav class="sidenav" #sidenav mode="side" opened>
-		<sidenav></sidenav>
-	</mat-sidenav>
+	<mat-sidenav-container>
+		<mat-sidenav class="sidenav" #sidenav [mode]="mode">
+			<sidenav></sidenav>
+		</mat-sidenav>
 
-	<mat-sidenav-content>
-		<main [class.sidenav-opened]="sidenav.opened">
-			<router-outlet></router-outlet>
-		</main>
-	</mat-sidenav-content>
-</mat-sidenav-container>
+		<mat-sidenav-content>
+			<main [class.sidenav-opened]="sidenav.opened">
+				<router-outlet></router-outlet>
+			</main>
+		</mat-sidenav-content>
+	</mat-sidenav-container>
 
-<global-fab class="global-fab-button"></global-fab>
+	<global-fab class="global-fab-button"></global-fab>
+</ng-container>
