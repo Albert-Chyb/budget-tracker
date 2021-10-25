@@ -6,7 +6,7 @@
 	</mat-sidenav>
 
 	<mat-sidenav-content>
-		<main>
+		<main [class.sidenav-opened]="sidenav.opened">
 			<router-outlet></router-outlet>
 		</main>
 	</mat-sidenav-content>
