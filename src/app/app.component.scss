@@ -48,9 +48,6 @@ main {
 			@include containers.make-container('xxl', false);
 		}
 	}
-
-	outline: 3px solid crimson;
-	outline-offset: -3px;
 }
 
 .mat-sidenav {
