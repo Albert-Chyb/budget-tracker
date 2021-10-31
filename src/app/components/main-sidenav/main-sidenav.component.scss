@@ -1,0 +1,36 @@
+@use '../../sass/variables' as vars;
+@use '../../sass/layout/breakpoints';
+@use '../../sass/layout/containers';
+@use 'sass:math';
+@use 'sass:map';
+
+:host {
+	display: block;
+}
+
+.mat-sidenav {
+	position: fixed;
+	top: vars.$mat-toolbar-desktop-height;
+	overflow-y: auto;
+
+	@media only screen and (max-width: vars.$mat-toolbar-size-change-breakpoint) {
+		top: vars.$mat-toolbar-mobile-height;
+	}
+}
+
+.content {
+	padding: {
+		top: calc(env(safe-area-inset-top) + #{vars.$global-spacing});
+		bottom: calc(env(safe-area-inset-bottom) + #{vars.$global-spacing});
+		left: calc(env(safe-area-inset-left) + #{vars.$global-spacing});
+		right: calc(env(safe-area-inset-right) + #{vars.$global-spacing});
+	}
+
+	// The height of the Angular Material sidenav component is based on content height, and there is no way of setting it from outside.
+	// This is why we set min height of the content to 100 vh - main navbar height.
+	min-height: calc(100vh - (#{vars.$mat-toolbar-desktop-height}));
+
+	@media only screen and (max-width: vars.$mat-toolbar-size-change-breakpoint) {
+		min-height: calc(100vh - (#{vars.$mat-toolbar-mobile-height}));
+	}
+}

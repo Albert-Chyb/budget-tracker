@@ -61,6 +61,7 @@ import { TransactionComponent } from './pages/transaction/transaction.component'
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
+import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
 
 // TODO: Add Progressive Web App
 
@@ -134,6 +135,7 @@ const AppDateAdapterProvider: Provider = {
 		LoadingPipe,
 		FileTypeValidatorDirective,
 		FileSizeValidatorDirective,
+  MainSidenavComponent,
 	],
 	imports: [
 		BrowserModule,

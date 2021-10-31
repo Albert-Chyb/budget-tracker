@@ -1,0 +1,11 @@
+<mat-sidenav-container>
+	<mat-sidenav class="sidenav" [mode]="sidenavMode$ | async">
+		<sidenav></sidenav>
+	</mat-sidenav>
+
+	<mat-sidenav-content>
+		<div class="content">
+			<ng-content></ng-content>
+		</div>
+	</mat-sidenav-content>
+</mat-sidenav-container>
