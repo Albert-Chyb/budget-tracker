@@ -25,6 +25,7 @@ import { DateAdapter } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import firebase from 'firebase/app';
+import { NgChartsModule } from 'ng2-charts';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -38,6 +39,7 @@ import { FileInputComponent } from './components/file-input/file-input.component
 import { GlobalFabComponent } from './components/global-fab/global-fab.component';
 import { LoadingIndicatorComponent } from './components/loading-indicator/loading-indicator.component';
 import { MainNavbarComponent } from './components/main-navbar/main-navbar.component';
+import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
 import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
 import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
@@ -61,7 +63,6 @@ import { TransactionComponent } from './pages/transaction/transaction.component'
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
-import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
 
 // TODO: Add Progressive Web App
 
@@ -135,7 +136,7 @@ const AppDateAdapterProvider: Provider = {
 		LoadingPipe,
 		FileTypeValidatorDirective,
 		FileSizeValidatorDirective,
-  MainSidenavComponent,
+		MainSidenavComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -147,6 +148,7 @@ const AppDateAdapterProvider: Provider = {
 		FormsModule,
 		AngularFireStorageModule,
 		AngularFireFunctionsModule,
+		NgChartsModule,
 	],
 	providers: [
 		PolishLocaleProvider,
