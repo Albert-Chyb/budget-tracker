@@ -44,7 +44,7 @@ export type TWalletCategorizedStatistics = {
 export type TWalletYearStatistics = {
 	[month in TMonthIndex]: TWalletMonthStatistics;
 } &
-	IWalletPeriodStatistics & { walletId: string; year: number };
+	IWalletPeriodStatistics;
 
 /**
  * Represents an object that contains aggregated values in a month and its weeks.
