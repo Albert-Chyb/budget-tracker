@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { TWalletYearStatistics } from 'src/app/common/interfaces/wallet-statistics';
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -18,16 +20,18 @@ export class WalletsStatisticsService {
 			map(uid => this._afStore.collection(`users/${uid}/wallets-statistics/`))
 		);
 
-	year(year: number) {
+	year(year: number): Observable<TWalletYearStatistics> {
 		return this._collection$.pipe(
-			switchMap(collection => collection.doc(String(year)).valueChanges())
+			switchMap(collection => collection.doc<any>(String(year)).valueChanges())
 		);
 	}
 
-	wallet(walletId: string, year: number) {
+	wallet(walletId: string, year: number): Observable<TWalletYearStatistics> {
 		return this._collection$.pipe(
 			switchMap(collection =>
-				collection.doc(`${year}/year-by-wallets/${walletId}`).valueChanges()
+				collection
+					.doc<any>(`${year}/year-by-wallets/${walletId}`)
+					.valueChanges()
 			)
 		);
 	}
