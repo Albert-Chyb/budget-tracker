@@ -13,6 +13,7 @@ import {
 	MatFormFieldModule,
 	MAT_FORM_FIELD_DEFAULT_OPTIONS,
 } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -56,6 +57,7 @@ const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 		MatRadioModule,
 		MatButtonToggleModule,
 		LayoutModule,
+		MatGridListModule,
 	],
 	providers: [
 		{

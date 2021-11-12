@@ -44,6 +44,7 @@ import { NewCategoryDialogComponent } from './components/new-category-dialog/new
 import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { WalletPickerComponent } from './components/wallet-picker/wallet-picker.component';
 import { WalletComponent } from './components/wallet/wallet.component';
 import { BlackListValidatorDirective } from './directives/black-list-validator/black-list-validator.directive';
 import {
@@ -119,24 +120,27 @@ const AppDateAdapterProvider: Provider = {
 		WalletsComponent,
 		NewWalletDialogComponent,
 		PromptDialogComponent,
-		SelectOnFocusDirective,
 		WalletComponent,
 		ClueComponent,
 		CategoriesComponent,
 		FileInputComponent,
 		NewCategoryDialogComponent,
 		LoadingIndicatorComponent,
-		ClueIfDirective,
-		GlobalFabDirective,
+		MainSidenavComponent,
+		WalletPickerComponent,
+		AlertComponent,
 		GlobalFabComponent,
 		TransactionComponent,
+
+		SelectOnFocusDirective,
+		ClueIfDirective,
+		GlobalFabDirective,
 		MaxValidatorDirective,
 		BlackListValidatorDirective,
-		AlertComponent,
-		LoadingPipe,
 		FileTypeValidatorDirective,
 		FileSizeValidatorDirective,
-		MainSidenavComponent,
+
+		LoadingPipe,
 	],
 	imports: [
 		BrowserModule,
