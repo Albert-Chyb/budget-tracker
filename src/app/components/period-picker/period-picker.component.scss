@@ -1,0 +1,24 @@
+:host {
+	display: block;
+}
+
+.mat-form-field {
+	width: 100%;
+}
+
+.mat-button-toggle-group {
+	width: 100%;
+	margin-bottom: 1rem;
+}
+
+.mat-button-toggle {
+	flex-basis: 100%;
+}
+
+.period-picker-form {
+	min-height: 30rem;
+}
+
+.mat-dialog-actions {
+	justify-content: flex-end;
+}

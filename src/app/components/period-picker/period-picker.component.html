@@ -1,0 +1,67 @@
+<form class="period-picker-form" id="period-picker" #periodForm="ngForm">
+	<mat-button-toggle-group
+		name="period"
+		aria-label="Okres z jakiego wyświetlić statystyki"
+		[(ngModel)]="selectedPeriod"
+	>
+		<mat-button-toggle value="year">Rok</mat-button-toggle>
+		<mat-button-toggle value="month">Miesiąc</mat-button-toggle>
+		<mat-button-toggle value="week">Tydzień</mat-button-toggle>
+	</mat-button-toggle-group>
+
+	<mat-form-field class="year" *ngIf="hasSelection">
+		<mat-label>Rok</mat-label>
+
+		<mat-select name="year" [(ngModel)]="year" #yearModel="ngModel" required>
+			<mat-option [value]="2020">2020</mat-option>
+			<mat-option [value]="2021">2021</mat-option>
+			<mat-option [value]="2022">2022</mat-option>
+		</mat-select>
+	</mat-form-field>
+
+	<mat-form-field class="month" *ngIf="isSelectedWeek || isSelectedMonth">
+		<mat-label>Miesiąc</mat-label>
+
+		<mat-select name="month" [(ngModel)]="month" #monthModel="ngModel" required>
+			<mat-option [value]="0">Styczeń</mat-option>
+			<mat-option [value]="1">Luty</mat-option>
+			<mat-option [value]="2">Marzec</mat-option>
+			<mat-option [value]="3">Kwiecień</mat-option>
+			<mat-option [value]="4">Maj</mat-option>
+			<mat-option [value]="5">Czerwiec</mat-option>
+			<mat-option [value]="6">Lipiec</mat-option>
+			<mat-option [value]="7">Sierpień</mat-option>
+			<mat-option [value]="8">Wrzesień</mat-option>
+			<mat-option [value]="9">Październik</mat-option>
+			<mat-option [value]="10">Listopad</mat-option>
+			<mat-option [value]="11">Grudzień</mat-option>
+		</mat-select>
+	</mat-form-field>
+
+	<mat-form-field class="week" *ngIf="isSelectedWeek">
+		<mat-label>Tydzień</mat-label>
+
+		<mat-select name="week" [(ngModel)]="week" #weekModel="ngModel" required>
+			<mat-option [value]="0">1</mat-option>
+			<mat-option [value]="1">2</mat-option>
+			<mat-option [value]="2">3</mat-option>
+			<mat-option [value]="3">4</mat-option>
+		</mat-select>
+	</mat-form-field>
+</form>
+
+<mat-dialog-actions>
+	<button mat-button color="warn" form="period-picker" mat-dialog-close>
+		Anuluj
+	</button>
+
+	<button
+		mat-button
+		color="accent"
+		form="period-picker"
+		[mat-dialog-close]="processValue()"
+		[disabled]="periodForm.invalid"
+	>
+		OK
+	</button>
+</mat-dialog-actions>
