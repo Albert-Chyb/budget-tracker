@@ -21,8 +21,13 @@
 	}
 }
 
+.mat-card-subtitle {
+	font-size: clamp(1.2rem, 3vw, 1em);
+	min-height: 4rem;
+}
+
 .money-amount {
 	text-align: center;
-	font-size: 3.5rem;
-	line-height: 3.5rem;
+	font-size: clamp(2.4rem, 5vw, 3rem);
+	line-height: clamp(2.4rem, 5vw, 3rem);
 }

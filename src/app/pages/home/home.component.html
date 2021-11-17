@@ -25,11 +25,14 @@
 </div>
 
 <mat-grid-list
+	*ngIf="layout$ | async as layout"
 	[cols]="cols"
 	[rowHeight]="rowHeightRem + 'rem'"
 	[gutterSize]="gutterSizeRem + 'rem'"
 >
-	<mat-grid-tile>
+	<!-- CARDS -->
+
+	<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
 		<mat-card>
 			<mat-card-header>
 				<h2 mat-card-title>Balans</h2>
@@ -37,12 +40,12 @@
 			</mat-card-header>
 
 			<mat-card-content>
-				<p class="money-amount">{{ 1476.56 | currency }}</p>
+				<p class="money-amount">{{ 10476.56 | currency }}</p>
 			</mat-card-content>
 		</mat-card>
 	</mat-grid-tile>
 
-	<mat-grid-tile>
+	<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
 		<mat-card>
 			<mat-card-header>
 				<h2 mat-card-title>Przychody</h2>
@@ -55,7 +58,7 @@
 		</mat-card>
 	</mat-grid-tile>
 
-	<mat-grid-tile>
+	<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
 		<mat-card>
 			<mat-card-header>
 				<h2 mat-card-title>Wydatki</h2>
@@ -68,7 +71,7 @@
 		</mat-card>
 	</mat-grid-tile>
 
-	<mat-grid-tile>
+	<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
 		<mat-card>
 			<mat-card-header>
 				<h2 mat-card-title>Różnica</h2>
@@ -81,14 +84,16 @@
 		</mat-card>
 	</mat-grid-tile>
 
-	<mat-grid-tile rowspan="3" colspan="3">
+	<!-- Bar chart -->
+
+	<mat-grid-tile [colspan]="layout.expensesChart.colspan" rowspan="35">
 		<mat-card>
 			<mat-card-header>
 				<h2 mat-card-title>Wykres wydatków w wybranym okresie</h2>
 			</mat-card-header>
 
 			<mat-card-content>
-				<div style="width: 100%" [style.height]="rowHeightRem * 2.5 + 'rem'">
+				<div style="width: 100%" [style.height]="'40' + 'rem'">
 					<canvas
 						baseChart
 						[options]="{ maintainAspectRatio: false }"
@@ -109,7 +114,9 @@
 		</mat-card>
 	</mat-grid-tile>
 
-	<mat-grid-tile rowspan="3" colspan="1">
+	<!-- Popular categories -->
+
+	<mat-grid-tile [colspan]="layout.popularCategoriesChart.colspan" rowspan="35">
 		<mat-card>
 			<mat-card-header>
 				<h2 mat-card-title>Popularne kategorie</h2>
@@ -124,6 +131,16 @@
 					[labels]="['Jedzenie', 'Paliwo', 'Transport', 'Rozrywka', 'Imprezy']"
 				></canvas>
 			</mat-card-content>
+		</mat-card>
+	</mat-grid-tile>
+
+	<!-- Latest transactions -->
+
+	<mat-grid-tile [colspan]="layout.transactionsTable.colspan" rowspan="35">
+		<mat-card>
+			<mat-card-header>
+				<h2 mat-card-title>Ostatnie transakcje</h2>
+			</mat-card-header>
 		</mat-card>
 	</mat-grid-tile>
 </mat-grid-list>

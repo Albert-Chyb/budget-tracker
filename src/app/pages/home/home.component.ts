@@ -1,8 +1,10 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { ComponentType } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
+import { Breakpoint } from 'src/app/common/breakpoints';
 import {
 	PeriodPickerComponent,
 	TPeriodPickerValue,
@@ -11,10 +13,17 @@ import {
 	TWalletPickerValue,
 	WalletPickerComponent,
 } from 'src/app/components/wallet-picker/wallet-picker.component';
+import {
+	largeLayout,
+	mediumLayout,
+	smallLayout,
+	xSmallLayout,
+} from './layouts';
 
 /*
  * The dialogs probably shouldn't call for data every time they are opened. Get data in this component and pass it to a dialog with injector.
- * Create responsive layout.
+ * Create responsive layout when sidenav is opened.
+ * Adjust charts theme to the dark background.
  *
  * Integrate this component with backend.
  */
@@ -25,11 +34,36 @@ import {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-	constructor(private readonly _dialog: MatDialog) {}
+	constructor(
+		private readonly _dialog: MatDialog,
+		private readonly _breakpointObserver: BreakpointObserver
+	) {}
 
-	cols = 4;
-	rowHeightRem = 15;
+	cols = 12;
+	rowHeightRem = 1;
 	gutterSizeRem = 0.5;
+
+	private readonly _correspondingLayouts = new Map([
+		['(max-width: 375px)', xSmallLayout],
+		[Breakpoint.XSmall, smallLayout],
+		[Breakpoint.Small, smallLayout],
+		[Breakpoint.Medium, mediumLayout],
+		[Breakpoint.Large, largeLayout],
+		[Breakpoint.XLarge, largeLayout],
+		[Breakpoint.XXLarge, largeLayout],
+	]);
+
+	readonly layout$ = this._breakpointObserver
+		.observe(Array.from(this._correspondingLayouts.keys()))
+		.pipe(
+			map(state => {
+				const [breakpoint] = Object.entries(state.breakpoints).find(
+					([, isMatching]) => isMatching
+				);
+
+				return this._correspondingLayouts.get(breakpoint as Breakpoint);
+			})
+		);
 
 	private readonly _dataStream$ = new BehaviorSubject<TWalletPickerValue>(null);
 	private readonly _periodStream$ = new BehaviorSubject<TPeriodPickerValue>(
