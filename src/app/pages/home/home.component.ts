@@ -3,7 +3,7 @@ import { ComponentType } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
 import {
 	PeriodPickerComponent,
@@ -13,6 +13,7 @@ import {
 	TWalletPickerValue,
 	WalletPickerComponent,
 } from 'src/app/components/wallet-picker/wallet-picker.component';
+import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
 import {
 	largeLayout,
 	mediumLayout,
@@ -22,7 +23,6 @@ import {
 
 /*
  * The dialogs probably shouldn't call for data every time they are opened. Get data in this component and pass it to a dialog with injector.
- * Create responsive layout when sidenav is opened.
  * Adjust charts theme to the dark background.
  *
  * Integrate this component with backend.
@@ -36,15 +36,16 @@ import {
 export class HomeComponent {
 	constructor(
 		private readonly _dialog: MatDialog,
-		private readonly _breakpointObserver: BreakpointObserver
+		private readonly _breakpointObserver: BreakpointObserver,
+		private readonly _mainSidenav: MainSidenavService
 	) {}
 
 	cols = 12;
 	rowHeightRem = 1;
 	gutterSizeRem = 0.5;
 
-	private readonly _correspondingLayouts = new Map([
-		['(max-width: 375px)', xSmallLayout],
+	private readonly _layouts = new Map([
+		['(max-width: 374.98px)', xSmallLayout],
 		[Breakpoint.XSmall, smallLayout],
 		[Breakpoint.Small, smallLayout],
 		[Breakpoint.Medium, mediumLayout],
@@ -52,18 +53,31 @@ export class HomeComponent {
 		[Breakpoint.XLarge, largeLayout],
 		[Breakpoint.XXLarge, largeLayout],
 	]);
+	private readonly _drawerLayouts = new Map([
+		['(max-width: 374.98px)', xSmallLayout],
+		[Breakpoint.XSmall, smallLayout],
+		[Breakpoint.Small, smallLayout],
+		[Breakpoint.Medium, smallLayout],
+		[Breakpoint.Large, mediumLayout],
+		[Breakpoint.XLarge, largeLayout],
+		[Breakpoint.XXLarge, largeLayout],
+	]);
 
-	readonly layout$ = this._breakpointObserver
-		.observe(Array.from(this._correspondingLayouts.keys()))
-		.pipe(
-			map(state => {
-				const [breakpoint] = Object.entries(state.breakpoints).find(
-					([, isMatching]) => isMatching
-				);
+	readonly layout$ = this._mainSidenav.isOpened$.pipe(
+		map(isOpened => (isOpened ? this._drawerLayouts : this._layouts)),
+		switchMap(layout => {
+			return this._breakpointObserver.observe(Array.from(layout.keys())).pipe(
+				map(state => {
+					const [breakpoint] = Object.entries(state.breakpoints).find(
+						([, isMatching]) => isMatching
+					);
 
-				return this._correspondingLayouts.get(breakpoint as Breakpoint);
-			})
-		);
+					return layout.get(breakpoint as Breakpoint);
+				}),
+				distinctUntilChanged()
+			);
+		})
+	);
 
 	private readonly _dataStream$ = new BehaviorSubject<TWalletPickerValue>(null);
 	private readonly _periodStream$ = new BehaviorSubject<TPeriodPickerValue>(
