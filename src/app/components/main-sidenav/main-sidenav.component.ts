@@ -9,6 +9,7 @@ import { MatDrawerMode, MatSidenav } from '@angular/material/sidenav';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
+import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
 
 @Component({
 	selector: 'main-sidenav',
@@ -19,8 +20,13 @@ import { Breakpoint } from 'src/app/common/breakpoints';
 export class MainSidenavComponent {
 	constructor(
 		private readonly _breakpointObserver: BreakpointObserver,
-		private readonly _changeDetector: ChangeDetectorRef
-	) {}
+		private readonly _changeDetector: ChangeDetectorRef,
+		private readonly _mainSidenav: MainSidenavService
+	) {
+		this._mainSidenav.isOpened$.subscribe(isOpened =>
+			isOpened ? this.sidenav?.open() : this.sidenav?.close()
+		);
+	}
 
 	@ViewChild(MatSidenav) sidenav: MatSidenav;
 
@@ -54,7 +60,7 @@ export class MainSidenavComponent {
 		);
 
 	toggle() {
-		this.sidenav.toggle();
+		this._mainSidenav.toggle();
 		this._changeDetector.detectChanges();
 	}
 
