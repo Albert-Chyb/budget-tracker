@@ -27,6 +27,20 @@ export interface IWalletStatisticsAggregatedFields {
  */
 export interface IWalletPeriodStatistics
 	extends IWalletStatisticsAggregatedFields {
+	// It will be refactored later.
+	'0'?: IWalletPeriodStatistics;
+	'1'?: IWalletPeriodStatistics;
+	'2'?: IWalletPeriodStatistics;
+	'3'?: IWalletPeriodStatistics;
+	'4'?: IWalletPeriodStatistics;
+	'5'?: IWalletPeriodStatistics;
+	'6'?: IWalletPeriodStatistics;
+	'7'?: IWalletPeriodStatistics;
+	'8'?: IWalletPeriodStatistics;
+	'9'?: IWalletPeriodStatistics;
+	'10'?: IWalletPeriodStatistics;
+	'11'?: IWalletPeriodStatistics;
+
 	categories: TWalletCategorizedStatistics;
 }
 

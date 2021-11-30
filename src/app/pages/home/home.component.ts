@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
+import { IWalletPeriodStatistics } from 'src/app/common/interfaces/wallet-statistics';
 import {
 	PeriodPickerComponent,
 	TPeriodPickerValue,
@@ -44,6 +45,27 @@ export class HomeComponent {
 	rowHeightRem = 1;
 	gutterSizeRem = 0.5;
 
+	DUMMY_STATISTICS: IWalletPeriodStatistics = {
+		expenses: 1,
+		income: 2,
+		categories: null,
+		'0': {
+			expenses: 100,
+			income: 47,
+			categories: null,
+		},
+		// '5': {
+		// 	expenses: 85,
+		// 	income: 34,
+		// 	categories: null,
+		// },
+		'1': {
+			expenses: 45,
+			income: 12,
+			categories: null,
+		},
+	};
+
 	private readonly _layouts = new Map([
 		['(max-width: 374.98px)', xSmallLayout],
 		[Breakpoint.XSmall, smallLayout],
@@ -62,7 +84,6 @@ export class HomeComponent {
 		[Breakpoint.XLarge, largeLayout],
 		[Breakpoint.XXLarge, largeLayout],
 	]);
-
 	readonly layout$ = this._mainSidenav.isOpened$.pipe(
 		map(isOpened => (isOpened ? this._drawerLayouts : this._layouts)),
 		switchMap(layout => {
