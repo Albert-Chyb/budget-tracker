@@ -5,7 +5,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
-import { IWalletPeriodStatistics } from 'src/app/common/interfaces/wallet-statistics';
+import { ICategory } from 'src/app/common/interfaces/category';
+import {
+	IWalletPeriodStatistics,
+	TWalletCategorizedStatistics,
+} from 'src/app/common/interfaces/wallet-statistics';
 import {
 	PeriodPickerComponent,
 	TPeriodPickerValue,
@@ -29,6 +33,72 @@ import {
  * Integrate this component with backend.
  */
 
+const DUMMY_DATA: TWalletCategorizedStatistics = {
+	'1a': {
+		expenses: 15,
+		income: 1,
+	},
+	'2b': {
+		expenses: 15,
+		income: 1,
+	},
+	'3c': {
+		expenses: 60,
+		income: 1,
+	},
+	'4d': {
+		expenses: 12,
+		income: 1,
+	},
+	'5f': {
+		expenses: 100,
+		income: 1,
+	},
+};
+
+const DUMMY_CATEGORIES: ICategory[] = [
+	{
+		id: '1a',
+		name: 'Jedzenie',
+
+		icon: '',
+		iconPath: '',
+		defaultTransactionsType: 'expense',
+	},
+	{
+		id: '2b',
+		name: 'Paliwo',
+
+		icon: '',
+		iconPath: '',
+		defaultTransactionsType: 'expense',
+	},
+	{
+		id: '3c',
+		name: 'Rozrywka',
+
+		icon: '',
+		iconPath: '',
+		defaultTransactionsType: 'expense',
+	},
+	{
+		id: '4d',
+		name: 'Transport',
+
+		icon: '',
+		iconPath: '',
+		defaultTransactionsType: 'expense',
+	},
+	{
+		id: '5f',
+		name: 'Imprezy',
+
+		icon: '',
+		iconPath: '',
+		defaultTransactionsType: 'expense',
+	},
+];
+
 @Component({
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
@@ -45,6 +115,7 @@ export class HomeComponent {
 	rowHeightRem = 1;
 	gutterSizeRem = 0.5;
 
+	// TODO: Remove this
 	DUMMY_STATISTICS: IWalletPeriodStatistics = {
 		expenses: 1,
 		income: 2,
@@ -65,6 +136,71 @@ export class HomeComponent {
 			categories: null,
 		},
 	};
+	DUMMY_DATA: TWalletCategorizedStatistics = {
+		'1a': {
+			expenses: 15,
+			income: 1,
+		},
+		'2b': {
+			expenses: 15,
+			income: 1,
+		},
+		'3c': {
+			expenses: 60,
+			income: 1,
+		},
+		'4d': {
+			expenses: 12,
+			income: 1,
+		},
+		'5f': {
+			expenses: 100,
+			income: 1,
+		},
+	};
+
+	DUMMY_CATEGORIES: ICategory[] = [
+		{
+			id: '1a',
+			name: 'Jedzenie',
+
+			icon: '',
+			iconPath: '',
+			defaultTransactionsType: 'expense',
+		},
+		{
+			id: '2b',
+			name: 'Paliwo',
+
+			icon: '',
+			iconPath: '',
+			defaultTransactionsType: 'expense',
+		},
+		{
+			id: '3c',
+			name: 'Rozrywka',
+
+			icon: '',
+			iconPath: '',
+			defaultTransactionsType: 'expense',
+		},
+		{
+			id: '4d',
+			name: 'Transport',
+
+			icon: '',
+			iconPath: '',
+			defaultTransactionsType: 'expense',
+		},
+		{
+			id: '5f',
+			name: 'Imprezy',
+
+			icon: '',
+			iconPath: '',
+			defaultTransactionsType: 'expense',
+		},
+	];
 
 	private readonly _layouts = new Map([
 		['(max-width: 374.98px)', xSmallLayout],

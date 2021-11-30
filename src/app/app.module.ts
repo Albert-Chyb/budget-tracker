@@ -66,6 +66,7 @@ import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
 import { GroupedTransactionsChartComponent } from './components/grouped-transactions-chart/grouped-transactions-chart.component';
+import { CategorizedExpensesChartComponent } from './components/categorized-expenses-chart/categorized-expenses-chart.component';
 
 // TODO: Add Progressive Web App
 
@@ -145,6 +146,7 @@ const AppDateAdapterProvider: Provider = {
 		LoadingPipe,
 		PeriodPickerComponent,
   GroupedTransactionsChartComponent,
+  CategorizedExpensesChartComponent,
 	],
 	imports: [
 		BrowserModule,

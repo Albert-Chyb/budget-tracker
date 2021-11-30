@@ -112,13 +112,10 @@
 			</mat-card-header>
 
 			<mat-card-content>
-				<canvas
-					baseChart
-					type="pie"
-					[options]="{}"
-					[datasets]="[{ data: [30, 15, 60, 12, 67], label: 'Wydatki' }]"
-					[labels]="['Jedzenie', 'Paliwo', 'Transport', 'Rozrywka', 'Imprezy']"
-				></canvas>
+				<categorized-expenses-chart
+					[data]="DUMMY_DATA"
+					[categories]="DUMMY_CATEGORIES"
+				></categorized-expenses-chart>
 			</mat-card-content>
 		</mat-card>
 	</mat-grid-tile>
