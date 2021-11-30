@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChartOptions } from 'chart.js';
 import { ICategory } from 'src/app/common/interfaces/category';
 import { Chart } from 'src/app/common/models/chart';
 import { TWalletCategorizedStatistics } from '../../common/interfaces/wallet-statistics';
@@ -20,6 +21,10 @@ export class CategorizedExpensesChartComponent extends Chart<TWalletCategorizedS
 
 	private _categories: ICategory[] = [];
 	private _data: TWalletCategorizedStatistics = {};
+	readonly chartOptions: ChartOptions = {
+		maintainAspectRatio: false,
+		responsive: true,
+	};
 
 	@Input('categories')
 	set categories(newCategories: ICategory[]) {

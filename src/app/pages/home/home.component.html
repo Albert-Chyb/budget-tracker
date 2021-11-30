@@ -93,7 +93,7 @@
 			</mat-card-header>
 
 			<mat-card-content>
-				<div style="width: 100%" [style.height]="'40' + 'rem'">
+				<div class="chart">
 					<grouped-transactions-chart
 						[data]="DUMMY_STATISTICS"
 						period="year"
@@ -112,10 +112,12 @@
 			</mat-card-header>
 
 			<mat-card-content>
-				<categorized-expenses-chart
-					[data]="DUMMY_DATA"
-					[categories]="DUMMY_CATEGORIES"
-				></categorized-expenses-chart>
+				<div class="chart">
+					<categorized-expenses-chart
+						[data]="DUMMY_DATA"
+						[categories]="DUMMY_CATEGORIES"
+					></categorized-expenses-chart>
+				</div>
 			</mat-card-content>
 		</mat-card>
 	</mat-grid-tile>
