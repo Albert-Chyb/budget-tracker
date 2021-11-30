@@ -15,10 +15,6 @@
 		width: 100%;
 		height: 100%;
 	}
-
-	canvas {
-		height: 100%;
-	}
 }
 
 .mat-card-subtitle {
@@ -32,6 +28,11 @@
 	line-height: clamp(2.4rem, 5vw, 3rem);
 }
 
-.chart {
+.chart-wrapper {
+	display: flex;
 	height: 40rem;
+
+	.chart {
+		width: 100%;
+	}
 }
