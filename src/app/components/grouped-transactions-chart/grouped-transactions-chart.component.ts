@@ -1,15 +1,61 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Constructor } from '@angular/material/core/common-behaviors/constructor';
 import { ChartOptions } from 'chart.js';
 import { IWalletPeriodStatistics } from 'src/app/common/interfaces/wallet-statistics';
-import { Chart } from 'src/app/common/models/chart';
 import {
-	StatisticsChartMonthDataset,
-	StatisticsChartWeekDataset,
-	StatisticsChartYearDataset,
-	StatisticsDayLabelConverter,
-	StatisticsMonthLabelConverter,
-	StatisticsWeekLabelConverter,
-} from './chart-utils';
+	Chart,
+	DataConverter,
+	LabelConverter,
+} from 'src/app/common/models/chart-base';
+import {
+	DailyExpensesDataConverter,
+	DailyIncomeDataConverter,
+	MonthLabelConverter,
+	MonthlyExpensesDataConverter,
+	MonthlyIncomeDataConverter,
+	WeekDayLabelConverter,
+	WeekLabelConverter,
+	WeeklyExpensesDataConverter,
+	WeeklyIncomeDataConverter,
+} from './chart-data-converters';
+
+type TPeriod = 'year' | 'month' | 'week';
+type ConverterPair = [
+	Constructor<LabelConverter>,
+	Constructor<DataConverter<IWalletPeriodStatistics>>,
+	Constructor<DataConverter<IWalletPeriodStatistics>>
+];
+
+/*
+!	Please note the order of the converters. First one is for labels, 
+!	second one is for expenses statistics and the third one is for income statistics.
+*/
+const CHART_CONVERTERS_PARIS = new Map<TPeriod, ConverterPair>([
+	[
+		'year',
+		[
+			MonthLabelConverter,
+			MonthlyExpensesDataConverter,
+			MonthlyIncomeDataConverter,
+		],
+	],
+	[
+		'month',
+		[
+			WeekLabelConverter,
+			WeeklyExpensesDataConverter,
+			WeeklyIncomeDataConverter,
+		],
+	],
+	[
+		'week',
+		[
+			WeekDayLabelConverter,
+			DailyExpensesDataConverter,
+			DailyIncomeDataConverter,
+		],
+	],
+]);
 
 @Component({
 	selector: 'grouped-transactions-chart',
@@ -17,62 +63,41 @@ import {
 	styleUrls: ['./grouped-transactions-chart.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GroupedTransactionsChartComponent extends Chart<IWalletPeriodStatistics> {
-	constructor() {
-		super();
-	}
-
-	private _period: 'year' | 'month' | 'week';
-
-	@Input('data')
-	set data(newData: IWalletPeriodStatistics) {
-		switch (this._period) {
-			case 'year':
-				this.changeDataset(new StatisticsChartYearDataset(newData));
-				break;
-
-			case 'month':
-				this.changeDataset(new StatisticsChartMonthDataset(newData));
-				break;
-
-			case 'week':
-				this.changeDataset(new StatisticsChartWeekDataset(newData));
-				break;
-
-			default:
-				throw new Error('Given period is not supported');
-		}
-	}
-
-	@Input('period')
-	set period(period: 'year' | 'month' | 'week') {
-		this._period = period;
-
-		switch (period) {
-			case 'year':
-				this.changeDataset(new StatisticsChartYearDataset(this.dataset.data));
-				this.changeLabels(new StatisticsMonthLabelConverter());
-				break;
-
-			case 'month':
-				this.changeDataset(new StatisticsChartMonthDataset(this.dataset.data));
-				this.changeLabels(new StatisticsWeekLabelConverter());
-
-				break;
-
-			case 'week':
-				this.changeDataset(new StatisticsChartWeekDataset(this.dataset.data));
-				this.changeLabels(new StatisticsDayLabelConverter());
-
-				break;
-
-			default:
-				throw new Error('Given period is not supported');
-		}
-	}
-
-	readonly chartOptions: ChartOptions = {
+export class GroupedTransactionsChartComponent extends Chart<
+	IWalletPeriodStatistics,
+	'bar'
+> {
+	readonly chartConfig: ChartOptions<'bar'> = {
 		maintainAspectRatio: false,
 		responsive: true,
+		datasets: {
+			bar: {
+				borderRadius: 3,
+			},
+		},
 	};
+	private _period: TPeriod;
+
+	@Input('period')
+	set period(period: TPeriod) {
+		this._period = period;
+		this.removeAllDataConverters();
+
+		const [LabelConverter, ExpensesConverter, IncomeConverter] =
+			this._retrieveConverters(period);
+
+		this.setLabelConverter(new LabelConverter());
+		this.addDataConverter(new ExpensesConverter(), new IncomeConverter());
+	}
+	get period() {
+		return this._period;
+	}
+
+	private _retrieveConverters(period: TPeriod) {
+		if (CHART_CONVERTERS_PARIS.has(period)) {
+			return CHART_CONVERTERS_PARIS.get(period);
+		} else {
+			throw new Error(`Unsupported period - (${period})`);
+		}
+	}
 }

@@ -1,9 +1,6 @@
 <canvas
 	baseChart
-	[options]="chartOptions"
+	[options]="chartConfig"
 	type="bar"
-	[datasets]="[
-		{ data: generateChartData(), label: dataset.label, borderRadius: 3 }
-	]"
-	[labels]="generateLabels()"
+	[datasets]="generateChartDatasets(data)"
 ></canvas>

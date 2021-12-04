@@ -99,6 +99,27 @@ const DUMMY_CATEGORIES: ICategory[] = [
 	},
 ];
 
+const DUMMY_PERIOD_DATA: IWalletPeriodStatistics = {
+	expenses: 1,
+	income: 2,
+	categories: null,
+	'0': {
+		expenses: 100,
+		income: 47,
+		categories: null,
+	},
+	'5': {
+		expenses: 85,
+		income: 34,
+		categories: null,
+	},
+	'1': {
+		expenses: 45,
+		income: 12,
+		categories: null,
+	},
+};
+
 @Component({
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
@@ -111,96 +132,14 @@ export class HomeComponent {
 		private readonly _mainSidenav: MainSidenavService
 	) {}
 
-	cols = 12;
-	rowHeightRem = 1;
-	gutterSizeRem = 0.5;
+	readonly cols = 12;
+	readonly rowHeightRem = 1;
+	readonly gutterSizeRem = 0.5;
 
-	// TODO: Remove this
-	DUMMY_STATISTICS: IWalletPeriodStatistics = {
-		expenses: 1,
-		income: 2,
-		categories: null,
-		'0': {
-			expenses: 100,
-			income: 47,
-			categories: null,
-		},
-		// '5': {
-		// 	expenses: 85,
-		// 	income: 34,
-		// 	categories: null,
-		// },
-		'1': {
-			expenses: 45,
-			income: 12,
-			categories: null,
-		},
-	};
-	DUMMY_DATA: TWalletCategorizedStatistics = {
-		'1a': {
-			expenses: 15,
-			income: 1,
-		},
-		'2b': {
-			expenses: 15,
-			income: 1,
-		},
-		'3c': {
-			expenses: 60,
-			income: 1,
-		},
-		'4d': {
-			expenses: 12,
-			income: 1,
-		},
-		'5f': {
-			expenses: 100,
-			income: 1,
-		},
-	};
-
-	DUMMY_CATEGORIES: ICategory[] = [
-		{
-			id: '1a',
-			name: 'Jedzenie',
-
-			icon: '',
-			iconPath: '',
-			defaultTransactionsType: 'expense',
-		},
-		{
-			id: '2b',
-			name: 'Paliwo',
-
-			icon: '',
-			iconPath: '',
-			defaultTransactionsType: 'expense',
-		},
-		{
-			id: '3c',
-			name: 'Rozrywka',
-
-			icon: '',
-			iconPath: '',
-			defaultTransactionsType: 'expense',
-		},
-		{
-			id: '4d',
-			name: 'Transport',
-
-			icon: '',
-			iconPath: '',
-			defaultTransactionsType: 'expense',
-		},
-		{
-			id: '5f',
-			name: 'Imprezy',
-
-			icon: '',
-			iconPath: '',
-			defaultTransactionsType: 'expense',
-		},
-	];
+	// TODO: Remove those
+	readonly DUMMY_STATISTICS: IWalletPeriodStatistics = DUMMY_PERIOD_DATA;
+	readonly DUMMY_DATA: TWalletCategorizedStatistics = DUMMY_DATA;
+	readonly DUMMY_CATEGORIES: ICategory[] = DUMMY_CATEGORIES;
 
 	private readonly _layouts = new Map([
 		['(max-width: 374.98px)', xSmallLayout],
