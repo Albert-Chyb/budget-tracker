@@ -2,6 +2,6 @@
 	baseChart
 	type="pie"
 	[options]="chartOptions"
-	[datasets]="[{ data: generateChartData(), label: dataset.label }]"
+	[datasets]="generateChartDatasets()"
 	[labels]="generateLabels()"
 ></canvas>

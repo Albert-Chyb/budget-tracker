@@ -39,12 +39,13 @@ export abstract class Chart<T, C extends ChartType> {
 	}
 
 	/** Generates datasets for the chart */
-	generateChartDatasets(rawData: T): ChartDataset<C, TChartData>[] {
+	generateChartDatasets(): ChartDataset<C, any>[] {
 		const convertedData = this._dataConverters.map(dataset => {
 			const chartData: ChartDataset<C, TChartData> = {
 				...this.getDatasetConfig(dataset.label),
-				data: this._convertLabels(dataset.convert(rawData)),
+				data: this._convertLabels(dataset.convert(this.data)),
 				label: dataset.label,
+				parsing: true,
 			} as any;
 
 			return chartData;
@@ -81,11 +82,29 @@ export abstract class Chart<T, C extends ChartType> {
 	}
 }
 
+@Directive()
+export abstract class PieChart<T> extends Chart<T, 'pie'> {
+	generateChartDatasets(): ChartDataset<'pie', number[]>[] {
+		const chartDatasets = super.generateChartDatasets();
+
+		return chartDatasets.map(dataset => {
+			dataset.data = Object.values(dataset.data);
+			return dataset;
+		});
+	}
+
+	generateLabels(): string[] {
+		const chartDatasets = super.generateChartDatasets();
+
+		return Object.keys(chartDatasets[0].data);
+	}
+}
+
 export abstract class LabelConverter {
 	abstract convert(key: string): string;
 }
 
 export abstract class DataConverter<T> {
 	constructor(public readonly label: string) {}
-	abstract convert(data: T): { [label: string]: number };
+	abstract convert(data: T): TChartData;
 }
