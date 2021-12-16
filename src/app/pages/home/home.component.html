@@ -128,9 +128,18 @@
 
 	<mat-grid-tile [colspan]="layout.transactionsTable.colspan" rowspan="35">
 		<mat-card>
-			<mat-card-header>
+			<mat-card-header class="mat-card-header-with-action">
 				<h2 mat-card-title>Ostatnie transakcje</h2>
+				<a href="#" mat-button color="accent" class="mat-card-header-action">
+					Zobacz wszystkie
+				</a>
 			</mat-card-header>
+			<mat-card-content>
+				<transactions-table
+					[transactions]="DUMMY_TRANSACTIONS"
+					[maxCount]="8"
+				></transactions-table>
+			</mat-card-content>
 		</mat-card>
 	</mat-grid-tile>
 </mat-grid-list>

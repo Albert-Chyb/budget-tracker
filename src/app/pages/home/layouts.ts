@@ -36,10 +36,10 @@ export const mediumLayout = {
 		colspan: 12,
 	},
 	popularCategoriesChart: {
-		colspan: 5,
+		colspan: 12,
 	},
 	transactionsTable: {
-		colspan: 7,
+		colspan: 12,
 	},
 };
 

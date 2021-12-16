@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
 import { ICategory } from 'src/app/common/interfaces/category';
+import { ITransaction } from 'src/app/common/interfaces/transaction';
 import {
 	IWalletPeriodStatistics,
 	TWalletCategorizedStatistics,
@@ -120,6 +121,119 @@ const DUMMY_PERIOD_DATA: IWalletPeriodStatistics = {
 	},
 };
 
+const DUMMY_TRANSACTIONS: ITransaction[] = [
+	{
+		amount: 23.3,
+		type: 'expense',
+		category: 'Jedzenie',
+		wallet: 'Konto bankowe',
+		date: new Date(2021, 11, 1),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 52.3,
+		type: 'expense',
+		category: 'Imprezy',
+		wallet: 'Konto bankowe',
+		date: new Date(2021, 11, 2),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 12.3,
+		type: 'expense',
+		category: 'Transport',
+		wallet: 'Portfel',
+		date: new Date(2021, 11, 3),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 50,
+		type: 'income',
+		category: 'Kieszonkowe',
+		wallet: 'Konto bankowe',
+		date: new Date(2021, 11, 4),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 2300,
+		type: 'income',
+		category: 'Pensja',
+		wallet: 'Konto oszczędnościowe',
+		date: new Date(2021, 11, 5),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 23.3,
+		type: 'expense',
+		category: 'Inne',
+		wallet: 'Konto bankowe',
+		date: new Date(2021, 11, 6),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 23.3,
+		type: 'expense',
+		category: 'Jedzenie',
+		wallet: 'Konto bankowe',
+		date: new Date(2021, 11, 1),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 52.3,
+		type: 'expense',
+		category: 'Imprezy',
+		wallet: 'Konto bankowe',
+		date: new Date(2021, 11, 2),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 12.3,
+		type: 'expense',
+		category: 'Transport',
+		wallet: 'Portfel',
+		date: new Date(2021, 11, 3),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 50,
+		type: 'income',
+		category: 'Kieszonkowe',
+		wallet: 'Konto bankowe',
+		date: new Date(2021, 11, 4),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 2300,
+		type: 'income',
+		category: 'Pensja',
+		wallet: 'Konto oszczędnościowe',
+		date: new Date(2021, 11, 5),
+		description: '',
+		id: 'aslffsdg',
+	},
+	{
+		amount: 23.3,
+		type: 'expense',
+		category: 'Inne',
+		wallet: 'Konto bankowe',
+		date: new Date(2021, 11, 6),
+		description: '',
+		id: 'aslffsdg',
+	},
+];
+
+// TODO: Create a component that displays passed transactions in a mat-table
+
 @Component({
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
@@ -140,6 +254,7 @@ export class HomeComponent {
 	readonly DUMMY_STATISTICS: IWalletPeriodStatistics = DUMMY_PERIOD_DATA;
 	readonly DUMMY_DATA: TWalletCategorizedStatistics = DUMMY_DATA;
 	readonly DUMMY_CATEGORIES: ICategory[] = DUMMY_CATEGORIES;
+	readonly DUMMY_TRANSACTIONS = DUMMY_TRANSACTIONS;
 
 	private readonly _layouts = new Map([
 		['(max-width: 374.98px)', xSmallLayout],
