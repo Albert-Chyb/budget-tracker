@@ -24,122 +24,135 @@
 	</button>
 </div>
 
-<mat-grid-list
-	*ngIf="layout$ | async as layout"
-	[cols]="cols"
-	[rowHeight]="rowHeightRem + 'rem'"
-	[gutterSize]="gutterSizeRem + 'rem'"
->
-	<!-- CARDS -->
+<ng-container *ngIf="data$ | loading | async as data">
+	<mat-grid-list
+		*ngIf="layout$ | async as layout"
+		[cols]="cols"
+		[rowHeight]="rowHeightRem + 'rem'"
+		[gutterSize]="gutterSizeRem + 'rem'"
+	>
+		<!-- CARDS -->
 
-	<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
-		<mat-card>
-			<mat-card-header>
-				<h2 mat-card-title>Balans</h2>
-				<p mat-card-subtitle>Suma w wybranych portfelach</p>
-			</mat-card-header>
+		<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
+			<mat-card>
+				<mat-card-header>
+					<h2 mat-card-title>Balans</h2>
+					<p mat-card-subtitle>Suma w wybranych portfelach</p>
+				</mat-card-header>
 
-			<mat-card-content>
-				<p class="money-amount">{{ 10476.56 | currency }}</p>
-			</mat-card-content>
-		</mat-card>
-	</mat-grid-tile>
+				<mat-card-content>
+					<p class="money-amount">
+						{{ getTotalBalance(data.wallets) | currency }}
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
 
-	<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
-		<mat-card>
-			<mat-card-header>
-				<h2 mat-card-title>Przychody</h2>
-				<p mat-card-subtitle>- 15% vs ostatni okres</p>
-			</mat-card-header>
+		<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
+			<mat-card>
+				<mat-card-header>
+					<h2 mat-card-title>Przychody</h2>
+					<p mat-card-subtitle>- 15% vs ostatni okres</p>
+				</mat-card-header>
 
-			<mat-card-content>
-				<p class="money-amount">{{ 600 | currency }}</p>
-			</mat-card-content>
-		</mat-card>
-	</mat-grid-tile>
+				<mat-card-content>
+					<p class="money-amount">
+						{{ getIncome(data.statistics) | currency }}
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
 
-	<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
-		<mat-card>
-			<mat-card-header>
-				<h2 mat-card-title>Wydatki</h2>
-				<p mat-card-subtitle>+ 7% vs ostatni okres</p>
-			</mat-card-header>
+		<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
+			<mat-card>
+				<mat-card-header>
+					<h2 mat-card-title>Wydatki</h2>
+					<p mat-card-subtitle>+ 7% vs ostatni okres</p>
+				</mat-card-header>
 
-			<mat-card-content>
-				<p class="money-amount">{{ 174.99 | currency }}</p>
-			</mat-card-content>
-		</mat-card>
-	</mat-grid-tile>
+				<mat-card-content>
+					<p class="money-amount">
+						{{ getExpenses(data.statistics) | currency }}
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
 
-	<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
-		<mat-card>
-			<mat-card-header>
-				<h2 mat-card-title>Różnica</h2>
-				<p mat-card-subtitle>Różnica przychodów i wydatków</p>
-			</mat-card-header>
+		<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
+			<mat-card>
+				<mat-card-header>
+					<h2 mat-card-title>Różnica</h2>
+					<p mat-card-subtitle>Różnica przychodów i wydatków</p>
+				</mat-card-header>
 
-			<mat-card-content>
-				<p class="money-amount">{{ 600 - 174.99 | currency }}</p>
-			</mat-card-content>
-		</mat-card>
-	</mat-grid-tile>
+				<mat-card-content>
+					<p class="money-amount">
+						{{ getDifference(data.statistics) | currency }}
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
 
-	<!-- Bar chart -->
+		<!-- Bar chart -->
 
-	<mat-grid-tile [colspan]="layout.expensesChart.colspan" rowspan="35">
-		<mat-card>
-			<mat-card-header>
-				<h2 mat-card-title>Wykres wydatków w wybranym okresie</h2>
-			</mat-card-header>
+		<mat-grid-tile [colspan]="layout.expensesChart.colspan" rowspan="35">
+			<mat-card>
+				<mat-card-header>
+					<h2 mat-card-title>Wykres wydatków w wybranym okresie</h2>
+				</mat-card-header>
 
-			<mat-card-content>
-				<div class="chart-wrapper">
-					<grouped-transactions-chart
-						class="chart"
-						[data]="DUMMY_STATISTICS"
-						period="week"
-					></grouped-transactions-chart>
-				</div>
-			</mat-card-content>
-		</mat-card>
-	</mat-grid-tile>
+				<mat-card-content>
+					<div class="chart-wrapper">
+						<grouped-transactions-chart
+							class="chart"
+							[data]="data.statistics"
+							period="year"
+						></grouped-transactions-chart>
+					</div>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
 
-	<!-- Popular categories -->
+		<!-- Popular categories -->
 
-	<mat-grid-tile [colspan]="layout.popularCategoriesChart.colspan" rowspan="35">
-		<mat-card>
-			<mat-card-header>
-				<h2 mat-card-title>Popularne kategorie</h2>
-			</mat-card-header>
+		<mat-grid-tile
+			[colspan]="layout.popularCategoriesChart.colspan"
+			rowspan="35"
+		>
+			<mat-card>
+				<mat-card-header>
+					<h2 mat-card-title>Popularne kategorie</h2>
+				</mat-card-header>
 
-			<mat-card-content>
-				<div class="chart-wrapper">
-					<categorized-expenses-chart
-						class="chart"
-						[data]="DUMMY_DATA"
-						[categories]="DUMMY_CATEGORIES"
-					></categorized-expenses-chart>
-				</div>
-			</mat-card-content>
-		</mat-card>
-	</mat-grid-tile>
+				<mat-card-content>
+					<div class="chart-wrapper">
+						<categorized-expenses-chart
+							class="chart"
+							[data]="data.statistics.categories"
+							[categories]="data.categories"
+						></categorized-expenses-chart>
+					</div>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
 
-	<!-- Latest transactions -->
+		<!-- Latest transactions -->
 
-	<mat-grid-tile [colspan]="layout.transactionsTable.colspan" rowspan="35">
-		<mat-card>
-			<mat-card-header class="mat-card-header-with-action">
-				<h2 mat-card-title>Ostatnie transakcje</h2>
-				<a href="#" mat-button color="accent" class="mat-card-header-action">
-					Zobacz wszystkie
-				</a>
-			</mat-card-header>
-			<mat-card-content>
-				<transactions-table
-					[transactions]="DUMMY_TRANSACTIONS"
-					[maxCount]="8"
-				></transactions-table>
-			</mat-card-content>
-		</mat-card>
-	</mat-grid-tile>
-</mat-grid-list>
+		<mat-grid-tile [colspan]="layout.transactionsTable.colspan" rowspan="35">
+			<mat-card>
+				<mat-card-header class="mat-card-header-with-action">
+					<h2 mat-card-title>Ostatnie transakcje</h2>
+					<a href="#" mat-button color="accent" class="mat-card-header-action">
+						Zobacz wszystkie
+					</a>
+				</mat-card-header>
+				<mat-card-content>
+					<transactions-table
+						[transactions]="DUMMY_TRANSACTIONS"
+						[maxCount]="8"
+					></transactions-table>
+				</mat-card-content>
+			</mat-card>
+		</mat-grid-tile>
+	</mat-grid-list>
+</ng-container>

@@ -2,11 +2,12 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { ComponentType } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
 import { ICategory } from 'src/app/common/interfaces/category';
 import { ITransaction } from 'src/app/common/interfaces/transaction';
+import { IWallet } from 'src/app/common/interfaces/wallet';
 import {
 	IWalletPeriodStatistics,
 	TWalletCategorizedStatistics,
@@ -19,7 +20,10 @@ import {
 	TWalletPickerValue,
 	WalletPickerComponent,
 } from 'src/app/components/wallet-picker/wallet-picker.component';
+import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
+import { WalletsStatisticsService } from 'src/app/services/wallets-statistics/wallets-statistics.service';
+import { WalletsService } from 'src/app/services/wallets/wallets.service';
 import {
 	largeLayout,
 	mediumLayout,
@@ -33,6 +37,14 @@ import {
  *
  * Integrate this component with backend.
  */
+
+const DEFAULT_WALLET_PICKER_VALUE: TWalletPickerValue = 'all';
+const DEFAULT_PERIOD_PICKER_VALUE: TPeriodPickerValue = [
+	new Date().getFullYear(),
+	null,
+	null,
+	'year',
+];
 
 const DUMMY_DATA: TWalletCategorizedStatistics = {
 	'1a': {
@@ -232,8 +244,6 @@ const DUMMY_TRANSACTIONS: ITransaction[] = [
 	},
 ];
 
-// TODO: Create a component that displays passed transactions in a mat-table
-
 @Component({
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
@@ -243,17 +253,29 @@ export class HomeComponent {
 	constructor(
 		private readonly _dialog: MatDialog,
 		private readonly _breakpointObserver: BreakpointObserver,
-		private readonly _mainSidenav: MainSidenavService
+		private readonly _mainSidenav: MainSidenavService,
+		private readonly _walletStatistics: WalletsStatisticsService,
+		private readonly _wallets: WalletsService,
+		private readonly _categories: CategoriesService
 	) {}
 
 	readonly cols = 12;
 	readonly rowHeightRem = 1;
 	readonly gutterSizeRem = 0.5;
 
-	// TODO: Remove those
-	readonly DUMMY_STATISTICS: IWalletPeriodStatistics = DUMMY_PERIOD_DATA;
-	readonly DUMMY_DATA: TWalletCategorizedStatistics = DUMMY_DATA;
-	readonly DUMMY_CATEGORIES: ICategory[] = DUMMY_CATEGORIES;
+	readonly data$ = combineLatest([
+		this._wallets.list(),
+		this._categories.list(),
+		this._walletStatistics.year(2021),
+	]).pipe(
+		map(([wallets, categories, statistics]) => ({
+			wallets,
+			categories,
+			statistics,
+		}))
+	);
+
+	// TODO: Remove this
 	readonly DUMMY_TRANSACTIONS = DUMMY_TRANSACTIONS;
 
 	private readonly _layouts = new Map([
@@ -290,18 +312,67 @@ export class HomeComponent {
 		})
 	);
 
-	private readonly _dataStream$ = new BehaviorSubject<TWalletPickerValue>(null);
-	private readonly _periodStream$ = new BehaviorSubject<TPeriodPickerValue>(
-		null
+	private readonly _walletStream$ = new BehaviorSubject<TWalletPickerValue>(
+		DEFAULT_WALLET_PICKER_VALUE
 	);
-	readonly data$ = this._dataStream$.asObservable();
+	private readonly _periodStream$ = new BehaviorSubject<TPeriodPickerValue>(
+		DEFAULT_PERIOD_PICKER_VALUE
+	);
+	readonly wallet$ = this._walletStream$.asObservable();
 	readonly period$ = this._periodStream$.asObservable();
+
+	getTotalBalance(wallets: IWallet[]): number {
+		const targetedWalletId = this._walletStream$.value;
+
+		if (targetedWalletId === 'all') {
+			return wallets.reduce(
+				(totalAmount, wallet) => totalAmount + wallet.balance,
+				0
+			);
+		} else {
+			return wallets.find(wallet => wallet.id === targetedWalletId).balance;
+		}
+	}
+
+	getIncome(statistics: IWalletPeriodStatistics) {
+		const [year, month, week, selectedPeriod] = this._periodStream$.value;
+		let income: number;
+
+		if (selectedPeriod === 'year') {
+			income = statistics.income;
+		} else if (selectedPeriod === 'month') {
+			income = (statistics as any)[String(month)].income;
+		} else if (selectedPeriod === 'week') {
+			income = (statistics as any)[String(month)][String(week)].income;
+		}
+
+		return income;
+	}
+
+	getExpenses(statistics: IWalletPeriodStatistics) {
+		const [year, month, week, selectedPeriod] = this._periodStream$.value;
+		let expenses: number;
+
+		if (selectedPeriod === 'year') {
+			expenses = statistics.expenses;
+		} else if (selectedPeriod === 'month') {
+			expenses = (statistics as any)[String(month)].expenses;
+		} else if (selectedPeriod === 'week') {
+			expenses = (statistics as any)[String(month)][String(week)].expenses;
+		}
+
+		return expenses;
+	}
+
+	getDifference(statistics: IWalletPeriodStatistics): number {
+		return this.getIncome(statistics) - this.getExpenses(statistics);
+	}
 
 	async changeDataSource() {
 		const newDataSource = await this._openWalletPicker();
 
 		if (newDataSource) {
-			this._dataStream$.next(newDataSource);
+			this._walletStream$.next(newDataSource);
 		}
 
 		console.log(newDataSource);
@@ -324,7 +395,7 @@ export class HomeComponent {
 			WalletPickerComponent,
 			TWalletPickerValue,
 			TWalletPickerValue
-		>(WalletPickerComponent, this._dataStream$.value);
+		>(WalletPickerComponent, this._walletStream$.value);
 	}
 
 	private _openPeriodPicker() {
