@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-type TPeriod = 'year' | 'month' | 'week';
+export type TPeriod = 'year' | 'month' | 'week';
 export type TPeriodPickerValue =
 	| [number | null, number | null, number | null, TPeriod]
 	| null;

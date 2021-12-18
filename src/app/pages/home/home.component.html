@@ -18,7 +18,7 @@
 		color="accent"
 		aria-label="Otwórz dialog do zmiany portfela"
 		matTooltip="Zmień portfel"
-		(click)="changeDataSource()"
+		(click)="changeWallet()"
 	>
 		<mat-icon>account_balance_wallet</mat-icon>
 	</button>
@@ -105,8 +105,8 @@
 					<div class="chart-wrapper">
 						<grouped-transactions-chart
 							class="chart"
-							[data]="data.statistics"
-							period="year"
+							[data]="getStatisticsForPeriod(data.statistics, selectedPeriod)"
+							[period]="selectedPeriod"
 						></grouped-transactions-chart>
 					</div>
 				</mat-card-content>
@@ -128,7 +128,7 @@
 					<div class="chart-wrapper">
 						<categorized-expenses-chart
 							class="chart"
-							[data]="data.statistics.categories"
+							[data]="getCategorizedStatistics(data.statistics, selectedPeriod)"
 							[categories]="data.categories"
 						></categorized-expenses-chart>
 					</div>

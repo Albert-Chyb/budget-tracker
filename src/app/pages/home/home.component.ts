@@ -2,10 +2,10 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { ComponentType } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
-import { ICategory } from 'src/app/common/interfaces/category';
 import { ITransaction } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
 import {
@@ -14,6 +14,7 @@ import {
 } from 'src/app/common/interfaces/wallet-statistics';
 import {
 	PeriodPickerComponent,
+	TPeriod,
 	TPeriodPickerValue,
 } from 'src/app/components/period-picker/period-picker.component';
 import {
@@ -21,6 +22,7 @@ import {
 	WalletPickerComponent,
 } from 'src/app/components/wallet-picker/wallet-picker.component';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
+import { LoadingService } from 'src/app/services/loading/loading.service';
 import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
 import { WalletsStatisticsService } from 'src/app/services/wallets-statistics/wallets-statistics.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
@@ -35,103 +37,12 @@ import {
  * The dialogs probably shouldn't call for data every time they are opened. Get data in this component and pass it to a dialog with injector.
  * Adjust charts theme to the dark background.
  *
+ * Make a class for the statistics object.
+ * Filter categories that contains no expenses in pie chart.
+ * Change period picker value to an object
  * Integrate this component with backend.
+ * Implement comparison with the last period (in a year scope).
  */
-
-const DEFAULT_WALLET_PICKER_VALUE: TWalletPickerValue = 'all';
-const DEFAULT_PERIOD_PICKER_VALUE: TPeriodPickerValue = [
-	new Date().getFullYear(),
-	null,
-	null,
-	'year',
-];
-
-const DUMMY_DATA: TWalletCategorizedStatistics = {
-	'1a': {
-		expenses: 15,
-		income: 1,
-	},
-	'2b': {
-		expenses: 15,
-		income: 1,
-	},
-	'3c': {
-		expenses: 60,
-		income: 1,
-	},
-	'4d': {
-		expenses: 12,
-		income: 1,
-	},
-	'5f': {
-		expenses: 100,
-		income: 1,
-	},
-};
-
-const DUMMY_CATEGORIES: ICategory[] = [
-	{
-		id: '1a',
-		name: 'Jedzenie',
-
-		icon: '',
-		iconPath: '',
-		defaultTransactionsType: 'expense',
-	},
-	{
-		id: '2b',
-		name: 'Paliwo',
-
-		icon: '',
-		iconPath: '',
-		defaultTransactionsType: 'expense',
-	},
-	{
-		id: '3c',
-		name: 'Rozrywka',
-
-		icon: '',
-		iconPath: '',
-		defaultTransactionsType: 'expense',
-	},
-	{
-		id: '4d',
-		name: 'Transport',
-
-		icon: '',
-		iconPath: '',
-		defaultTransactionsType: 'expense',
-	},
-	{
-		id: '5f',
-		name: 'Imprezy',
-
-		icon: '',
-		iconPath: '',
-		defaultTransactionsType: 'expense',
-	},
-];
-
-const DUMMY_PERIOD_DATA: IWalletPeriodStatistics = {
-	expenses: 1,
-	income: 2,
-	categories: null,
-	'0': {
-		expenses: 100,
-		income: 47,
-		categories: null,
-	},
-	'5': {
-		expenses: 85,
-		income: 34,
-		categories: null,
-	},
-	'1': {
-		expenses: 45,
-		income: 12,
-		categories: null,
-	},
-};
 
 const DUMMY_TRANSACTIONS: ITransaction[] = [
 	{
@@ -256,17 +167,61 @@ export class HomeComponent {
 		private readonly _mainSidenav: MainSidenavService,
 		private readonly _walletStatistics: WalletsStatisticsService,
 		private readonly _wallets: WalletsService,
-		private readonly _categories: CategoriesService
+		private readonly _categories: CategoriesService,
+		private readonly _route: ActivatedRoute,
+		private readonly _router: Router,
+		private readonly _loading: LoadingService
 	) {}
 
 	readonly cols = 12;
 	readonly rowHeightRem = 1;
 	readonly gutterSizeRem = 0.5;
 
+	/** Emits whenever the wallet changes */
+	readonly selectedWallet$: Observable<TWalletPickerValue> =
+		this._route.queryParamMap.pipe(
+			map(params => params.get('wallet')),
+			distinctUntilChanged()
+		);
+
+	/** Emits whenever the period changes */
+	readonly selectedPeriod$: Observable<TPeriodPickerValue> =
+		this._route.queryParamMap.pipe(
+			map(params => {
+				return [
+					...this._buildPeriodParts(params),
+					params.get('period') as TPeriod,
+				] as [number, number, number, TPeriod];
+			})
+		);
+
+	/**
+	 * Emits whenever a new statistics object should be downloaded from the server.
+	 * When a new year or wallet was selected.
+	 */
+	private readonly _statistics$ = combineLatest([
+		this.selectedPeriod$.pipe(
+			distinctUntilChanged(([oldYear], [newYear]) => oldYear === newYear)
+		),
+		this.selectedWallet$,
+	]).pipe(
+		switchMap(([period, wallet]) => {
+			const [year] = period;
+
+			if (wallet === 'all') {
+				// We want to retrieve statistic for a year
+				return this._loading.add(this._walletStatistics.year(year));
+			} else {
+				// We want to retrieve statistic for specific wallet in a specified year
+				return this._loading.add(this._walletStatistics.wallet(wallet, year));
+			}
+		})
+	);
+
 	readonly data$ = combineLatest([
 		this._wallets.list(),
 		this._categories.list(),
-		this._walletStatistics.year(2021),
+		this._statistics$,
 	]).pipe(
 		map(([wallets, categories, statistics]) => ({
 			wallets,
@@ -312,53 +267,44 @@ export class HomeComponent {
 		})
 	);
 
-	private readonly _walletStream$ = new BehaviorSubject<TWalletPickerValue>(
-		DEFAULT_WALLET_PICKER_VALUE
-	);
-	private readonly _periodStream$ = new BehaviorSubject<TPeriodPickerValue>(
-		DEFAULT_PERIOD_PICKER_VALUE
-	);
-	readonly wallet$ = this._walletStream$.asObservable();
-	readonly period$ = this._periodStream$.asObservable();
-
 	getTotalBalance(wallets: IWallet[]): number {
-		const targetedWalletId = this._walletStream$.value;
-
-		if (targetedWalletId === 'all') {
+		if (this.selectedWallet === 'all') {
 			return wallets.reduce(
 				(totalAmount, wallet) => totalAmount + wallet.balance,
 				0
 			);
 		} else {
-			return wallets.find(wallet => wallet.id === targetedWalletId).balance;
+			return wallets.find(wallet => wallet.id === this.selectedWallet).balance;
 		}
 	}
 
 	getIncome(statistics: IWalletPeriodStatistics) {
-		const [year, month, week, selectedPeriod] = this._periodStream$.value;
+		const [year, month, week] = this.selectedPeriodParts;
 		let income: number;
 
-		if (selectedPeriod === 'year') {
-			income = statistics.income;
-		} else if (selectedPeriod === 'month') {
-			income = (statistics as any)[String(month)].income;
-		} else if (selectedPeriod === 'week') {
-			income = (statistics as any)[String(month)][String(week)].income;
+		if (this.selectedPeriod === 'year') {
+			income = statistics?.income;
+		} else if (this.selectedPeriod === 'month') {
+			income = (statistics as any)?.[String(month)]?.income ?? 0;
+		} else if (this.selectedPeriod === 'week') {
+			income =
+				(statistics as any)?.[String(month)]?.[String(week)]?.income ?? 0;
 		}
 
 		return income;
 	}
 
 	getExpenses(statistics: IWalletPeriodStatistics) {
-		const [year, month, week, selectedPeriod] = this._periodStream$.value;
+		const [year, month, week] = this.selectedPeriodParts;
 		let expenses: number;
 
-		if (selectedPeriod === 'year') {
-			expenses = statistics.expenses;
-		} else if (selectedPeriod === 'month') {
-			expenses = (statistics as any)[String(month)].expenses;
-		} else if (selectedPeriod === 'week') {
-			expenses = (statistics as any)[String(month)][String(week)].expenses;
+		if (this.selectedPeriod === 'year') {
+			expenses = statistics?.expenses;
+		} else if (this.selectedPeriod === 'month') {
+			expenses = (statistics as any)?.[String(month)]?.expenses ?? 0;
+		} else if (this.selectedPeriod === 'week') {
+			expenses =
+				(statistics as any)?.[String(month)]?.[String(week)]?.expenses ?? 0;
 		}
 
 		return expenses;
@@ -368,14 +314,44 @@ export class HomeComponent {
 		return this.getIncome(statistics) - this.getExpenses(statistics);
 	}
 
-	async changeDataSource() {
-		const newDataSource = await this._openWalletPicker();
+	getStatisticsForPeriod(
+		statistics: IWalletPeriodStatistics,
+		period: TPeriod
+	): IWalletPeriodStatistics {
+		switch (period) {
+			case 'year':
+				return statistics;
 
-		if (newDataSource) {
-			this._walletStream$.next(newDataSource);
+			case 'month':
+				return (statistics as any)[String(this.selectedPeriodParts[1])];
+
+			case 'week':
+				return (statistics as any)[String(this.selectedPeriodParts[1])][
+					String(this.selectedPeriodParts[2])
+				];
 		}
+	}
 
-		console.log(newDataSource);
+	getCategorizedStatistics(
+		statistics: IWalletPeriodStatistics,
+		period: TPeriod
+	): TWalletCategorizedStatistics {
+		return this.getStatisticsForPeriod(statistics, period).categories;
+	}
+
+	async changeWallet() {
+		const selectedWallet = await this._openWalletPicker();
+
+		if (selectedWallet) {
+			this._router.navigate([], {
+				relativeTo: this._route,
+				queryParamsHandling: 'merge',
+				queryParams: {
+					wallet: selectedWallet,
+				},
+				replaceUrl: true,
+			});
+		}
 	}
 
 	async changePeriod() {
@@ -384,10 +360,25 @@ export class HomeComponent {
 		if (newPeriod) {
 			const [year, month, week, period] = newPeriod;
 
-			this._periodStream$.next(newPeriod);
-
-			console.log({ year, month, week, period });
+			this._router.navigate([], {
+				relativeTo: this._route,
+				queryParamsHandling: 'merge',
+				queryParams: { year, month, week, period },
+				replaceUrl: true,
+			});
 		}
+	}
+
+	get selectedWallet(): string {
+		return this._route.snapshot.queryParamMap.get('wallet');
+	}
+
+	get selectedPeriod(): TPeriod {
+		return this._route.snapshot.queryParamMap.get('period') as any;
+	}
+
+	get selectedPeriodParts(): [number, number, number] {
+		return this._buildPeriodParts(this._route.snapshot.queryParamMap);
 	}
 
 	private _openWalletPicker() {
@@ -395,7 +386,7 @@ export class HomeComponent {
 			WalletPickerComponent,
 			TWalletPickerValue,
 			TWalletPickerValue
-		>(WalletPickerComponent, this._walletStream$.value);
+		>(WalletPickerComponent, this.selectedWallet);
 	}
 
 	private _openPeriodPicker() {
@@ -403,10 +394,10 @@ export class HomeComponent {
 			PeriodPickerComponent,
 			TPeriodPickerValue,
 			TPeriodPickerValue
-		>(
-			PeriodPickerComponent,
-			this._periodStream$.value ?? [null, null, null, null]
-		);
+		>(PeriodPickerComponent, [
+			...this.selectedPeriodParts,
+			this.selectedPeriod,
+		]);
 	}
 
 	private _openPicker<DialogComponent, InjectorData, CloseValue>(
@@ -421,5 +412,19 @@ export class HomeComponent {
 			.afterClosed()
 			.pipe(first())
 			.toPromise();
+	}
+
+	private _buildPeriodParts(params: ParamMap): [number, number, number] {
+		const paramsNames: TPeriod[] = ['year', 'month', 'week'];
+
+		const periodParts = paramsNames.map(paramName => {
+			if (params.has(paramName)) {
+				return Number(params.get(paramName));
+			} else {
+				return null;
+			}
+		});
+
+		return periodParts as any;
 	}
 }
