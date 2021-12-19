@@ -191,7 +191,7 @@ export class HomeComponent {
 				return [
 					...this._buildPeriodParts(params),
 					params.get('period') as TPeriod,
-				] as [number, number, number, TPeriod];
+				] as TPeriodPickerValue;
 			})
 		);
 
@@ -218,6 +218,7 @@ export class HomeComponent {
 		})
 	);
 
+	/**	The data source for the template */
 	readonly data$ = combineLatest([
 		this._wallets.list(),
 		this._categories.list(),
@@ -381,7 +382,7 @@ export class HomeComponent {
 		return this._buildPeriodParts(this._route.snapshot.queryParamMap);
 	}
 
-	private _openWalletPicker() {
+	private _openWalletPicker(): Promise<TWalletPickerValue> {
 		return this._openPicker<
 			WalletPickerComponent,
 			TWalletPickerValue,
@@ -389,7 +390,7 @@ export class HomeComponent {
 		>(WalletPickerComponent, this.selectedWallet);
 	}
 
-	private _openPeriodPicker() {
+	private _openPeriodPicker(): Promise<TPeriodPickerValue> {
 		return this._openPicker<
 			PeriodPickerComponent,
 			TPeriodPickerValue,
