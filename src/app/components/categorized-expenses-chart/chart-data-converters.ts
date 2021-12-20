@@ -13,7 +13,7 @@ export class CategorizedExpensesChartLabelConverter extends LabelConverter {
 	convert(categoryId: string): string {
 		const category = this._categories.find(cat => cat.id === categoryId);
 
-		return category.name ?? categoryId;
+		return category?.name ?? categoryId;
 	}
 }
 

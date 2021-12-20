@@ -24,7 +24,7 @@
 	</button>
 </div>
 
-<ng-container *ngIf="data$ | loading | async as data">
+<ng-container *ngIf="data$ | async as data">
 	<mat-grid-list
 		*ngIf="layout$ | async as layout"
 		[cols]="cols"
@@ -57,7 +57,7 @@
 
 				<mat-card-content>
 					<p class="money-amount">
-						{{ getIncome(data.statistics) | currency }}
+						{{ data.statistics.income | currency }}
 					</p>
 				</mat-card-content>
 			</mat-card>
@@ -72,7 +72,7 @@
 
 				<mat-card-content>
 					<p class="money-amount">
-						{{ getExpenses(data.statistics) | currency }}
+						{{ data.statistics.expenses | currency }}
 					</p>
 				</mat-card-content>
 			</mat-card>
@@ -87,7 +87,7 @@
 
 				<mat-card-content>
 					<p class="money-amount">
-						{{ getDifference(data.statistics) | currency }}
+						{{ data.statistics.difference | currency }}
 					</p>
 				</mat-card-content>
 			</mat-card>
@@ -105,7 +105,7 @@
 					<div class="chart-wrapper">
 						<grouped-transactions-chart
 							class="chart"
-							[data]="getStatisticsForPeriod(data.statistics, selectedPeriod)"
+							[data]="data.statistics.raw"
 							[period]="selectedPeriod"
 						></grouped-transactions-chart>
 					</div>
@@ -128,7 +128,7 @@
 					<div class="chart-wrapper">
 						<categorized-expenses-chart
 							class="chart"
-							[data]="getCategorizedStatistics(data.statistics, selectedPeriod)"
+							[data]="data.statistics.categories"
 							[categories]="data.categories"
 						></categorized-expenses-chart>
 					</div>

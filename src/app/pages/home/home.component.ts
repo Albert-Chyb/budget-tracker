@@ -2,16 +2,14 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { ComponentType } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
+import { compareArrays } from 'src/app/common/helpers/compareArrays';
 import { ITransaction } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
-import {
-	IWalletPeriodStatistics,
-	TWalletCategorizedStatistics,
-} from 'src/app/common/interfaces/wallet-statistics';
+import { WalletStatistics } from 'src/app/common/models/wallet-statistics';
 import {
 	PeriodPickerComponent,
 	TPeriod,
@@ -36,7 +34,6 @@ import {
 /*
  * The dialogs probably shouldn't call for data every time they are opened. Get data in this component and pass it to a dialog with injector.
  * Adjust charts theme to the dark background.
- *
  * Make a class for the statistics object.
  * Filter categories that contains no expenses in pie chart.
  * Change period picker value to an object
@@ -192,13 +189,13 @@ export class HomeComponent {
 					...this._buildPeriodParts(params),
 					params.get('period') as TPeriod,
 				] as TPeriodPickerValue;
-			})
+			}),
+			distinctUntilChanged((oldPeriod, newPeriod) =>
+				compareArrays(oldPeriod, newPeriod)
+			)
 		);
 
-	/**
-	 * Emits whenever a new statistics object should be downloaded from the server.
-	 * When a new year or wallet was selected.
-	 */
+	/** Emits whenever statistics object has changed */
 	private readonly _statistics$ = combineLatest([
 		this.selectedPeriod$.pipe(
 			distinctUntilChanged(([oldYear], [newYear]) => oldYear === newYear)
@@ -207,15 +204,41 @@ export class HomeComponent {
 	]).pipe(
 		switchMap(([period, wallet]) => {
 			const [year] = period;
+			let observable$: Observable<WalletStatistics>;
 
 			if (wallet === 'all') {
 				// We want to retrieve statistic for a year
-				return this._loading.add(this._walletStatistics.year(year));
+				observable$ = this._walletStatistics.year(year);
 			} else {
-				// We want to retrieve statistic for specific wallet in a specified year
-				return this._loading.add(this._walletStatistics.wallet(wallet, year));
+				// We want to retrieve statistic for a specific wallet in a specified year
+				observable$ = this._walletStatistics.wallet(wallet, year);
 			}
-		})
+
+			return this._loading.add(observable$);
+		}),
+		switchMap(statistics =>
+			this.selectedPeriod$.pipe(
+				map(([year, month, week, period]) => {
+					let periodStatistics: WalletStatistics;
+
+					switch (period) {
+						case 'year':
+							periodStatistics = statistics;
+							break;
+
+						case 'month':
+							periodStatistics = statistics.getPeriod(month);
+							break;
+
+						case 'week':
+							periodStatistics = statistics.getPeriod(month).getPeriod(week);
+							break;
+					}
+
+					return periodStatistics;
+				})
+			)
+		)
 	);
 
 	/**	The data source for the template */
@@ -279,79 +302,11 @@ export class HomeComponent {
 		}
 	}
 
-	getIncome(statistics: IWalletPeriodStatistics) {
-		const [year, month, week] = this.selectedPeriodParts;
-		let income: number;
-
-		if (this.selectedPeriod === 'year') {
-			income = statistics?.income;
-		} else if (this.selectedPeriod === 'month') {
-			income = (statistics as any)?.[String(month)]?.income ?? 0;
-		} else if (this.selectedPeriod === 'week') {
-			income =
-				(statistics as any)?.[String(month)]?.[String(week)]?.income ?? 0;
-		}
-
-		return income;
-	}
-
-	getExpenses(statistics: IWalletPeriodStatistics) {
-		const [year, month, week] = this.selectedPeriodParts;
-		let expenses: number;
-
-		if (this.selectedPeriod === 'year') {
-			expenses = statistics?.expenses;
-		} else if (this.selectedPeriod === 'month') {
-			expenses = (statistics as any)?.[String(month)]?.expenses ?? 0;
-		} else if (this.selectedPeriod === 'week') {
-			expenses =
-				(statistics as any)?.[String(month)]?.[String(week)]?.expenses ?? 0;
-		}
-
-		return expenses;
-	}
-
-	getDifference(statistics: IWalletPeriodStatistics): number {
-		return this.getIncome(statistics) - this.getExpenses(statistics);
-	}
-
-	getStatisticsForPeriod(
-		statistics: IWalletPeriodStatistics,
-		period: TPeriod
-	): IWalletPeriodStatistics {
-		switch (period) {
-			case 'year':
-				return statistics;
-
-			case 'month':
-				return (statistics as any)[String(this.selectedPeriodParts[1])];
-
-			case 'week':
-				return (statistics as any)[String(this.selectedPeriodParts[1])][
-					String(this.selectedPeriodParts[2])
-				];
-		}
-	}
-
-	getCategorizedStatistics(
-		statistics: IWalletPeriodStatistics,
-		period: TPeriod
-	): TWalletCategorizedStatistics {
-		return this.getStatisticsForPeriod(statistics, period).categories;
-	}
-
 	async changeWallet() {
 		const selectedWallet = await this._openWalletPicker();
 
 		if (selectedWallet) {
-			this._router.navigate([], {
-				relativeTo: this._route,
-				queryParamsHandling: 'merge',
-				queryParams: {
-					wallet: selectedWallet,
-				},
-				replaceUrl: true,
-			});
+			this._setQueryParams({ wallet: selectedWallet });
 		}
 	}
 
@@ -361,12 +316,7 @@ export class HomeComponent {
 		if (newPeriod) {
 			const [year, month, week, period] = newPeriod;
 
-			this._router.navigate([], {
-				relativeTo: this._route,
-				queryParamsHandling: 'merge',
-				queryParams: { year, month, week, period },
-				replaceUrl: true,
-			});
+			this._setQueryParams({ year, month, week, period });
 		}
 	}
 
@@ -427,5 +377,14 @@ export class HomeComponent {
 		});
 
 		return periodParts as any;
+	}
+
+	private _setQueryParams(queryParams: Params) {
+		return this._router.navigate([], {
+			relativeTo: this._route,
+			queryParamsHandling: 'merge',
+			queryParams,
+			replaceUrl: true,
+		});
 	}
 }
