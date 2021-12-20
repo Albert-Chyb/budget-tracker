@@ -28,12 +28,19 @@ export class CategorizedExpensesChartComponent
 		responsive: true,
 	};
 
-	@Input('categories') categories: ICategory[];
-
-	ngOnInit() {
+	private _categories: ICategory[];
+	@Input('categories')
+	public set categories(value: ICategory[]) {
+		this._categories = value;
 		this.setLabelConverter(
 			new CategorizedExpensesChartLabelConverter(this.categories)
 		);
+	}
+	public get categories(): ICategory[] {
+		return this._categories;
+	}
+
+	ngOnInit() {
 		this.addDataConverter(new CategorizedExpensesChartDataConverter('Wydatki'));
 	}
 }

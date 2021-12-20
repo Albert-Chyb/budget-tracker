@@ -19,14 +19,13 @@ export class CategorizedExpensesChartLabelConverter extends LabelConverter {
 
 export class CategorizedExpensesChartDataConverter extends DataConverter<TWalletCategorizedStatistics> {
 	convert(data: TWalletCategorizedStatistics): { [label: string]: number } {
-		const convertedData = Object.entries(data).reduce(
-			(dataset, [categoryId, categoryStatistics]) => {
+		const convertedData = Object.entries(data)
+			.filter(([, value]) => value.expenses > 0)
+			.reduce((dataset, [categoryId, categoryStatistics]) => {
 				dataset[categoryId] = categoryStatistics.expenses;
 
 				return dataset;
-			},
-			{} as any
-		);
+			}, {} as any);
 
 		return convertedData;
 	}
