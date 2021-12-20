@@ -3,6 +3,7 @@ import {
 	AngularFirestoreCollection,
 	AngularFirestoreDocument,
 	DocumentData,
+	QueryFn,
 } from '@angular/fire/firestore';
 import firebase from 'firebase';
 import { from, Observable } from 'rxjs';
@@ -55,6 +56,8 @@ export interface Read<T = unknown> {
 export interface List<T = unknown> {
 	/** Reads all documents from the database. */
 	list(): Observable<T[]>;
+
+	query(setQueriesFn: QueryFn): Observable<T[]>;
 }
 
 /**
@@ -101,7 +104,7 @@ export class FirestoreCollection {
 	protected collection$: Observable<AngularFirestoreCollection<unknown>>;
 
 	constructor(
-		private readonly _afStore: AngularFirestore,
+		protected readonly _afStore: AngularFirestore,
 		private readonly _path$: Observable<string>,
 		private readonly _converter: FirestoreDataConverter<unknown> = new FirestoreConverter()
 	) {
@@ -168,6 +171,19 @@ export function ListMixin<TBase extends Constructor<FirestoreCollection>>(
 	return class extends Base implements List<unknown> {
 		list(): Observable<unknown[]> {
 			return this.collection$.pipe(switchMap(coll => coll.valueChanges()));
+		}
+
+		query(setQueriesFn: QueryFn): Observable<unknown[]> {
+			return this.collection$.pipe(
+				switchMap(coll => {
+					const queriedCollection = this._afStore.collection(
+						coll.ref,
+						setQueriesFn
+					);
+
+					return queriedCollection.valueChanges();
+				})
+			);
 		}
 	};
 }

@@ -148,8 +148,10 @@
 				</mat-card-header>
 				<mat-card-content>
 					<transactions-table
-						[transactions]="DUMMY_TRANSACTIONS"
-						[maxCount]="8"
+						[transactions]="data.transactions"
+						[maxCount]="maxTransactionsCount"
+						[categories]="data.categories"
+						[wallets]="data.wallets"
 					></transactions-table>
 				</mat-card-content>
 			</mat-card>

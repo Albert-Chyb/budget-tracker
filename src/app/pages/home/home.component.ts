@@ -7,7 +7,6 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
 import { compareArrays } from 'src/app/common/helpers/compareArrays';
-import { ITransaction } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
 import { WalletStatistics } from 'src/app/common/models/wallet-statistics';
 import {
@@ -22,6 +21,7 @@ import {
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
+import { TransactionsService } from 'src/app/services/transactions/transactions.service';
 import { WalletsStatisticsService } from 'src/app/services/wallets-statistics/wallets-statistics.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
 import {
@@ -34,123 +34,9 @@ import {
 /*
  * The dialogs probably shouldn't call for data every time they are opened. Get data in this component and pass it to a dialog with injector.
  * Adjust charts theme to the dark background.
- * Make a class for the statistics object.
  * Filter categories that contains no expenses in pie chart.
- * Change period picker value to an object
- * Integrate this component with backend.
  * Implement comparison with the last period (in a year scope).
  */
-
-const DUMMY_TRANSACTIONS: ITransaction[] = [
-	{
-		amount: 23.3,
-		type: 'expense',
-		category: 'Jedzenie',
-		wallet: 'Konto bankowe',
-		date: new Date(2021, 11, 1),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 52.3,
-		type: 'expense',
-		category: 'Imprezy',
-		wallet: 'Konto bankowe',
-		date: new Date(2021, 11, 2),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 12.3,
-		type: 'expense',
-		category: 'Transport',
-		wallet: 'Portfel',
-		date: new Date(2021, 11, 3),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 50,
-		type: 'income',
-		category: 'Kieszonkowe',
-		wallet: 'Konto bankowe',
-		date: new Date(2021, 11, 4),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 2300,
-		type: 'income',
-		category: 'Pensja',
-		wallet: 'Konto oszczędnościowe',
-		date: new Date(2021, 11, 5),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 23.3,
-		type: 'expense',
-		category: 'Inne',
-		wallet: 'Konto bankowe',
-		date: new Date(2021, 11, 6),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 23.3,
-		type: 'expense',
-		category: 'Jedzenie',
-		wallet: 'Konto bankowe',
-		date: new Date(2021, 11, 1),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 52.3,
-		type: 'expense',
-		category: 'Imprezy',
-		wallet: 'Konto bankowe',
-		date: new Date(2021, 11, 2),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 12.3,
-		type: 'expense',
-		category: 'Transport',
-		wallet: 'Portfel',
-		date: new Date(2021, 11, 3),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 50,
-		type: 'income',
-		category: 'Kieszonkowe',
-		wallet: 'Konto bankowe',
-		date: new Date(2021, 11, 4),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 2300,
-		type: 'income',
-		category: 'Pensja',
-		wallet: 'Konto oszczędnościowe',
-		date: new Date(2021, 11, 5),
-		description: '',
-		id: 'aslffsdg',
-	},
-	{
-		amount: 23.3,
-		type: 'expense',
-		category: 'Inne',
-		wallet: 'Konto bankowe',
-		date: new Date(2021, 11, 6),
-		description: '',
-		id: 'aslffsdg',
-	},
-];
 
 @Component({
 	templateUrl: './home.component.html',
@@ -164,6 +50,7 @@ export class HomeComponent {
 		private readonly _mainSidenav: MainSidenavService,
 		private readonly _walletStatistics: WalletsStatisticsService,
 		private readonly _wallets: WalletsService,
+		private readonly _transactions: TransactionsService,
 		private readonly _categories: CategoriesService,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
@@ -173,6 +60,8 @@ export class HomeComponent {
 	readonly cols = 12;
 	readonly rowHeightRem = 1;
 	readonly gutterSizeRem = 0.5;
+
+	readonly maxTransactionsCount = 8;
 
 	/** Emits whenever the wallet changes */
 	readonly selectedWallet$: Observable<TWalletPickerValue> =
@@ -246,16 +135,17 @@ export class HomeComponent {
 		this._wallets.list(),
 		this._categories.list(),
 		this._statistics$,
+		this._transactions.query(queries =>
+			queries.limit(this.maxTransactionsCount).orderBy('date', 'desc')
+		),
 	]).pipe(
-		map(([wallets, categories, statistics]) => ({
+		map(([wallets, categories, statistics, transactions]) => ({
 			wallets,
 			categories,
 			statistics,
+			transactions,
 		}))
 	);
-
-	// TODO: Remove this
-	readonly DUMMY_TRANSACTIONS = DUMMY_TRANSACTIONS;
 
 	private readonly _layouts = new Map([
 		['(max-width: 374.98px)', xSmallLayout],
