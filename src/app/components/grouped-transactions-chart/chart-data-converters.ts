@@ -84,7 +84,7 @@ export class WeekDayLabelConverter extends LabelConverter {
 
 export class WeekLabelConverter extends LabelConverter {
 	convert(key: string): string {
-		return `Tydzień ${key}`;
+		return `Tydzień ${+key + 1}`;
 	}
 }
 
