@@ -24,7 +24,7 @@
 	</button>
 </div>
 
-<ng-container *ngIf="data$ | async as data">
+<ng-container *ngIf="data$ | loading | async as data">
 	<mat-grid-list
 		*ngIf="layout$ | async as layout"
 		[cols]="cols"
