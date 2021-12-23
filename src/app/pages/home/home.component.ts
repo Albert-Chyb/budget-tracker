@@ -37,8 +37,8 @@ import {
 /*
  * The dialogs probably shouldn't call for data every time they are opened. Get data in this component and pass it to a dialog with injector.
  * Adjust charts theme to the dark background.
- * Filter categories that contains no expenses in pie chart.
  * Implement comparison with the last period (in a year scope).
+ * When user clicks on bar chart a period, the dashboard should switch to that period. (it is a little time saver)
  */
 
 @Component({
@@ -110,6 +110,7 @@ export class HomeComponent {
 		}),
 		switchMap(statistics =>
 			this.selectedPeriod$.pipe(
+				distinctUntilChanged(([oldYear], [newYear]) => oldYear !== newYear),
 				map(([year, month, week, period]) => {
 					let periodStatistics: WalletStatistics;
 
