@@ -7,7 +7,7 @@ import {
 import { ChartOptions } from 'chart.js';
 import { ICategory } from 'src/app/common/interfaces/category';
 import { PieChart } from 'src/app/common/models/chart-base';
-import { TWalletCategorizedStatistics } from '../../common/interfaces/wallet-statistics';
+import { WalletCategorizedStatistics } from 'src/app/common/models/wallet-statistics';
 import {
 	CategorizedExpensesChartDataConverter,
 	CategorizedExpensesChartLabelConverter,
@@ -20,7 +20,7 @@ import {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategorizedExpensesChartComponent
-	extends PieChart<TWalletCategorizedStatistics>
+	extends PieChart<WalletCategorizedStatistics>
 	implements OnInit
 {
 	readonly chartOptions: ChartOptions = {

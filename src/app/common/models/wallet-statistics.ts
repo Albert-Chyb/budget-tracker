@@ -1,6 +1,7 @@
 import { firstDayInMonth, numberOfDaysInMonth } from '../helpers/date';
 import {
 	IWalletPeriodStatistics,
+	IWalletStatisticsAggregatedFields,
 	TWalletCategorizedStatistics,
 } from '../interfaces/wallet-statistics';
 
@@ -15,12 +16,69 @@ const EMPTY_PERIOD_STATISTICS: IWalletPeriodStatistics = {
 	},
 };
 
+export class WalletCategorizedStatistics {
+	constructor(
+		private readonly _rawCategorizedStatistics: TWalletCategorizedStatistics
+	) {}
+
+	category(id: string) {
+		if (id in this._rawCategorizedStatistics) {
+			return new WalletCategoryStatistics(
+				id,
+				this._rawCategorizedStatistics[id]
+			);
+		} else {
+			throw new Error('No category with given id.');
+		}
+	}
+
+	*[Symbol.iterator]() {
+		for (const categoryId in this._rawCategorizedStatistics) {
+			if (
+				Object.prototype.hasOwnProperty.call(
+					this._rawCategorizedStatistics,
+					categoryId
+				)
+			) {
+				yield this.category(categoryId);
+			}
+		}
+	}
+}
+
+export class WalletCategoryStatistics {
+	constructor(
+		private readonly _id: string,
+		private readonly _rawCategoryStatistics: IWalletStatisticsAggregatedFields
+	) {}
+
+	get expenses(): number {
+		return this._rawCategoryStatistics.expenses;
+	}
+
+	get income(): number {
+		return this._rawCategoryStatistics.income;
+	}
+
+	get difference(): number {
+		return this.income - this.expenses;
+	}
+
+	get id(): string {
+		return this._id;
+	}
+}
+
 export abstract class WalletStatistics {
 	constructor(rawStatistics: IWalletPeriodStatistics | null) {
 		if (rawStatistics) {
 			this._rawStatistics = rawStatistics;
 			this.hasTransactions = false;
 		}
+
+		this.categories = new WalletCategorizedStatistics(
+			this._rawStatistics.categories
+		);
 	}
 
 	/** Base statistics object that is in use. */
@@ -44,6 +102,8 @@ export abstract class WalletStatistics {
 	/** If any transactions are included in the period. */
 	hasTransactions = true;
 
+	categories: WalletCategorizedStatistics;
+
 	get income(): number {
 		return this._rawStatistics.income;
 	}
@@ -54,14 +114,6 @@ export abstract class WalletStatistics {
 
 	get difference(): number {
 		return this.income - this.expenses;
-	}
-
-	get categories(): TWalletCategorizedStatistics {
-		return this._rawStatistics.categories;
-	}
-
-	get raw() {
-		return this._rawStatistics;
 	}
 
 	get date() {
