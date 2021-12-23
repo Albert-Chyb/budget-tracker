@@ -8,7 +8,10 @@ import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
 import { compareArrays } from 'src/app/common/helpers/compareArrays';
 import { IWallet } from 'src/app/common/interfaces/wallet';
-import { WalletStatistics } from 'src/app/common/models/wallet-statistics';
+import {
+	WalletStatistics,
+	WalletYearStatistics,
+} from 'src/app/common/models/wallet-statistics';
 import {
 	PeriodPickerComponent,
 	TPeriod,
@@ -93,7 +96,7 @@ export class HomeComponent {
 	]).pipe(
 		switchMap(([period, wallet]) => {
 			const [year] = period;
-			let observable$: Observable<WalletStatistics>;
+			let observable$: Observable<WalletYearStatistics>;
 
 			if (wallet === 'all') {
 				// We want to retrieve statistic for a year

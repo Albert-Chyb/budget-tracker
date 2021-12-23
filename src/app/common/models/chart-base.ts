@@ -1,7 +1,7 @@
 import { Directive, Input } from '@angular/core';
 import { ChartDataset, ChartType } from 'chart.js';
 
-type TChartData = { [unconvertedLabel: string]: number };
+export type TChartData = { [unconvertedLabel: string]: number };
 type TChartConfig<C extends ChartType> = Omit<
 	ChartDataset<C, TChartData>,
 	'data' | 'label'

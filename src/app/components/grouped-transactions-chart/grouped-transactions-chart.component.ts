@@ -1,60 +1,27 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	Input,
+	OnInit,
+} from '@angular/core';
 import { Constructor } from '@angular/material/core/common-behaviors/constructor';
 import { ChartOptions } from 'chart.js';
-import { IWalletPeriodStatistics } from 'src/app/common/interfaces/wallet-statistics';
+import { Chart, LabelConverter } from 'src/app/common/models/chart-base';
+import { WalletStatistics } from 'src/app/common/models/wallet-statistics';
 import {
-	Chart,
-	DataConverter,
-	LabelConverter,
-} from 'src/app/common/models/chart-base';
-import {
-	DailyExpensesDataConverter,
-	DailyIncomeDataConverter,
 	MonthLabelConverter,
-	MonthlyExpensesDataConverter,
-	MonthlyIncomeDataConverter,
+	StatisticsDataConverter,
 	WeekDayLabelConverter,
 	WeekLabelConverter,
-	WeeklyExpensesDataConverter,
-	WeeklyIncomeDataConverter,
 } from './chart-data-converters';
 
 type TPeriod = 'year' | 'month' | 'week';
-type ConverterPair = [
-	Constructor<LabelConverter>,
-	Constructor<DataConverter<IWalletPeriodStatistics>>,
-	Constructor<DataConverter<IWalletPeriodStatistics>>
-];
+type ConverterPair = Constructor<LabelConverter>;
 
-/*
-!	Please note the order of the converters. First one is for labels, 
-!	second one is for expenses statistics and the third one is for income statistics.
-*/
-const CHART_CONVERTERS_PARIS = new Map<TPeriod, ConverterPair>([
-	[
-		'year',
-		[
-			MonthLabelConverter,
-			MonthlyExpensesDataConverter,
-			MonthlyIncomeDataConverter,
-		],
-	],
-	[
-		'month',
-		[
-			WeekLabelConverter,
-			WeeklyExpensesDataConverter,
-			WeeklyIncomeDataConverter,
-		],
-	],
-	[
-		'week',
-		[
-			WeekDayLabelConverter,
-			DailyExpensesDataConverter,
-			DailyIncomeDataConverter,
-		],
-	],
+const CHART_LABEL_CONVERTERS = new Map<TPeriod, ConverterPair>([
+	['year', MonthLabelConverter],
+	['month', WeekLabelConverter],
+	['week', WeekDayLabelConverter],
 ]);
 
 @Component({
@@ -63,10 +30,10 @@ const CHART_CONVERTERS_PARIS = new Map<TPeriod, ConverterPair>([
 	styleUrls: ['./grouped-transactions-chart.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GroupedTransactionsChartComponent extends Chart<
-	IWalletPeriodStatistics,
-	'bar'
-> {
+export class GroupedTransactionsChartComponent
+	extends Chart<WalletStatistics, 'bar'>
+	implements OnInit
+{
 	readonly chartConfig: ChartOptions<'bar'> = {
 		maintainAspectRatio: false,
 		responsive: true,
@@ -78,24 +45,27 @@ export class GroupedTransactionsChartComponent extends Chart<
 	};
 	private _period: TPeriod;
 
+	ngOnInit(): void {
+		this.addDataConverter(
+			new StatisticsDataConverter('expenses'),
+			new StatisticsDataConverter('income')
+		);
+	}
+
 	@Input('period')
 	set period(period: TPeriod) {
 		this._period = period;
-		this.removeAllDataConverters();
-
-		const [LabelConverter, ExpensesConverter, IncomeConverter] =
-			this._retrieveConverters(period);
+		const LabelConverter = this._retrieveLabelConverter(period);
 
 		this.setLabelConverter(new LabelConverter());
-		this.addDataConverter(new ExpensesConverter(), new IncomeConverter());
 	}
 	get period() {
 		return this._period;
 	}
 
-	private _retrieveConverters(period: TPeriod) {
-		if (CHART_CONVERTERS_PARIS.has(period)) {
-			return CHART_CONVERTERS_PARIS.get(period);
+	private _retrieveLabelConverter(period: TPeriod) {
+		if (CHART_LABEL_CONVERTERS.has(period)) {
+			return CHART_LABEL_CONVERTERS.get(period);
 		} else {
 			throw new Error(`Unsupported period - (${period})`);
 		}
