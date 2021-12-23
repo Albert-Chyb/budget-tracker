@@ -4,7 +4,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
+import {
+	distinctUntilChanged,
+	first,
+	map,
+	shareReplay,
+	switchMap,
+} from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
 import { compareArrays } from 'src/app/common/helpers/compareArrays';
 import { IWallet } from 'src/app/common/interfaces/wallet';
@@ -18,6 +24,7 @@ import {
 	TPeriodPickerValue,
 } from 'src/app/components/period-picker/period-picker.component';
 import {
+	IWalletPickerInjectorData,
 	TWalletPickerValue,
 	WalletPickerComponent,
 } from 'src/app/components/wallet-picker/wallet-picker.component';
@@ -35,7 +42,6 @@ import {
 } from './layouts';
 
 /*
- * The dialogs probably shouldn't call for data every time they are opened. Get data in this component and pass it to a dialog with injector.
  * Adjust charts theme to the dark background.
  * Implement comparison with the last period (in a year scope).
  * When user clicks on bar chart a period, the dashboard should switch to that period. (it is a little time saver)
@@ -59,6 +65,10 @@ export class HomeComponent {
 		private readonly _router: Router,
 		private readonly _loading: LoadingService
 	) {}
+
+	private readonly _wallets$: Observable<IWallet[]> = this._wallets
+		.list()
+		.pipe(shareReplay());
 
 	readonly cols = 12;
 	readonly rowHeightRem = 1;
@@ -136,7 +146,7 @@ export class HomeComponent {
 
 	/**	The data source for the template */
 	readonly data$ = combineLatest([
-		this._wallets.list(),
+		this._wallets$,
 		this._categories.list(),
 		this._statistics$,
 		this._transactions.query(queries =>
@@ -229,9 +239,12 @@ export class HomeComponent {
 	private _openWalletPicker(): Promise<TWalletPickerValue> {
 		return this._openPicker<
 			WalletPickerComponent,
-			TWalletPickerValue,
+			IWalletPickerInjectorData,
 			TWalletPickerValue
-		>(WalletPickerComponent, this.selectedWallet);
+		>(WalletPickerComponent, {
+			value: this.selectedWallet,
+			wallets$: this._wallets$,
+		});
 	}
 
 	private _openPeriodPicker(): Promise<TPeriodPickerValue> {
