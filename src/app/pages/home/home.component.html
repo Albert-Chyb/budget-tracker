@@ -1,30 +1,31 @@
-<div class="header-with-actions">
-	<h1>Statystyki</h1>
-
-	<div class="spacer"></div>
-
-	<button
-		mat-icon-button
-		color="accent"
-		aria-label="Otwórz dialog do zmiany okresu"
-		matTooltip="Zmień okres"
-		(click)="changePeriod()"
-	>
-		<mat-icon>edit_calendar</mat-icon>
-	</button>
-
-	<button
-		mat-icon-button
-		color="accent"
-		aria-label="Otwórz dialog do zmiany portfela"
-		matTooltip="Zmień portfel"
-		(click)="changeWallet()"
-	>
-		<mat-icon>account_balance_wallet</mat-icon>
-	</button>
-</div>
-
 <ng-container *ngIf="data$ | loading | async as data">
+	<div class="header-with-actions">
+		<h1>Statystyki</h1>
+
+		<div class="spacer"></div>
+
+		<button
+			mat-icon-button
+			color="accent"
+			aria-label="Otwórz dialog do zmiany okresu"
+			matTooltip="Zmień okres"
+			(click)="changePeriod()"
+		>
+			<mat-icon>edit_calendar</mat-icon>
+		</button>
+
+		<button
+			[disabled]="data.wallets.length <= 1"
+			mat-icon-button
+			color="accent"
+			aria-label="Otwórz dialog do zmiany portfela"
+			matTooltip="Zmień portfel"
+			(click)="changeWallet()"
+		>
+			<mat-icon>account_balance_wallet</mat-icon>
+		</button>
+	</div>
+
 	<mat-grid-list
 		*ngIf="layout$ | async as layout"
 		[cols]="cols"
