@@ -39,3 +39,11 @@ export function endingOfWeek(
 export function addDays(date: Date, days: number): Date {
 	return new Date(date.setDate(date.getDate() + days));
 }
+
+export function numberOfWeeksInMonth(year: number, monthIndex: number): number {
+	return Math.ceil(
+		(numberOfDaysInMonth(year, monthIndex) +
+			firstDayInMonth(year, monthIndex)) /
+			7
+	);
+}

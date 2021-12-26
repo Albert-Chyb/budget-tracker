@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { WalletYearStatistics } from 'src/app/common/models/wallet-statistics';
 import { WalletStatisticsConverter } from 'src/app/common/models/wallets-statistics-converter';
@@ -41,5 +41,14 @@ export class WalletsStatisticsService {
 			),
 			map(statistics => new WalletYearStatistics(statistics, year))
 		);
+	}
+
+	/**
+	 * Gets years for which statistics exists in the database.
+	 *
+	 * Not implemented yet. For now it returns static array of years.
+	 */
+	availableYears(): Observable<number[]> {
+		return of([2020, 2021, 2022, 2023]);
 	}
 }

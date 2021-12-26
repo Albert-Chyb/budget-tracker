@@ -21,6 +21,7 @@ import {
 import {
 	PeriodPickerComponent,
 	TPeriod,
+	TPeriodPickerInjectorData,
 	TPeriodPickerValue,
 } from 'src/app/components/period-picker/period-picker.component';
 import {
@@ -68,6 +69,10 @@ export class HomeComponent {
 
 	private readonly _wallets$: Observable<IWallet[]> = this._wallets
 		.list()
+		.pipe(shareReplay());
+
+	private readonly _years$ = this._walletStatistics
+		.availableYears()
 		.pipe(shareReplay());
 
 	readonly cols = 12;
@@ -152,12 +157,14 @@ export class HomeComponent {
 		this._transactions.query(queries =>
 			queries.limit(this.maxTransactionsCount).orderBy('date', 'desc')
 		),
+		this._years$,
 	]).pipe(
-		map(([wallets, categories, statistics, transactions]) => ({
+		map(([wallets, categories, statistics, transactions, years]) => ({
 			wallets,
 			categories,
 			statistics,
 			transactions,
+			years,
 		}))
 	);
 
@@ -250,12 +257,12 @@ export class HomeComponent {
 	private _openPeriodPicker(): Promise<TPeriodPickerValue> {
 		return this._openPicker<
 			PeriodPickerComponent,
-			TPeriodPickerValue,
+			TPeriodPickerInjectorData,
 			TPeriodPickerValue
-		>(PeriodPickerComponent, [
-			...this.selectedPeriodParts,
-			this.selectedPeriod,
-		]);
+		>(PeriodPickerComponent, {
+			value: [...this.selectedPeriodParts, this.selectedPeriod],
+			years$: this._years$,
+		});
 	}
 
 	private _openPicker<DialogComponent, InjectorData, CloseValue>(
