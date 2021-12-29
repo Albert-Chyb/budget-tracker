@@ -3,14 +3,19 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { numberOfWeeksInMonth } from 'src/app/common/helpers/date';
 
-export type TPeriod = 'year' | 'month' | 'week';
+export type TPeriodName = 'year' | 'month' | 'week';
+
 export type TPeriodPickerInjectorData = {
 	years$: Observable<number[]>;
 	value: TPeriodPickerValue;
 };
-export type TPeriodPickerValue =
-	| [number | null, number | null, number | null, TPeriod]
-	| null;
+
+export type TPeriodPickerValue = {
+	year: number;
+	month: number;
+	week: number;
+	periodName: TPeriodName;
+} | null;
 
 @Component({
 	templateUrl: './period-picker.component.html',
@@ -22,10 +27,10 @@ export class PeriodPickerComponent {
 		@Inject(MAT_DIALOG_DATA) private readonly _data: TPeriodPickerInjectorData
 	) {}
 
-	private _selectedPeriod: TPeriod = this._data.value[3] ?? 'year';
-	year: number = this._data.value[0];
-	month: number = this._data.value[1];
-	week: number = this._data.value[2];
+	private _selectedPeriod: TPeriodName = this._data.value.periodName ?? 'year';
+	year: number = this._data.value.year;
+	month: number = this._data.value.month;
+	week: number = this._data.value.week;
 
 	years$ = this._data.years$;
 
@@ -44,10 +49,10 @@ export class PeriodPickerComponent {
 		'Grudzień',
 	];
 
-	get selectedPeriod(): TPeriod {
+	get selectedPeriod(): TPeriodName {
 		return this._selectedPeriod;
 	}
-	set selectedPeriod(value: TPeriod) {
+	set selectedPeriod(value: TPeriodName) {
 		this._selectedPeriod = value;
 
 		switch (value) {
@@ -91,6 +96,12 @@ export class PeriodPickerComponent {
 	}
 
 	processValue(): TPeriodPickerValue {
-		return [this.year, this.month, this.week, this.selectedPeriod];
+		const value = {
+			year: this.year,
+			month: this.month,
+			week: this.week,
+			periodName: this.selectedPeriod,
+		};
+		return value;
 	}
 }

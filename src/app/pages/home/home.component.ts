@@ -12,7 +12,6 @@ import {
 	switchMap,
 } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
-import { compareArrays } from 'src/app/common/helpers/compareArrays';
 import { IWallet } from 'src/app/common/interfaces/wallet';
 import {
 	WalletStatistics,
@@ -20,7 +19,7 @@ import {
 } from 'src/app/common/models/wallet-statistics';
 import {
 	PeriodPickerComponent,
-	TPeriod,
+	TPeriodName,
 	TPeriodPickerInjectorData,
 	TPeriodPickerValue,
 } from 'src/app/components/period-picker/period-picker.component';
@@ -44,9 +43,11 @@ import {
 
 /*
  * Adjust charts theme to the dark background.
- * Implement comparison with the last period (in a year scope).
  * When user clicks on bar chart a period, the dashboard should switch to that period. (it is a little time saver)
- */
+ 
+ * Create a method that creates period picker value from query params.
+ * Create a function that compares 2 objects
+*/
 
 @Component({
 	templateUrl: './home.component.html',
@@ -92,25 +93,36 @@ export class HomeComponent {
 	readonly selectedPeriod$: Observable<TPeriodPickerValue> =
 		this._route.queryParamMap.pipe(
 			map(params => {
-				return [
-					...this._buildPeriodParts(params),
-					params.get('period') as TPeriod,
-				] as TPeriodPickerValue;
+				const [year, month, week] = this._buildPeriodDateParts(params);
+
+				return {
+					periodName: params.get('periodName') as TPeriodName,
+					year,
+					month,
+					week,
+				};
 			}),
-			distinctUntilChanged((oldPeriod, newPeriod) =>
-				compareArrays(oldPeriod, newPeriod)
-			)
+			distinctUntilChanged((oldPeriod, newPeriod) => {
+				return (
+					oldPeriod.year === newPeriod.year &&
+					oldPeriod.month === newPeriod.month &&
+					oldPeriod.week === newPeriod.week &&
+					oldPeriod.periodName === newPeriod.periodName
+				);
+			})
 		);
 
 	/** Emits whenever statistics object has changed */
 	private readonly _statistics$ = combineLatest([
 		this.selectedPeriod$.pipe(
-			distinctUntilChanged(([oldYear], [newYear]) => oldYear === newYear)
+			distinctUntilChanged(
+				({ year: oldYear }, { year: newYear }) => oldYear === newYear
+			)
 		),
 		this.selectedWallet$,
 	]).pipe(
 		switchMap(([period, wallet]) => {
-			const [year] = period;
+			const { year } = period;
 			let observable$: Observable<WalletYearStatistics>;
 
 			if (wallet === 'all') {
@@ -125,12 +137,14 @@ export class HomeComponent {
 		}),
 		switchMap(statistics =>
 			this.selectedPeriod$.pipe(
-				distinctUntilChanged(([oldYear], [newYear]) => oldYear !== newYear),
-				map(([year, month, week, period]) => {
+				distinctUntilChanged(
+					({ year: oldYear }, { year: newYear }) => oldYear !== newYear
+				),
+				map(({ month, week, periodName }) => {
 					let periodStatistics: WalletStatistics;
 					let prevPeriodStatistics: WalletStatistics;
 
-					switch (period) {
+					switch (periodName) {
 						case 'year':
 							periodStatistics = statistics;
 							break;
@@ -302,9 +316,9 @@ export class HomeComponent {
 		const newPeriod = await this._openPeriodPicker();
 
 		if (newPeriod) {
-			const [year, month, week, period] = newPeriod;
+			const { year, month, week, periodName } = newPeriod;
 
-			this._setQueryParams({ year, month, week, period });
+			this._setQueryParams({ year, month, week, periodName });
 		}
 	}
 
@@ -314,13 +328,13 @@ export class HomeComponent {
 	}
 
 	/** Currently selected period's name */
-	get selectedPeriod(): TPeriod {
-		return this._route.snapshot.queryParamMap.get('period') as any;
+	get selectedPeriod(): TPeriodName {
+		return this._route.snapshot.queryParamMap.get('periodName') as TPeriodName;
 	}
 
 	/** Currently selected period */
 	get selectedPeriodParts(): [number, number, number] {
-		return this._buildPeriodParts(this._route.snapshot.queryParamMap);
+		return this._buildPeriodDateParts(this._route.snapshot.queryParamMap);
 	}
 
 	private _openWalletPicker(): Promise<TWalletPickerValue> {
@@ -335,12 +349,19 @@ export class HomeComponent {
 	}
 
 	private _openPeriodPicker(): Promise<TPeriodPickerValue> {
+		const [year, month, week] = this.selectedPeriodParts;
+
 		return this._openPicker<
 			PeriodPickerComponent,
 			TPeriodPickerInjectorData,
 			TPeriodPickerValue
 		>(PeriodPickerComponent, {
-			value: [...this.selectedPeriodParts, this.selectedPeriod],
+			value: {
+				year,
+				month,
+				week,
+				periodName: this.selectedPeriod,
+			},
 			years$: this._years$,
 		});
 	}
@@ -359,10 +380,10 @@ export class HomeComponent {
 			.toPromise();
 	}
 
-	private _buildPeriodParts(params: ParamMap): [number, number, number] {
-		const paramsNames: TPeriod[] = ['year', 'month', 'week'];
+	private _buildPeriodDateParts(params: ParamMap): [number, number, number] {
+		const paramsNames: TPeriodName[] = ['year', 'month', 'week'];
 
-		const periodParts = paramsNames.map(paramName => {
+		const [year, month, week] = paramsNames.map(paramName => {
 			if (params.has(paramName)) {
 				return Number(params.get(paramName));
 			} else {
@@ -370,7 +391,7 @@ export class HomeComponent {
 			}
 		});
 
-		return periodParts as any;
+		return [year, month, week];
 	}
 
 	private _setQueryParams(queryParams: Params) {

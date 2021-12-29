@@ -28,7 +28,7 @@ const routes: Routes = [
 			name: 'Strona główna',
 			[DEFAULT_QUERY_PARAMETERS]: {
 				wallet: 'all',
-				period: 'year',
+				periodName: 'year',
 				year: new Date().getFullYear(),
 			},
 		},
