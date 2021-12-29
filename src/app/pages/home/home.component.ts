@@ -128,6 +128,7 @@ export class HomeComponent {
 				distinctUntilChanged(([oldYear], [newYear]) => oldYear !== newYear),
 				map(([year, month, week, period]) => {
 					let periodStatistics: WalletStatistics;
+					let prevPeriodStatistics: WalletStatistics;
 
 					switch (period) {
 						case 'year':
@@ -136,14 +137,28 @@ export class HomeComponent {
 
 						case 'month':
 							periodStatistics = statistics.getPeriod(month);
+
+							if (month > 0) {
+								prevPeriodStatistics = statistics.getPeriod(month - 1);
+							}
 							break;
 
 						case 'week':
 							periodStatistics = statistics.getPeriod(month).getPeriod(week);
+
+							if (week - 1 < 0) {
+								prevPeriodStatistics = statistics.getPeriod(
+									month - 1
+								).lastPeriod;
+							} else {
+								prevPeriodStatistics = statistics
+									.getPeriod(month)
+									.getPeriod(week - 1);
+							}
 							break;
 					}
 
-					return periodStatistics;
+					return { periodStatistics, prevPeriodStatistics };
 				})
 			)
 		)
@@ -162,7 +177,8 @@ export class HomeComponent {
 		map(([wallets, categories, statistics, transactions, years]) => ({
 			wallets,
 			categories,
-			statistics,
+			statistics: statistics.periodStatistics,
+			prevPeriodStatistics: statistics.prevPeriodStatistics,
 			transactions,
 			years,
 		}))
@@ -211,6 +227,58 @@ export class HomeComponent {
 		} else {
 			return wallets.find(wallet => wallet.id === this.selectedWallet).balance;
 		}
+	}
+
+	/**
+	 * Calculates percentage change.
+	 * @param newValue Current value
+	 * @param original Older value
+	 * @returns Percentage change
+	 */
+	percentageChange(newValue: number, original: number | null): number {
+		if (original === null) {
+			return null;
+		}
+
+		const delta = newValue - original;
+
+		return original === 0 ? 0 : (delta / original) * 100;
+	}
+
+	/**
+	 * Formats number as a percentage. Appends the number sign and '%' sign.
+	 * @param number Number to format
+	 */
+	formatPercentageChange(number: number): string {
+		let result: string = String(Math.trunc(number));
+
+		if (Math.sign(number) === 1) {
+			result = `+${result}`;
+		} else if (Math.sign(number) === 0) {
+			result = `+${result}`;
+		}
+
+		return `${result}%`;
+	}
+
+	/**
+	 * Checks if the new value increased, decreased or is the same.
+	 * @param newValue Current value
+	 * @param original Older value
+	 * @returns CSS class name
+	 */
+	percentageChangeType(newValue: number, original: number) {
+		let type: 'increase' | 'decrease' | 'no-change';
+
+		if (newValue === original || original === 0) {
+			type === 'no-change';
+		} else if (newValue > original) {
+			type = 'increase';
+		} else {
+			type = 'decrease';
+		}
+
+		return type;
 	}
 
 	async changeWallet() {

@@ -36,3 +36,16 @@
 		width: 100%;
 	}
 }
+
+.decrease-is-better {
+	--decrease-color: green;
+	--increase-color: red;
+}
+
+.decrease {
+	color: var(--decrease-color, red);
+}
+
+.increase {
+	color: var(--increase-color, green);
+}

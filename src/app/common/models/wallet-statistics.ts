@@ -120,6 +120,10 @@ export abstract class WalletStatistics {
 		return this.periodParts;
 	}
 
+	get lastPeriod() {
+		return this.getPeriod(this.length - 1);
+	}
+
 	/** Returns a sub-period. */
 	abstract getPeriod(index: number): WalletStatistics;
 
@@ -143,6 +147,7 @@ export class WalletYearStatistics extends WalletStatistics {
 
 		this.periodParts = [year, null, null, null];
 	}
+
 	length = 12;
 
 	getPeriod(month: number) {

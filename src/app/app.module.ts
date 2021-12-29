@@ -34,9 +34,11 @@ import { cluesDatasets } from './common/clues-datasets';
 import { GlobalErrorHandler } from './common/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
 import { AlertComponent } from './components/alert/alert.component';
+import { CategorizedExpensesChartComponent } from './components/categorized-expenses-chart/categorized-expenses-chart.component';
 import { ClueComponent } from './components/clue/clue.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
 import { GlobalFabComponent } from './components/global-fab/global-fab.component';
+import { GroupedTransactionsChartComponent } from './components/grouped-transactions-chart/grouped-transactions-chart.component';
 import { LoadingIndicatorComponent } from './components/loading-indicator/loading-indicator.component';
 import { MainNavbarComponent } from './components/main-navbar/main-navbar.component';
 import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
@@ -45,6 +47,7 @@ import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wal
 import { PeriodPickerComponent } from './components/period-picker/period-picker.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { TransactionsTableComponent } from './components/transactions-table/transactions-table.component';
 import { WalletPickerComponent } from './components/wallet-picker/wallet-picker.component';
 import { WalletComponent } from './components/wallet/wallet.component';
 import { BlackListValidatorDirective } from './directives/black-list-validator/black-list-validator.directive';
@@ -65,9 +68,6 @@ import { TransactionComponent } from './pages/transaction/transaction.component'
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
-import { GroupedTransactionsChartComponent } from './components/grouped-transactions-chart/grouped-transactions-chart.component';
-import { CategorizedExpensesChartComponent } from './components/categorized-expenses-chart/categorized-expenses-chart.component';
-import { TransactionsTableComponent } from './components/transactions-table/transactions-table.component';
 
 // TODO: Add Progressive Web App
 
@@ -146,9 +146,9 @@ const AppDateAdapterProvider: Provider = {
 
 		LoadingPipe,
 		PeriodPickerComponent,
-  GroupedTransactionsChartComponent,
-  CategorizedExpensesChartComponent,
-  TransactionsTableComponent,
+		GroupedTransactionsChartComponent,
+		CategorizedExpensesChartComponent,
+		TransactionsTableComponent,
 	],
 	imports: [
 		BrowserModule,

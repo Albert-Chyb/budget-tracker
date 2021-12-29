@@ -53,7 +53,30 @@
 			<mat-card>
 				<mat-card-header>
 					<h2 mat-card-title>Przychody</h2>
-					<p mat-card-subtitle>- 15% vs ostatni okres</p>
+					<p
+						mat-card-subtitle
+						*ngIf="data.prevPeriodStatistics; else noPrevIncome"
+						[ngClass]="
+							percentageChangeType(
+								data.statistics.income,
+								data.prevPeriodStatistics.income
+							)
+						"
+					>
+						{{
+							formatPercentageChange(
+								percentageChange(
+									data.statistics.income,
+									data.prevPeriodStatistics.income
+								)
+							)
+						}}
+						vs ostatni okres
+					</p>
+
+					<ng-template #noPrevIncome>
+						<p mat-card-subtitle>Przychody w wybranym okresie.</p>
+					</ng-template>
 				</mat-card-header>
 
 				<mat-card-content>
@@ -68,7 +91,31 @@
 			<mat-card>
 				<mat-card-header>
 					<h2 mat-card-title>Wydatki</h2>
-					<p mat-card-subtitle>+ 7% vs ostatni okres</p>
+					<p
+						mat-card-subtitle
+						*ngIf="data.prevPeriodStatistics; else noPrevExpenses"
+						class="decrease-is-better"
+						[ngClass]="
+							percentageChangeType(
+								data.statistics.expenses,
+								data.prevPeriodStatistics.expenses
+							)
+						"
+					>
+						{{
+							formatPercentageChange(
+								percentageChange(
+									data.statistics.expenses,
+									data.prevPeriodStatistics.expenses
+								)
+							)
+						}}
+						vs ostatni okres
+					</p>
+
+					<ng-template #noPrevExpenses>
+						<p mat-card-subtitle>Wydatki w wybranym okresie</p>
+					</ng-template>
 				</mat-card-header>
 
 				<mat-card-content>
