@@ -218,8 +218,15 @@ export class HomeComponent {
 		})
 	);
 
-	getTotalBalance(wallets: IWallet[]): number {
-		if (this.selectedWallet === 'all') {
+	/**
+	 * Calculates total balance in targeted wallets.
+	 * The target can be set to a single wallet or all of them.
+	 * @param wallets Array of wallets
+	 * @param target Targeted wallet's id or 'all' if all are targeted
+	 * @returns
+	 */
+	getTotalBalance(wallets: IWallet[], target: string | 'all'): number {
+		if (target === 'all') {
 			return wallets.reduce(
 				(totalAmount, wallet) => totalAmount + wallet.balance,
 				0
@@ -281,6 +288,7 @@ export class HomeComponent {
 		return type;
 	}
 
+	/** Changes currently selected wallet. */
 	async changeWallet() {
 		const selectedWallet = await this._openWalletPicker();
 
@@ -289,6 +297,7 @@ export class HomeComponent {
 		}
 	}
 
+	/** Changes currently selected period. */
 	async changePeriod() {
 		const newPeriod = await this._openPeriodPicker();
 
@@ -299,14 +308,17 @@ export class HomeComponent {
 		}
 	}
 
+	/** Currently selected wallet. */
 	get selectedWallet(): string {
 		return this._route.snapshot.queryParamMap.get('wallet');
 	}
 
+	/** Currently selected period's name */
 	get selectedPeriod(): TPeriod {
 		return this._route.snapshot.queryParamMap.get('period') as any;
 	}
 
+	/** Currently selected period */
 	get selectedPeriodParts(): [number, number, number] {
 		return this._buildPeriodParts(this._route.snapshot.queryParamMap);
 	}

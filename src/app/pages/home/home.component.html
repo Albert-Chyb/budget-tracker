@@ -43,7 +43,7 @@
 
 				<mat-card-content>
 					<p class="money-amount">
-						{{ getTotalBalance(data.wallets) | currency }}
+						{{ getTotalBalance(data.wallets, selectedWallet) | currency }}
 					</p>
 				</mat-card-content>
 			</mat-card>
