@@ -6,6 +6,7 @@ import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import {
 	distinctUntilChanged,
+	distinctUntilKeyChanged,
 	first,
 	map,
 	shareReplay,
@@ -17,6 +18,7 @@ import {
 	WalletStatistics,
 	WalletYearStatistics,
 } from 'src/app/common/models/wallet-statistics';
+import { distinctUntilKeysChanged } from 'src/app/common/rxjs-custom-operators/distinctUntilKeysChanged';
 import {
 	PeriodPickerComponent,
 	TPeriodName,
@@ -102,23 +104,12 @@ export class HomeComponent {
 					week,
 				};
 			}),
-			distinctUntilChanged((oldPeriod, newPeriod) => {
-				return (
-					oldPeriod.year === newPeriod.year &&
-					oldPeriod.month === newPeriod.month &&
-					oldPeriod.week === newPeriod.week &&
-					oldPeriod.periodName === newPeriod.periodName
-				);
-			})
+			distinctUntilKeysChanged(['year', 'month', 'week', 'periodName'])
 		);
 
 	/** Emits whenever statistics object has changed */
 	private readonly _statistics$ = combineLatest([
-		this.selectedPeriod$.pipe(
-			distinctUntilChanged(
-				({ year: oldYear }, { year: newYear }) => oldYear === newYear
-			)
-		),
+		this.selectedPeriod$.pipe(distinctUntilKeyChanged('year')),
 		this.selectedWallet$,
 	]).pipe(
 		switchMap(([period, wallet]) => {
