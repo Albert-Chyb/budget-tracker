@@ -51,6 +51,22 @@ import {
  * Create a function that compares 2 objects
 */
 
+enum QueryParamsKeys {
+	Year = 'year',
+	Month = 'month',
+	Week = 'week',
+	PeriodName = 'periodName',
+	Wallet = 'wallet',
+}
+
+interface PageQueryParams {
+	year: number;
+	month: number;
+	week: number;
+	periodName: TPeriodName;
+	wallet: string;
+}
+
 @Component({
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
@@ -87,7 +103,7 @@ export class HomeComponent {
 	/** Emits whenever the wallet changes */
 	readonly selectedWallet$: Observable<TWalletPickerValue> =
 		this._route.queryParamMap.pipe(
-			map(params => params.get('wallet')),
+			map(params => params.get(QueryParamsKeys.Wallet)),
 			distinctUntilChanged()
 		);
 
@@ -98,7 +114,7 @@ export class HomeComponent {
 				const [year, month, week] = this._buildPeriodDateParts(params);
 
 				return {
-					periodName: params.get('periodName') as TPeriodName,
+					periodName: params.get(QueryParamsKeys.PeriodName) as TPeriodName,
 					year,
 					month,
 					week,
@@ -126,37 +142,33 @@ export class HomeComponent {
 
 			return this._loading.add(observable$);
 		}),
-		switchMap(statistics =>
+		switchMap(yearStatistics =>
 			this.selectedPeriod$.pipe(
 				distinctUntilChanged(
 					({ year: oldYear }, { year: newYear }) => oldYear !== newYear
 				),
 				map(({ month, week, periodName }) => {
-					let periodStatistics: WalletStatistics;
+					const periodStatistics: WalletStatistics =
+						yearStatistics.getNestedPeriod(month, week);
+
 					let prevPeriodStatistics: WalletStatistics;
 
 					switch (periodName) {
-						case 'year':
-							periodStatistics = statistics;
-							break;
-
 						case 'month':
-							periodStatistics = statistics.getPeriod(month);
-
 							if (month > 0) {
-								prevPeriodStatistics = statistics.getPeriod(month - 1);
+								prevPeriodStatistics = yearStatistics.getPeriod(month - 1);
 							}
 							break;
 
 						case 'week':
-							periodStatistics = statistics.getPeriod(month).getPeriod(week);
-
 							if (week - 1 < 0) {
-								prevPeriodStatistics = statistics.getPeriod(
+								// If the previous week is outside of the month.
+								prevPeriodStatistics = yearStatistics.getPeriod(
 									month - 1
 								).lastPeriod;
 							} else {
-								prevPeriodStatistics = statistics
+								// If the previous week is within the month.
+								prevPeriodStatistics = yearStatistics
 									.getPeriod(month)
 									.getPeriod(week - 1);
 							}
@@ -315,12 +327,14 @@ export class HomeComponent {
 
 	/** Currently selected wallet. */
 	get selectedWallet(): string {
-		return this._route.snapshot.queryParamMap.get('wallet');
+		return this._route.snapshot.queryParamMap.get(QueryParamsKeys.Wallet);
 	}
 
 	/** Currently selected period's name */
 	get selectedPeriod(): TPeriodName {
-		return this._route.snapshot.queryParamMap.get('periodName') as TPeriodName;
+		return this._route.snapshot.queryParamMap.get(
+			QueryParamsKeys.PeriodName
+		) as TPeriodName;
 	}
 
 	/** Currently selected period */
@@ -372,7 +386,11 @@ export class HomeComponent {
 	}
 
 	private _buildPeriodDateParts(params: ParamMap): [number, number, number] {
-		const paramsNames: TPeriodName[] = ['year', 'month', 'week'];
+		const paramsNames: TPeriodName[] = [
+			QueryParamsKeys.Year,
+			QueryParamsKeys.Month,
+			QueryParamsKeys.Week,
+		];
 
 		const [year, month, week] = paramsNames.map(paramName => {
 			if (params.has(paramName)) {

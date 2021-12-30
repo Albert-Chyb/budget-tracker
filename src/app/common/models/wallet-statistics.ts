@@ -89,7 +89,7 @@ export abstract class WalletStatistics {
 	 * Information about the period date.
 	 * It includes year, month, week, and day in that order.
 	 */
-	protected periodParts: [number, number, number, number] = [
+	protected dateParts: [number, number, number, number] = [
 		null,
 		null,
 		null,
@@ -117,7 +117,7 @@ export abstract class WalletStatistics {
 	}
 
 	get date() {
-		return this.periodParts;
+		return this.dateParts;
 	}
 
 	get lastPeriod() {
@@ -126,6 +126,14 @@ export abstract class WalletStatistics {
 
 	/** Returns a sub-period. */
 	abstract getPeriod(index: number): WalletStatistics;
+
+	getNestedPeriod(...parts: number[]): WalletStatistics {
+		return parts
+			.filter(part => typeof part === 'number')
+			.reduce<WalletStatistics>((prevStatistics, part) => {
+				return prevStatistics.getPeriod(part);
+			}, this);
+	}
 
 	protected getRawPeriod(index: number): IWalletPeriodStatistics {
 		return (<any>this._rawStatistics)?.[String(index)];
@@ -145,7 +153,7 @@ export class WalletYearStatistics extends WalletStatistics {
 	) {
 		super(rawStatistics);
 
-		this.periodParts = [year, null, null, null];
+		this.dateParts = [year, null, null, null];
 	}
 
 	length = 12;
@@ -167,10 +175,10 @@ export class WalletMonthStatistics extends WalletStatistics {
 	) {
 		super(rawStatistics);
 
-		this.periodParts = [year, month, null, null];
+		this.dateParts = [year, month, null, null];
 	}
 
-	length = this._weekCount();
+	length = this._weeksCount();
 
 	getPeriod(week: number) {
 		return new WalletWeekStatistics(
@@ -181,7 +189,7 @@ export class WalletMonthStatistics extends WalletStatistics {
 		);
 	}
 
-	private _weekCount() {
+	private _weeksCount() {
 		const firstWeekDayIndex = firstDayInMonth(this.year, this.month);
 		const days = numberOfDaysInMonth(this.year, this.month);
 
@@ -198,7 +206,7 @@ export class WalletWeekStatistics extends WalletStatistics {
 	) {
 		super(rawStatistics);
 
-		this.periodParts = [year, month, week, null];
+		this.dateParts = [year, month, week, null];
 	}
 
 	length = 7;
@@ -224,7 +232,7 @@ export class WalletDayStatistics extends WalletStatistics {
 	) {
 		super(rawStatistics);
 
-		this.periodParts = [year, month, week, day];
+		this.dateParts = [year, month, week, day];
 	}
 
 	length = 0;
