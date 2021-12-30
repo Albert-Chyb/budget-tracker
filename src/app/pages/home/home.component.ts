@@ -30,6 +30,7 @@ import {
 	TWalletPickerValue,
 	WalletPickerComponent,
 } from 'src/app/components/wallet-picker/wallet-picker.component';
+import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
@@ -47,8 +48,7 @@ import {
  * Adjust charts theme to the dark background.
  * When user clicks on bar chart a period, the dashboard should switch to that period. (it is a little time saver)
  
- * Create a method that creates period picker value from query params.
- * Create a function that compares 2 objects
+ * Check out what's wrong with bar chart labels for '2021 April, 1st week'
 */
 
 enum QueryParamsKeys {
@@ -59,18 +59,16 @@ enum QueryParamsKeys {
 	Wallet = 'wallet',
 }
 
-interface PageQueryParams {
-	year: number;
-	month: number;
-	week: number;
-	periodName: TPeriodName;
-	wallet: string;
-}
-
 @Component({
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [
+		{
+			provide: DEFAULT_CLUE_NAME,
+			useValue: 'noWallets',
+		},
+	],
 })
 export class HomeComponent {
 	constructor(
