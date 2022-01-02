@@ -3,6 +3,8 @@ import {
 	ActivatedRoute,
 	ActivatedRouteSnapshot,
 	CanActivate,
+	ParamMap,
+	Params,
 	Router,
 	RouterStateSnapshot,
 } from '@angular/router';
@@ -23,17 +25,33 @@ export class DefaultQueryParametersGuard implements CanActivate {
 		state: RouterStateSnapshot
 	): boolean {
 		const routeData = routeSnap.data as any;
-		const queryParams = routeData[DEFAULT_QUERY_PARAMETERS];
+		const defaultParams: Params = routeData[DEFAULT_QUERY_PARAMETERS];
 
-		if (!state.url.includes('?')) {
+		if (!defaultParams) {
+			throw new Error('Default query parameters of this route are not set.');
+		}
+
+		if (
+			!this._allDefaultParamsPresent(routeSnap.queryParamMap, defaultParams)
+		) {
 			this._router.navigate([state.url], {
 				relativeTo: this._route,
-				queryParams,
+				queryParams: defaultParams,
 			});
 
 			return false;
 		}
 
 		return true;
+	}
+
+	/** Checks if all default params are present in the query param map. */
+	private _allDefaultParamsPresent(
+		routeQueryParams: ParamMap,
+		defaultParams: Params
+	): boolean {
+		return Object.keys(defaultParams).every(defaultKey =>
+			routeQueryParams.has(defaultKey)
+		);
 	}
 }
