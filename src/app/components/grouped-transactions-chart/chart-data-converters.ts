@@ -1,6 +1,10 @@
 import { formatDate } from '@angular/common';
 import { capitalize } from 'src/app/common/helpers/capitalize';
-import { addDays, beginningOfWeek } from 'src/app/common/helpers/date';
+import {
+	addDays,
+	beginningOfWeek,
+	firstDayInMonth,
+} from 'src/app/common/helpers/date';
 import { IWalletStatisticsAggregatedFields } from 'src/app/common/interfaces/wallet-statistics';
 import {
 	DataConverter,
@@ -35,7 +39,10 @@ export class WeekDayLabelConverter extends LabelConverter {
 
 		return capitalize(
 			formatDate(
-				addDays(beginningOfWeek(year, month, week), day),
+				addDays(
+					beginningOfWeek(year, month, week),
+					day - firstDayInMonth(year, month)
+				),
 				'cccc',
 				'pl-PL'
 			)
