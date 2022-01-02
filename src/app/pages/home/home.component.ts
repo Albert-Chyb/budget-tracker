@@ -47,9 +47,7 @@ import {
 /*
  * Adjust charts theme to the dark background.
  * When user clicks on bar chart a period, the dashboard should switch to that period. (it is a little time saver)
- 
- * Check out what's wrong with bar chart labels for '2021 April, 1st week'
-*/
+ */
 
 enum QueryParamsKeys {
 	Year = 'year',
