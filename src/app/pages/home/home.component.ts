@@ -1,6 +1,6 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ComponentType } from '@angular/cdk/portal';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
@@ -45,8 +45,7 @@ import {
 } from './layouts';
 
 /*
- * Adjust charts theme to the dark background.
- * When user clicks on bar chart a period, the dashboard should switch to that period. (it is a little time saver)
+ TODO: Adjust charts theme to the dark background.
  */
 
 enum QueryParamsKeys {
@@ -79,13 +78,14 @@ export class HomeComponent {
 		private readonly _categories: CategoriesService,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
-		private readonly _loading: LoadingService
+		private readonly _loading: LoadingService,
+		private readonly _ngZone: NgZone
 	) {}
 
 	private readonly _wallets$: Observable<IWallet[]> = this._wallets
 		.list()
 		.pipe(shareReplay());
-
+	// TODO: Subscribe to the _years$ observable in here, rather than subscribing to it in the data$ observable.
 	private readonly _years$ = this._walletStatistics
 		.availableYears()
 		.pipe(shareReplay());
@@ -299,6 +299,16 @@ export class HomeComponent {
 		}
 
 		return type;
+	}
+
+	onBarChartClick(statistics: WalletStatistics) {
+		if (statistics.name !== 'day') {
+			const [year, month, week] = statistics.date;
+
+			this._ngZone.run(() =>
+				this._setQueryParams({ year, month, week, periodName: statistics.name })
+			);
+		}
 	}
 
 	/** Changes currently selected wallet. */

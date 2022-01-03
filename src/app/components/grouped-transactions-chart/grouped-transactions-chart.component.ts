@@ -1,8 +1,10 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	EventEmitter,
 	Input,
 	OnInit,
+	Output,
 } from '@angular/core';
 import { Constructor } from '@angular/material/core/common-behaviors/constructor';
 import { ChartOptions } from 'chart.js';
@@ -34,6 +36,8 @@ export class GroupedTransactionsChartComponent
 	extends Chart<WalletStatistics, 'bar'>
 	implements OnInit
 {
+	@Output('onPeriodClick') onPeriodClick = new EventEmitter();
+
 	readonly chartConfig: ChartOptions<'bar'> = {
 		maintainAspectRatio: false,
 		responsive: true,
@@ -41,6 +45,21 @@ export class GroupedTransactionsChartComponent
 			bar: {
 				borderRadius: 3,
 			},
+		},
+		onClick: ($event, elements, chart) => {
+			const clickedElements = chart.getElementsAtEventForMode(
+				$event.native,
+				'index',
+				{ axis: 'x' },
+				false
+			);
+			const periodIndex = clickedElements[0]?.index;
+
+			if (periodIndex !== null && periodIndex !== undefined) {
+				const period = this.data.getPeriod(periodIndex);
+
+				period.hasTransactions && this.onPeriodClick.emit(period);
+			}
 		},
 	};
 	private _period: TPeriod;

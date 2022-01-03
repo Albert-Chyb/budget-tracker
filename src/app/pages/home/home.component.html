@@ -157,6 +157,7 @@
 								class="chart"
 								[data]="data.statistics"
 								[period]="selectedPeriod"
+								(onPeriodClick)="onBarChartClick($event)"
 							></grouped-transactions-chart>
 						</div>
 					</mat-card-content>

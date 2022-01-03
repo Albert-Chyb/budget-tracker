@@ -73,7 +73,7 @@ export abstract class WalletStatistics {
 	constructor(rawStatistics: IWalletPeriodStatistics | null) {
 		if (rawStatistics) {
 			this._rawStatistics = rawStatistics;
-			this.hasTransactions = false;
+			this.hasTransactions = true;
 		}
 
 		this.categories = new WalletCategorizedStatistics(
@@ -100,9 +100,11 @@ export abstract class WalletStatistics {
 	length = 0;
 
 	/** If any transactions are included in the period. */
-	hasTransactions = true;
+	hasTransactions = false;
 
 	categories: WalletCategorizedStatistics;
+
+	name: 'year' | 'month' | 'week' | 'day';
 
 	get income(): number {
 		return this._rawStatistics.income;
@@ -154,6 +156,7 @@ export class WalletYearStatistics extends WalletStatistics {
 		super(rawStatistics);
 
 		this.dateParts = [year, null, null, null];
+		this.name = 'year';
 	}
 
 	length = 12;
@@ -176,6 +179,7 @@ export class WalletMonthStatistics extends WalletStatistics {
 		super(rawStatistics);
 
 		this.dateParts = [year, month, null, null];
+		this.name = 'month';
 	}
 
 	length = this._weeksCount();
@@ -207,6 +211,7 @@ export class WalletWeekStatistics extends WalletStatistics {
 		super(rawStatistics);
 
 		this.dateParts = [year, month, week, null];
+		this.name = 'week';
 	}
 
 	length = 7;
@@ -233,6 +238,7 @@ export class WalletDayStatistics extends WalletStatistics {
 		super(rawStatistics);
 
 		this.dateParts = [year, month, week, day];
+		this.name = 'day';
 	}
 
 	length = 0;
