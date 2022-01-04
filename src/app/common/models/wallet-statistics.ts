@@ -70,7 +70,11 @@ export class WalletCategoryStatistics {
 }
 
 export abstract class WalletStatistics {
-	constructor(rawStatistics: IWalletPeriodStatistics | null) {
+	constructor(
+		rawStatistics: IWalletPeriodStatistics | null,
+		private _dateParts: [number, number, number, number],
+		public readonly name: 'year' | 'month' | 'week' | 'day'
+	) {
 		if (rawStatistics) {
 			this._rawStatistics = rawStatistics;
 			this.hasTransactions = true;
@@ -81,20 +85,11 @@ export abstract class WalletStatistics {
 		);
 	}
 
+	protected readonly _subPeriods: WalletStatistics[] = [];
+
 	/** Base statistics object that is in use. */
 	private readonly _rawStatistics: IWalletPeriodStatistics =
 		EMPTY_PERIOD_STATISTICS;
-
-	/**
-	 * Information about the period date.
-	 * It includes year, month, week, and day in that order.
-	 */
-	protected dateParts: [number, number, number, number] = [
-		null,
-		null,
-		null,
-		null,
-	];
 
 	/** How many periods this period is splitted into. */
 	length = 0;
@@ -103,8 +98,6 @@ export abstract class WalletStatistics {
 	hasTransactions = false;
 
 	categories: WalletCategorizedStatistics;
-
-	name: 'year' | 'month' | 'week' | 'day';
 
 	get income(): number {
 		return this._rawStatistics.income;
@@ -119,7 +112,7 @@ export abstract class WalletStatistics {
 	}
 
 	get date() {
-		return this.dateParts;
+		return this._dateParts;
 	}
 
 	get lastPeriod() {
@@ -127,7 +120,9 @@ export abstract class WalletStatistics {
 	}
 
 	/** Returns a sub-period. */
-	abstract getPeriod(index: number): WalletStatistics;
+	getPeriod(index: number): WalletStatistics {
+		return this._subPeriods[index];
+	}
 
 	getNestedPeriod(...parts: number[]): WalletStatistics {
 		return parts
@@ -149,53 +144,43 @@ export abstract class WalletStatistics {
 }
 
 export class WalletYearStatistics extends WalletStatistics {
-	constructor(
-		rawStatistics: IWalletPeriodStatistics,
-		private readonly year: number
-	) {
-		super(rawStatistics);
+	constructor(rawStatistics: IWalletPeriodStatistics, year: number) {
+		super(rawStatistics, [year, null, null, null], 'year');
 
-		this.dateParts = [year, null, null, null];
-		this.name = 'year';
+		for (let i = 0; i < this.length; i++) {
+			const rawStatistics = this.getRawPeriod(i);
+
+			this._subPeriods.push(new WalletMonthStatistics(rawStatistics, year, i));
+		}
 	}
 
 	length = 12;
-
-	getPeriod(month: number) {
-		return new WalletMonthStatistics(
-			this.getRawPeriod(month),
-			this.year,
-			month
-		);
-	}
 }
 
 export class WalletMonthStatistics extends WalletStatistics {
 	constructor(
 		rawStatistics: IWalletPeriodStatistics,
-		private readonly year: number,
-		private readonly month: number
+		year: number,
+		month: number
 	) {
-		super(rawStatistics);
+		super(rawStatistics, [year, month, null, null], 'month');
 
-		this.dateParts = [year, month, null, null];
-		this.name = 'month';
+		for (let i = 0; i < this.length; i++) {
+			const rawStatistics = this.getRawPeriod(i);
+
+			this._subPeriods.push(
+				new WalletWeekStatistics(rawStatistics, year, month, i)
+			);
+		}
 	}
 
 	length = this._weeksCount();
 
-	getPeriod(week: number) {
-		return new WalletWeekStatistics(
-			this.getRawPeriod(week),
-			this.year,
-			this.month,
-			week
-		);
-	}
-
 	private _weeksCount() {
-		const firstWeekDayIndex = firstDayInMonth(this.year, this.month);
-		const days = numberOfDaysInMonth(this.year, this.month);
+		const [year, month] = this.date;
+
+		const firstWeekDayIndex = firstDayInMonth(year, month);
+		const days = numberOfDaysInMonth(year, month);
 
 		return Math.ceil((days + firstWeekDayIndex) / 7);
 	}
@@ -204,47 +189,32 @@ export class WalletMonthStatistics extends WalletStatistics {
 export class WalletWeekStatistics extends WalletStatistics {
 	constructor(
 		rawStatistics: IWalletPeriodStatistics,
-		private readonly year: number,
-		private readonly month: number,
-		private readonly week: number
+		year: number,
+		month: number,
+		week: number
 	) {
-		super(rawStatistics);
+		super(rawStatistics, [year, month, week, null], 'week');
 
-		this.dateParts = [year, month, week, null];
-		this.name = 'week';
+		for (let i = 0; i < this.length; i++) {
+			const rawStatistics = this.getRawPeriod(i);
+
+			this._subPeriods.push(
+				new WalletDayStatistics(rawStatistics, year, month, week, i)
+			);
+		}
 	}
 
 	length = 7;
-
-	getPeriod(day: number) {
-		return new WalletDayStatistics(
-			this.getRawPeriod(day),
-			this.year,
-			this.month,
-			this.week,
-			day
-		);
-	}
 }
 
 export class WalletDayStatistics extends WalletStatistics {
 	constructor(
 		rawStatistics: IWalletPeriodStatistics,
-		private readonly year: number,
-		private readonly month: number,
-		private readonly week: number,
-		private readonly day: number
+		year: number,
+		month: number,
+		week: number,
+		day: number
 	) {
-		super(rawStatistics);
-
-		this.dateParts = [year, month, week, day];
-		this.name = 'day';
-	}
-
-	length = 0;
-
-	/** CAUTION ! The day is not splitted into smaller periods. */
-	getPeriod(index: number) {
-		return this;
+		super(rawStatistics, [year, month, week, day], 'day');
 	}
 }
