@@ -58,7 +58,9 @@ export class GroupedTransactionsChartComponent
 			if (periodIndex !== null && periodIndex !== undefined) {
 				const period = this.data.getPeriod(periodIndex);
 
-				period.hasTransactions && this.onPeriodClick.emit(period);
+				period.hasTransactions &&
+					period.name !== 'day' &&
+					this.onPeriodClick.emit(period);
 			}
 		},
 	};
