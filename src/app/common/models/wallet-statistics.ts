@@ -24,8 +24,6 @@ const PERIODS_NAMES: Readonly<['year', 'month', 'week', 'day']> = [
 	'day',
 ];
 
-type LengthGetterFn = (date: number[]) => number;
-
 export class WalletCategorizedStatistics {
 	constructor(
 		private readonly _rawCategorizedStatistics: TWalletCategorizedStatistics
@@ -85,19 +83,13 @@ export abstract class WalletStatistics {
 		public readonly index: number,
 		private readonly _parent: WalletStatistics | null,
 		SubPeriodConstructor: Constructor<WalletStatistics>,
-		lengthGetter: LengthGetterFn | number
+		public readonly length: number
 	) {
 		this._rawStatistics = rawStatistics ?? EMPTY_PERIOD_STATISTICS;
 
 		this.categories = new WalletCategorizedStatistics(
 			this._rawStatistics.categories
 		);
-
-		if (typeof lengthGetter === 'number') {
-			this.length = lengthGetter;
-		} else if (typeof lengthGetter === 'function') {
-			this.length = lengthGetter(this.date);
-		}
 
 		if (SubPeriodConstructor) {
 			for (let i = 0; i < this.length; i++) {
@@ -113,9 +105,6 @@ export abstract class WalletStatistics {
 
 	/** Base statistics object that is in use by this object instance. */
 	private readonly _rawStatistics: IWalletPeriodStatistics;
-
-	/** How many periods this period is splitted into. */
-	length = 0;
 
 	/** Statistics in categories of this period. */
 	categories: WalletCategorizedStatistics;
@@ -206,8 +195,12 @@ export class WalletMonthStatistics extends WalletStatistics {
 		parent: WalletYearStatistics,
 		month: number
 	) {
-		super(rawStatistics, month, parent, WalletWeekStatistics, ([year, month]) =>
-			Number(formatDate(new Date(year, month + 1, 0), 'W', 'pl-PL'))
+		super(
+			rawStatistics,
+			month,
+			parent,
+			WalletWeekStatistics,
+			Number(formatDate(new Date(parent.index, month + 1, 0), 'W', 'pl-PL'))
 		);
 	}
 }
