@@ -40,13 +40,11 @@ export class WeekDayLabelConverter extends LabelConverter {
 
 	convert(date: string): string {
 		const [year, month, week, day] = date.split('-').map(d => +d);
+		const offset = week === 0 ? firstDayInMonth(year, month) : 0;
 
 		return capitalize(
 			formatDate(
-				addDays(
-					beginningOfWeek(year, month, week),
-					day - firstDayInMonth(year, month)
-				),
+				addDays(beginningOfWeek(year, month, week), day - offset),
 				'cccc',
 				this._locale
 			)
