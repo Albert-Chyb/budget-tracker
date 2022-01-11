@@ -46,6 +46,7 @@ import {
 
 /*
  TODO: Adjust charts theme to the dark background.
+ TODO: Pass current locale from DI wherever formatDate() functions is used. 
  */
 
 enum QueryParamsKeys {
@@ -157,12 +158,12 @@ export class HomeComponent {
 							break;
 
 						case 'week':
-							if (week - 1 < 0) {
+							if (month > 0 && week - 1 < 0) {
 								// If the previous week is outside of the month.
 								prevPeriodStatistics = yearStatistics.getPeriod(
 									month - 1
 								).lastPeriod;
-							} else {
+							} else if (week > 0) {
 								// If the previous week is within the month.
 								prevPeriodStatistics = yearStatistics
 									.getPeriod(month)
