@@ -34,6 +34,10 @@ export class StatisticsDataConverter extends DataConverter<WalletStatistics> {
 }
 
 export class WeekDayLabelConverter extends LabelConverter {
+	constructor(private readonly _locale: string) {
+		super();
+	}
+
 	convert(date: string): string {
 		const [year, month, week, day] = date.split('-').map(d => +d);
 
@@ -44,13 +48,17 @@ export class WeekDayLabelConverter extends LabelConverter {
 					day - firstDayInMonth(year, month)
 				),
 				'cccc',
-				'pl-PL'
+				this._locale
 			)
 		);
 	}
 }
 
 export class WeekLabelConverter extends LabelConverter {
+	constructor(private readonly _locale: string) {
+		super();
+	}
+
 	convert(date: string): string {
 		const [, , week] = date.split('-').map(d => +d);
 
@@ -59,9 +67,15 @@ export class WeekLabelConverter extends LabelConverter {
 }
 
 export class MonthLabelConverter extends LabelConverter {
+	constructor(private readonly _locale: string) {
+		super();
+	}
+
 	convert(date: string): string {
 		const [year, month] = date.split('-').map(d => +d);
 
-		return capitalize(formatDate(new Date(year, month, 1), 'LLLL', 'pl-PL'));
+		return capitalize(
+			formatDate(new Date(year, month, 1), 'LLLL', this._locale)
+		);
 	}
 }

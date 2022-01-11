@@ -2,7 +2,9 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	EventEmitter,
+	Inject,
 	Input,
+	LOCALE_ID,
 	OnInit,
 	Output,
 } from '@angular/core';
@@ -36,6 +38,10 @@ export class GroupedTransactionsChartComponent
 	extends Chart<WalletStatistics, 'bar'>
 	implements OnInit
 {
+	constructor(@Inject(LOCALE_ID) private readonly _localeId: string) {
+		super();
+	}
+
 	@Output('onPeriodClick') onPeriodClick = new EventEmitter();
 
 	readonly chartConfig: ChartOptions<'bar'> = {
@@ -78,7 +84,7 @@ export class GroupedTransactionsChartComponent
 		this._period = period;
 		const LabelConverter = this._retrieveLabelConverter(period);
 
-		this.setLabelConverter(new LabelConverter());
+		this.setLabelConverter(new LabelConverter(this._localeId));
 	}
 	get period() {
 		return this._period;
