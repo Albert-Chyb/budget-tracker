@@ -1,9 +1,15 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { ComponentType } from '@angular/cdk/portal';
-import { ChangeDetectionStrategy, Component, NgZone } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	NgZone,
+	OnDestroy,
+	OnInit,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import {
 	distinctUntilChanged,
 	distinctUntilKeyChanged,
@@ -46,7 +52,6 @@ import {
 
 /*
  TODO: Adjust charts theme to the dark background.
- TODO: Pass current locale from DI wherever formatDate() functions is used. 
  */
 
 enum QueryParamsKeys {
@@ -68,7 +73,7 @@ enum QueryParamsKeys {
 		},
 	],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
 	constructor(
 		private readonly _dialog: MatDialog,
 		private readonly _breakpointObserver: BreakpointObserver,
@@ -86,7 +91,8 @@ export class HomeComponent {
 	private readonly _wallets$: Observable<IWallet[]> = this._wallets
 		.list()
 		.pipe(shareReplay());
-	// TODO: Subscribe to the _years$ observable in here, rather than subscribing to it in the data$ observable.
+
+	private _yearsSubscription: Subscription;
 	private readonly _years$ = this._walletStatistics
 		.availableYears()
 		.pipe(shareReplay());
@@ -172,7 +178,7 @@ export class HomeComponent {
 							break;
 					}
 
-					return { periodStatistics, prevPeriodStatistics };
+					return { current: periodStatistics, previous: prevPeriodStatistics };
 				})
 			)
 		)
@@ -186,15 +192,13 @@ export class HomeComponent {
 		this._transactions.query(queries =>
 			queries.limit(this.maxTransactionsCount).orderBy('date', 'desc')
 		),
-		this._years$,
 	]).pipe(
-		map(([wallets, categories, statistics, transactions, years]) => ({
+		map(([wallets, categories, statistics, transactions]) => ({
 			wallets,
 			categories,
-			statistics: statistics.periodStatistics,
-			prevPeriodStatistics: statistics.prevPeriodStatistics,
+			periodStatistics: statistics.current,
+			prevPeriodStatistics: statistics.previous,
 			transactions,
-			years,
 		}))
 	);
 
@@ -231,6 +235,14 @@ export class HomeComponent {
 			);
 		})
 	);
+
+	ngOnInit() {
+		this._yearsSubscription = this._years$.subscribe();
+	}
+
+	ngOnDestroy() {
+		this._yearsSubscription?.unsubscribe();
+	}
 
 	/**
 	 * Calculates total balance in targeted wallets.

@@ -60,7 +60,7 @@
 							*ngIf="data.prevPeriodStatistics; else noPrevIncome"
 							[ngClass]="
 								percentageChangeType(
-									data.statistics.income,
+									data.periodStatistics.income,
 									data.prevPeriodStatistics.income
 								)
 							"
@@ -68,7 +68,7 @@
 							{{
 								formatPercentageChange(
 									percentageChange(
-										data.statistics.income,
+										data.periodStatistics.income,
 										data.prevPeriodStatistics.income
 									)
 								)
@@ -83,7 +83,7 @@
 
 					<mat-card-content>
 						<p class="money-amount">
-							{{ data.statistics.income | currency }}
+							{{ data.periodStatistics.income | currency }}
 						</p>
 					</mat-card-content>
 				</mat-card>
@@ -99,7 +99,7 @@
 							class="decrease-is-better"
 							[ngClass]="
 								percentageChangeType(
-									data.statistics.expenses,
+									data.periodStatistics.expenses,
 									data.prevPeriodStatistics.expenses
 								)
 							"
@@ -107,7 +107,7 @@
 							{{
 								formatPercentageChange(
 									percentageChange(
-										data.statistics.expenses,
+										data.periodStatistics.expenses,
 										data.prevPeriodStatistics.expenses
 									)
 								)
@@ -122,7 +122,7 @@
 
 					<mat-card-content>
 						<p class="money-amount">
-							{{ data.statistics.expenses | currency }}
+							{{ data.periodStatistics.expenses | currency }}
 						</p>
 					</mat-card-content>
 				</mat-card>
@@ -137,7 +137,7 @@
 
 					<mat-card-content>
 						<p class="money-amount">
-							{{ data.statistics.difference | currency }}
+							{{ data.periodStatistics.difference | currency }}
 						</p>
 					</mat-card-content>
 				</mat-card>
@@ -155,7 +155,7 @@
 						<div class="chart-wrapper">
 							<grouped-transactions-chart
 								class="chart"
-								[data]="data.statistics"
+								[data]="data.periodStatistics"
 								[period]="selectedPeriod"
 								(onPeriodClick)="onBarChartClick($event)"
 							></grouped-transactions-chart>
@@ -179,7 +179,7 @@
 						<div class="chart-wrapper">
 							<categorized-expenses-chart
 								class="chart"
-								[data]="data.statistics.categories"
+								[data]="data.periodStatistics.categories"
 								[categories]="data.categories"
 							></categorized-expenses-chart>
 						</div>
