@@ -20,6 +20,7 @@ import {
 } from 'rxjs/operators';
 import { Breakpoint } from 'src/app/common/breakpoints';
 import { IWallet } from 'src/app/common/interfaces/wallet';
+import { PrevPeriodComparison } from 'src/app/common/models/prev-period-comparison';
 import {
 	WalletStatistics,
 	WalletYearStatistics,
@@ -150,35 +151,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 				distinctUntilChanged(
 					({ year: oldYear }, { year: newYear }) => oldYear !== newYear
 				),
-				map(({ month, week, periodName }) => {
+				map(({ month, week }) => {
 					const periodStatistics: WalletStatistics =
 						yearStatistics.getNestedPeriod(month, week);
 
-					let prevPeriodStatistics: WalletStatistics;
-
-					switch (periodName) {
-						case 'month':
-							if (month > 0) {
-								prevPeriodStatistics = yearStatistics.getPeriod(month - 1);
-							}
-							break;
-
-						case 'week':
-							if (month > 0 && week - 1 < 0) {
-								// If the previous week is outside of the month.
-								prevPeriodStatistics = yearStatistics.getPeriod(
-									month - 1
-								).lastPeriod;
-							} else if (week > 0) {
-								// If the previous week is within the month.
-								prevPeriodStatistics = yearStatistics
-									.getPeriod(month)
-									.getPeriod(week - 1);
-							}
-							break;
-					}
-
-					return { current: periodStatistics, previous: prevPeriodStatistics };
+					return {
+						current: periodStatistics,
+						comparisonWithPrevPeriod: new PrevPeriodComparison(
+							periodStatistics
+						),
+					};
 				})
 			)
 		)
@@ -197,7 +179,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 			wallets,
 			categories,
 			periodStatistics: statistics.current,
-			prevPeriodStatistics: statistics.previous,
+			prevPeriodStatistics: statistics.comparisonWithPrevPeriod,
 			transactions,
 		}))
 	);
@@ -260,58 +242,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 		} else {
 			return wallets.find(wallet => wallet.id === this.selectedWallet).balance;
 		}
-	}
-
-	/**
-	 * Calculates percentage change.
-	 * @param newValue Current value
-	 * @param original Older value
-	 * @returns Percentage change
-	 */
-	percentageChange(newValue: number, original: number | null): number {
-		if (original === null) {
-			return null;
-		}
-
-		const delta = newValue - original;
-
-		return original === 0 ? 0 : (delta / original) * 100;
-	}
-
-	/**
-	 * Formats number as a percentage. Appends the number sign and '%' sign.
-	 * @param number Number to format
-	 */
-	formatPercentageChange(number: number): string {
-		let result: string = String(Math.trunc(number));
-
-		if (Math.sign(number) === 1) {
-			result = `+${result}`;
-		} else if (Math.sign(number) === 0) {
-			result = `+${result}`;
-		}
-
-		return `${result}%`;
-	}
-
-	/**
-	 * Checks if the new value increased, decreased or is the same.
-	 * @param newValue Current value
-	 * @param original Older value
-	 * @returns CSS class name
-	 */
-	percentageChangeType(newValue: number, original: number) {
-		let type: 'increase' | 'decrease' | 'no-change';
-
-		if (newValue === original || original === 0) {
-			type === 'no-change';
-		} else if (newValue > original) {
-			type = 'increase';
-		} else {
-			type = 'decrease';
-		}
-
-		return type;
 	}
 
 	onBarChartClick(statistics: WalletStatistics) {

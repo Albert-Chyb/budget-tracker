@@ -140,6 +140,10 @@ export abstract class WalletStatistics {
 		return Number(Boolean(this.expenses)) + Number(Boolean(this.income)) !== 0;
 	}
 
+	get parent() {
+		return this._parent;
+	}
+
 	/** Returns a sub-period. */
 	getPeriod(index: number): WalletStatistics {
 		if (index >= this.length) {

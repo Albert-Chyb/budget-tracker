@@ -57,22 +57,20 @@
 						<h2 mat-card-title>Przychody</h2>
 						<p
 							mat-card-subtitle
-							*ngIf="data.prevPeriodStatistics; else noPrevIncome"
-							[ngClass]="
-								percentageChangeType(
-									data.periodStatistics.income,
-									data.prevPeriodStatistics.income
-								)
+							*ngIf="
+								data.prevPeriodStatistics.prevPeriodExists;
+								else noPrevIncome
 							"
+							[ngClass]="{
+								increase: data.prevPeriodStatistics.incomePercentageChange > 0,
+								decrease: data.prevPeriodStatistics.incomePercentageChange < 0
+							}"
 						>
 							{{
-								formatPercentageChange(
-									percentageChange(
-										data.periodStatistics.income,
-										data.prevPeriodStatistics.income
-									)
-								)
-							}}
+								data.prevPeriodStatistics.incomePercentageChange >= 0
+									? '+'
+									: ''
+							}}{{ data.prevPeriodStatistics.incomePercentageChange | percent }}
 							vs ostatni okres
 						</p>
 
@@ -95,22 +93,23 @@
 						<h2 mat-card-title>Wydatki</h2>
 						<p
 							mat-card-subtitle
-							*ngIf="data.prevPeriodStatistics; else noPrevExpenses"
-							class="decrease-is-better"
-							[ngClass]="
-								percentageChangeType(
-									data.periodStatistics.expenses,
-									data.prevPeriodStatistics.expenses
-								)
+							*ngIf="
+								data.prevPeriodStatistics.prevPeriodExists;
+								else noPrevExpenses
 							"
+							class="decrease-is-better"
+							[ngClass]="{
+								increase:
+									data.prevPeriodStatistics.expensesPercentageChange > 0,
+								decrease: data.prevPeriodStatistics.expensesPercentageChange < 0
+							}"
 						>
 							{{
-								formatPercentageChange(
-									percentageChange(
-										data.periodStatistics.expenses,
-										data.prevPeriodStatistics.expenses
-									)
-								)
+								data.prevPeriodStatistics.expensesPercentageChange >= 0
+									? '+'
+									: ''
+							}}{{
+								data.prevPeriodStatistics.expensesPercentageChange | percent
 							}}
 							vs ostatni okres
 						</p>
