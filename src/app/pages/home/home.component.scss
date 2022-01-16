@@ -1,3 +1,5 @@
+@use '../../sass/variables' as vars;
+
 :host {
 	display: block;
 }
@@ -38,14 +40,14 @@
 }
 
 .decrease-is-better {
-	--decrease-color: green;
-	--increase-color: red;
+	--decrease-color: #{vars.$success-color};
+	--increase-color: #{vars.$warn-color};
 }
 
 .decrease {
-	color: var(--decrease-color, red);
+	color: var(--decrease-color, #{vars.$warn-color});
 }
 
 .increase {
-	color: var(--increase-color, green);
+	color: var(--increase-color, #{vars.$success-color});
 }
