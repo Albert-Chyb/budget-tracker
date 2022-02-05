@@ -1,3 +1,53 @@
+@use '../../sass/variables' as vars;
+
 :host {
-  display: block;
+	display: block;
+}
+
+.header-with-actions {
+	display: flex;
+
+	.spacer {
+		flex: 1 1 auto;
+	}
+}
+
+.mat-grid-tile {
+	.mat-card {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.mat-card-subtitle {
+	font-size: clamp(1.2rem, 3vw, 1em);
+	min-height: 4rem;
+}
+
+.money-amount {
+	text-align: center;
+	font-size: clamp(2.4rem, 5vw, 3rem);
+	line-height: clamp(2.4rem, 5vw, 3rem);
+}
+
+.chart-wrapper {
+	display: flex;
+	height: 40rem;
+
+	.chart {
+		width: 100%;
+	}
+}
+
+.decrease-is-better {
+	--decrease-color: #{vars.$success-color};
+	--increase-color: #{vars.$warn-color};
+}
+
+.decrease {
+	color: var(--decrease-color, #{vars.$warn-color});
+}
+
+.increase {
+	color: var(--increase-color, #{vars.$success-color});
 }

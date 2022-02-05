@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @use './app/sass/variables' as vars;
+@import '../src/app/sass/utils/mat-card';
 
 html {
 	font-size: 62.5%;

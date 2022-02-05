@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -22,11 +22,6 @@ export class SidenavComponent implements OnInit {
 			icon: 'add_circle',
 			text: 'Dodaj transakcje',
 			routerLink: '/transaction',
-		},
-		{
-			icon: 'analytics',
-			text: 'Statystyki',
-			routerLink: '/analytics',
 		},
 		{
 			icon: 'account_balance_wallet',

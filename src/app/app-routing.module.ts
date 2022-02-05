@@ -5,6 +5,10 @@ import {
 	redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
 import { RouterModule, Routes } from '@angular/router';
+import {
+	DefaultQueryParametersGuard,
+	DEFAULT_QUERY_PARAMETERS,
+} from './guards/default-query-parameters/default-query-parameters.guard';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -18,11 +22,17 @@ const routes: Routes = [
 	{
 		path: '',
 		component: HomeComponent,
-		canActivate: [AngularFireAuthGuard],
+		canActivate: [AngularFireAuthGuard, DefaultQueryParametersGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
 			name: 'Strona główna',
+			[DEFAULT_QUERY_PARAMETERS]: {
+				wallet: 'all',
+				periodName: 'year',
+				year: new Date().getFullYear(),
+			},
 		},
+		runGuardsAndResolvers: 'paramsOrQueryParamsChange',
 	},
 	{
 		path: 'login',

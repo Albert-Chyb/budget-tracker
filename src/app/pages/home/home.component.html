@@ -1,1 +1,216 @@
-<p>home works!</p>
+<ng-container *ngIf="data$ | loading | async as data">
+	<div class="header-with-actions">
+		<h1>Statystyki</h1>
+
+		<div class="spacer"></div>
+
+		<button
+			[disabled]="data.wallets.length === 0"
+			mat-icon-button
+			color="accent"
+			aria-label="Otwórz dialog do zmiany okresu"
+			matTooltip="Zmień okres"
+			(click)="changePeriod()"
+		>
+			<mat-icon>edit_calendar</mat-icon>
+		</button>
+
+		<button
+			[disabled]="data.wallets.length <= 1"
+			mat-icon-button
+			color="accent"
+			aria-label="Otwórz dialog do zmiany portfela"
+			matTooltip="Zmień portfel"
+			(click)="changeWallet()"
+		>
+			<mat-icon>account_balance_wallet</mat-icon>
+		</button>
+	</div>
+
+	<ng-container *clueIf="data.wallets.length === 0">
+		<mat-grid-list
+			*ngIf="layout$ | async as layout"
+			[cols]="cols"
+			[rowHeight]="rowHeightRem + 'rem'"
+			[gutterSize]="gutterSizeRem + 'rem'"
+		>
+			<!-- CARDS -->
+
+			<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
+				<mat-card>
+					<mat-card-header>
+						<h2 mat-card-title>Balans</h2>
+						<p mat-card-subtitle>Suma w wybranych portfelach</p>
+					</mat-card-header>
+
+					<mat-card-content>
+						<p class="money-amount">
+							{{ getTotalBalance(data.wallets, selectedWallet) | currency }}
+						</p>
+					</mat-card-content>
+				</mat-card>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
+				<mat-card>
+					<mat-card-header>
+						<h2 mat-card-title>Przychody</h2>
+						<p
+							mat-card-subtitle
+							*ngIf="
+								data.prevPeriodStatistics.prevPeriodExists;
+								else noPrevIncome
+							"
+							[ngClass]="{
+								increase: data.prevPeriodStatistics.incomePercentageChange > 0,
+								decrease: data.prevPeriodStatistics.incomePercentageChange < 0
+							}"
+						>
+							{{
+								data.prevPeriodStatistics.incomePercentageChange >= 0
+									? '+'
+									: ''
+							}}{{ data.prevPeriodStatistics.incomePercentageChange | percent }}
+							vs ostatni okres
+						</p>
+
+						<ng-template #noPrevIncome>
+							<p mat-card-subtitle>Przychody w wybranym okresie.</p>
+						</ng-template>
+					</mat-card-header>
+
+					<mat-card-content>
+						<p class="money-amount">
+							{{ data.periodStatistics.income | currency }}
+						</p>
+					</mat-card-content>
+				</mat-card>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
+				<mat-card>
+					<mat-card-header>
+						<h2 mat-card-title>Wydatki</h2>
+						<p
+							mat-card-subtitle
+							*ngIf="
+								data.prevPeriodStatistics.prevPeriodExists;
+								else noPrevExpenses
+							"
+							class="decrease-is-better"
+							[ngClass]="{
+								increase:
+									data.prevPeriodStatistics.expensesPercentageChange > 0,
+								decrease: data.prevPeriodStatistics.expensesPercentageChange < 0
+							}"
+						>
+							{{
+								data.prevPeriodStatistics.expensesPercentageChange >= 0
+									? '+'
+									: ''
+							}}{{
+								data.prevPeriodStatistics.expensesPercentageChange | percent
+							}}
+							vs ostatni okres
+						</p>
+
+						<ng-template #noPrevExpenses>
+							<p mat-card-subtitle>Wydatki w wybranym okresie</p>
+						</ng-template>
+					</mat-card-header>
+
+					<mat-card-content>
+						<p class="money-amount">
+							{{ data.periodStatistics.expenses | currency }}
+						</p>
+					</mat-card-content>
+				</mat-card>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="layout.card.colspan" rowspan="11">
+				<mat-card>
+					<mat-card-header>
+						<h2 mat-card-title>Różnica</h2>
+						<p mat-card-subtitle>Różnica przychodów i wydatków</p>
+					</mat-card-header>
+
+					<mat-card-content>
+						<p class="money-amount">
+							{{ data.periodStatistics.difference | currency }}
+						</p>
+					</mat-card-content>
+				</mat-card>
+			</mat-grid-tile>
+
+			<!-- Bar chart -->
+
+			<mat-grid-tile [colspan]="layout.expensesChart.colspan" rowspan="35">
+				<mat-card>
+					<mat-card-header>
+						<h2 mat-card-title>Wykres wydatków w wybranym okresie</h2>
+					</mat-card-header>
+
+					<mat-card-content>
+						<div class="chart-wrapper">
+							<grouped-transactions-chart
+								class="chart"
+								[data]="data.periodStatistics"
+								[period]="selectedPeriod"
+								(onPeriodClick)="onBarChartClick($event)"
+							></grouped-transactions-chart>
+						</div>
+					</mat-card-content>
+				</mat-card>
+			</mat-grid-tile>
+
+			<!-- Popular categories -->
+
+			<mat-grid-tile
+				[colspan]="layout.popularCategoriesChart.colspan"
+				rowspan="35"
+			>
+				<mat-card>
+					<mat-card-header>
+						<h2 mat-card-title>Popularne kategorie</h2>
+					</mat-card-header>
+
+					<mat-card-content>
+						<div class="chart-wrapper">
+							<categorized-expenses-chart
+								class="chart"
+								[data]="data.periodStatistics.categories"
+								[categories]="data.categories"
+							></categorized-expenses-chart>
+						</div>
+					</mat-card-content>
+				</mat-card>
+			</mat-grid-tile>
+
+			<!-- Latest transactions -->
+
+			<mat-grid-tile [colspan]="layout.transactionsTable.colspan" rowspan="35">
+				<mat-card>
+					<mat-card-header class="mat-card-header-with-action">
+						<h2 mat-card-title>Ostatnie transakcje</h2>
+						<a
+							href="#"
+							mat-button
+							color="accent"
+							class="mat-card-header-action"
+						>
+							Zobacz wszystkie
+						</a>
+					</mat-card-header>
+					<mat-card-content>
+						<transactions-table
+							[transactions]="data.transactions"
+							[maxCount]="maxTransactionsCount"
+							[categories]="data.categories"
+							[wallets]="data.wallets"
+						></transactions-table>
+					</mat-card-content>
+				</mat-card>
+			</mat-grid-tile>
+		</mat-grid-list>
+	</ng-container>
+</ng-container>

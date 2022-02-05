@@ -25,6 +25,7 @@ import { DateAdapter } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import firebase from 'firebase/app';
+import { NgChartsModule } from 'ng2-charts';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -33,15 +34,21 @@ import { cluesDatasets } from './common/clues-datasets';
 import { GlobalErrorHandler } from './common/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
 import { AlertComponent } from './components/alert/alert.component';
+import { CategorizedExpensesChartComponent } from './components/categorized-expenses-chart/categorized-expenses-chart.component';
 import { ClueComponent } from './components/clue/clue.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
 import { GlobalFabComponent } from './components/global-fab/global-fab.component';
+import { GroupedTransactionsChartComponent } from './components/grouped-transactions-chart/grouped-transactions-chart.component';
 import { LoadingIndicatorComponent } from './components/loading-indicator/loading-indicator.component';
 import { MainNavbarComponent } from './components/main-navbar/main-navbar.component';
+import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
 import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
 import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
+import { PeriodPickerComponent } from './components/period-picker/period-picker.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { TransactionsTableComponent } from './components/transactions-table/transactions-table.component';
+import { WalletPickerComponent } from './components/wallet-picker/wallet-picker.component';
 import { WalletComponent } from './components/wallet/wallet.component';
 import { BlackListValidatorDirective } from './directives/black-list-validator/black-list-validator.directive';
 import {
@@ -61,7 +68,6 @@ import { TransactionComponent } from './pages/transaction/transaction.component'
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
-import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
 
 // TODO: Add Progressive Web App
 
@@ -118,24 +124,31 @@ const AppDateAdapterProvider: Provider = {
 		WalletsComponent,
 		NewWalletDialogComponent,
 		PromptDialogComponent,
-		SelectOnFocusDirective,
 		WalletComponent,
 		ClueComponent,
 		CategoriesComponent,
 		FileInputComponent,
 		NewCategoryDialogComponent,
 		LoadingIndicatorComponent,
-		ClueIfDirective,
-		GlobalFabDirective,
+		MainSidenavComponent,
+		WalletPickerComponent,
+		AlertComponent,
 		GlobalFabComponent,
 		TransactionComponent,
+
+		SelectOnFocusDirective,
+		ClueIfDirective,
+		GlobalFabDirective,
 		MaxValidatorDirective,
 		BlackListValidatorDirective,
-		AlertComponent,
-		LoadingPipe,
 		FileTypeValidatorDirective,
 		FileSizeValidatorDirective,
-  MainSidenavComponent,
+
+		LoadingPipe,
+		PeriodPickerComponent,
+		GroupedTransactionsChartComponent,
+		CategorizedExpensesChartComponent,
+		TransactionsTableComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -147,6 +160,7 @@ const AppDateAdapterProvider: Provider = {
 		FormsModule,
 		AngularFireStorageModule,
 		AngularFireFunctionsModule,
+		NgChartsModule,
 	],
 	providers: [
 		PolishLocaleProvider,

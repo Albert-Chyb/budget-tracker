@@ -17,3 +17,5 @@ $accent-palette: mat-palette($mat-green, 'A200', 'A100', 'A400');
 $warn-pallette: mat-palette($mat-red);
 $primary-color: mat-color($primary-palette);
 $accent-color: mat-color($accent-palette);
+$warn-color: mat-color($warn-pallette);
+$success-color: mat-color(mat-palette($mat-green, 'A200', 'A100', 'A400'));

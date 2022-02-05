@@ -1,0 +1,23 @@
+<ng-container *ngIf="wallets$ | async as wallets; else loadingSpinner">
+	<mat-selection-list
+		*clueIf="wallets.length === 0"
+		[multiple]="false"
+		[(ngModel)]="selectedWallet"
+	>
+		<mat-list-option value="all" mat-dialog-close="all">
+			Wszystkie
+		</mat-list-option>
+
+		<mat-list-option
+			*ngFor="let wallet of wallets"
+			[value]="wallet.id"
+			[mat-dialog-close]="wallet.id"
+		>
+			{{ wallet.name }}
+		</mat-list-option>
+	</mat-selection-list>
+</ng-container>
+
+<ng-template #loadingSpinner>
+	<mat-spinner></mat-spinner>
+</ng-template>
