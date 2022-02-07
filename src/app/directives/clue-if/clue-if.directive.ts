@@ -1,6 +1,4 @@
 import {
-	ComponentFactory,
-	ComponentFactoryResolver,
 	Directive,
 	Inject,
 	InjectionToken,
@@ -8,6 +6,7 @@ import {
 	Renderer2,
 	Self,
 	TemplateRef,
+	Type,
 	ViewContainerRef,
 } from '@angular/core';
 import { ClueComponent } from 'src/app/components/clue/clue.component';
@@ -51,7 +50,6 @@ export class ClueIfDirective {
 	constructor(
 		@Self() private readonly _viewContainer: ViewContainerRef,
 		@Self() private readonly _templateRef: TemplateRef<any>,
-		private readonly _componentFactory: ComponentFactoryResolver,
 		private readonly _renderer: Renderer2,
 
 		@Inject(CLUES_DATASETS)
@@ -77,7 +75,7 @@ export class ClueIfDirective {
 				this.clueName ?? this._defaultClueName
 			);
 
-			this._insertClueIntoView(this._createClueFactory(), message, img);
+			this._insertClueIntoView(ClueComponent, message, img);
 		} else {
 			this._viewContainer.createEmbeddedView(this._templateRef);
 		}
@@ -86,21 +84,10 @@ export class ClueIfDirective {
 		return this._isClueShown;
 	}
 
-	private _createClueFactory() {
-		return this._componentFactory.resolveComponentFactory(ClueComponent);
-	}
-
-	private _insertClueIntoView(
-		componentFactory: ComponentFactory<ClueComponent>,
-		msg: string,
-		img: string
-	) {
-		const componentRef = this._viewContainer.createComponent(
-			componentFactory,
-			undefined,
-			undefined,
-			this._crateProjectionTextNode(msg)
-		);
+	private _insertClueIntoView(Component: Type<any>, msg: string, img: string) {
+		const componentRef = this._viewContainer.createComponent(Component, {
+			projectableNodes: this._crateProjectionTextNode(msg),
+		});
 
 		componentRef.instance.img = img;
 
