@@ -2,7 +2,7 @@ import {
 	Action,
 	AngularFirestore,
 	DocumentSnapshot,
-} from '@angular/fire/firestore';
+} from '@angular/fire/compat/firestore';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 

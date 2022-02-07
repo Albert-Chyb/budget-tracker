@@ -1,4 +1,4 @@
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 
 export interface FirebaseError {
 	type: string;
@@ -16,6 +16,6 @@ export class FirebaseError extends Error implements firebase.FirebaseError {
 
 	code: string;
 	message: string;
-	name: string;
+	name: string | any;
 	stack?: string | undefined;
 }

@@ -8,23 +8,23 @@ import {
 	NgModule,
 	Provider,
 } from '@angular/core';
-import { AngularFireModule } from '@angular/fire';
+import { AngularFireModule } from '@angular/fire/compat';
 import {
 	AngularFireAuthModule,
 	USE_EMULATOR as USE_AUTH_EMULATOR,
-} from '@angular/fire/auth';
-import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
+} from '@angular/fire/compat/auth';
+import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
 import {
 	AngularFireFunctionsModule,
 	REGION,
 	USE_EMULATOR as USE_CLOUD_FUNCTIONS_EMULATOR,
-} from '@angular/fire/functions';
-import { AngularFireStorageModule } from '@angular/fire/storage';
+} from '@angular/fire/compat/functions';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { FormsModule } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import { NgChartsModule } from 'ng2-charts';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -85,7 +85,7 @@ const FirestoreEmulatorProvider: Provider = {
 };
 const FirebaseAuthEmulatorProvider: Provider = {
 	provide: USE_AUTH_EMULATOR,
-	useValue: environment.firestoreEmulators.auth,
+	useValue: ['http://' + environment.firestoreEmulators.auth.join(':')],
 };
 const FirebaseCloudFunctionsEmulatorsProvider: Provider = {
 	provide: USE_CLOUD_FUNCTIONS_EMULATOR,

@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import {
 	AngularFireStorage,
 	AngularFireUploadTask,
-} from '@angular/fire/storage';
+} from '@angular/fire/compat/storage';
 import { from, Observable } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-
 import { UserService } from '../user/user.service';
 
 @Injectable({

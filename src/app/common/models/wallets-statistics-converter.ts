@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase/compat';
 import { FirestoreDataConverter } from '../interfaces/firestore';
 import { IWalletPeriodStatistics } from '../interfaces/wallet-statistics';
 
@@ -15,7 +15,7 @@ export class WalletStatisticsConverter
 	toFirestore(
 		modelObject: any,
 		options?: any
-	): import('firebase').default.firestore.DocumentData {
+	): import('firebase/compat').default.firestore.DocumentData {
 		throw new Error('The wallet statistics are read only.');
 	}
 

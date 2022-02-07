@@ -3,7 +3,7 @@ import {
 	AngularFireAuthGuard,
 	redirectLoggedInTo,
 	redirectUnauthorizedTo,
-} from '@angular/fire/auth-guard';
+} from '@angular/fire/compat/auth-guard';
 import { RouterModule, Routes } from '@angular/router';
 import {
 	DefaultQueryParametersGuard,

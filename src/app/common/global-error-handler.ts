@@ -1,5 +1,5 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import { ErrorsService } from '../services/errors/errors.service';
 import { FirebaseError } from './errors/firebase-errors';
 
@@ -16,7 +16,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 			'rejection' in unhandled ? unhandled.rejection : unhandled;
 
 		if (actualThrown instanceof FirebaseError) {
-			this._handleFirebaseError(actualThrown);
+			this._handleFirebaseError(<any>actualThrown);
 		} else {
 			// Throw other errors back to the console.
 			throw unhandled;

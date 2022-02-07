@@ -1,4 +1,4 @@
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import { FirestoreDataConverter } from '../interfaces/firestore';
 import { IWallet, IWalletBase } from '../interfaces/wallet';
 

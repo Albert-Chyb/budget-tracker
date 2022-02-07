@@ -4,8 +4,8 @@ import {
 	AngularFirestoreDocument,
 	DocumentData,
 	QueryFn,
-} from '@angular/fire/firestore';
-import firebase from 'firebase';
+} from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat';
 import { from, Observable } from 'rxjs';
 import { map, mapTo, switchMap } from 'rxjs/operators';
 import {
