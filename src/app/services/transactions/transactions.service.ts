@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, QueryFn } from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import {
@@ -37,6 +38,16 @@ export class TransactionsService extends Collection<Methods>(...ALL_MIXINS) {
 			afStore,
 			user.getUid$().pipe(switchMap(uid => of(`users/${uid}/transactions`))),
 			new FirestoreTransactionConverter()
+		);
+	}
+
+	querySnap(setQueriesFn: QueryFn<firebase.firestore.DocumentData>) {
+		return this.collection$.pipe(
+			switchMap(collection =>
+				this._afStore
+					.collection<ITransaction>(collection.ref, setQueriesFn)
+					.snapshotChanges()
+			)
 		);
 	}
 }
