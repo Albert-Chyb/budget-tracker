@@ -86,7 +86,7 @@ const routes: Routes = [
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
-			name: 'Edytuj transakcję',
+			name: 'Transakcje',
 		},
 	},
 ];
