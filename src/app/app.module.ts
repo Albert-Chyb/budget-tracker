@@ -44,6 +44,7 @@ import { MainNavbarComponent } from './components/main-navbar/main-navbar.compon
 import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
 import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
 import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
+import { PaginatedTransactionsTableComponent } from './components/paginated-transactions-table/paginated-transactions-table.component';
 import { PeriodPickerComponent } from './components/period-picker/period-picker.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
@@ -65,10 +66,10 @@ import { CategoriesComponent } from './pages/categories/categories.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
+import { TransactionsComponent } from './pages/transactions/transactions.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
-import { TransactionsComponent } from './pages/transactions/transactions.component';
 
 // TODO: Add Progressive Web App
 
@@ -150,7 +151,8 @@ const AppDateAdapterProvider: Provider = {
 		GroupedTransactionsChartComponent,
 		CategorizedExpensesChartComponent,
 		TransactionsTableComponent,
-  TransactionsComponent,
+		TransactionsComponent,
+		PaginatedTransactionsTableComponent,
 	],
 	imports: [
 		BrowserModule,

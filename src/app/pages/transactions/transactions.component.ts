@@ -1,15 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
 @Component({
-  templateUrl: './transactions.component.html',
-  styleUrls: ['./transactions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	templateUrl: './transactions.component.html',
+	styleUrls: ['./transactions.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+	ngOnInit(): void {}
 }
