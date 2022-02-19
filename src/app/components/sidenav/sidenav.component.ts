@@ -19,6 +19,11 @@ export class SidenavComponent implements OnInit {
 			routerLink: '/',
 		},
 		{
+			icon: 'receipt_long',
+			text: 'Transakcje',
+			routerLink: '/transactions',
+		},
+		{
 			icon: 'add_circle',
 			text: 'Dodaj transakcje',
 			routerLink: '/transaction',
