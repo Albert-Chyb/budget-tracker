@@ -7,10 +7,14 @@ import {
 	ViewChild,
 } from '@angular/core';
 import {
+	AngularFirestore,
+	AngularFirestoreCollection,
 	DocumentChangeAction,
 	QueryDocumentSnapshot,
+	QueryFn,
 } from '@angular/fire/compat/firestore';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import firebase from 'firebase/compat';
 import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { ICategory } from 'src/app/common/interfaces/category';
@@ -25,14 +29,19 @@ interface IPageChangeEvent {
 	pageSize: number;
 }
 
-class TransactionsDataSource implements DataSource<ITransaction> {
-	constructor(private readonly _transactionsService: TransactionsService) {}
+class PaginatedCollectionDataSource<T> implements DataSource<T> {
+	constructor(
+		private readonly _afStore: AngularFirestore,
+		private readonly _collection$: Observable<AngularFirestoreCollection<T>>,
+		private readonly _field: firebase.firestore.FieldPath | string,
+		private readonly _orderDirection: firebase.firestore.OrderByDirection
+	) {}
 
 	/** First document in the latest batch. */
-	private _firstSeen: QueryDocumentSnapshot<ITransaction>;
+	private _firstSeen: QueryDocumentSnapshot<T>;
 
 	/** Last document in the latest batch. */
-	private _lastSeen: QueryDocumentSnapshot<ITransaction>;
+	private _lastSeen: QueryDocumentSnapshot<T>;
 
 	/** Emits whenever the page changes. */
 	private readonly _onPageChange$ = new ReplaySubject<IPageChangeEvent>(1);
@@ -44,9 +53,7 @@ class TransactionsDataSource implements DataSource<ITransaction> {
 		map(snapshots => this._convertSnapshotsIntoDocs(snapshots))
 	);
 
-	connect(
-		collectionViewer: CollectionViewer
-	): Observable<readonly ITransaction[]> {
+	connect(collectionViewer: CollectionViewer): Observable<readonly T[]> {
 		return this._latestBatch$;
 	}
 
@@ -66,7 +73,7 @@ class TransactionsDataSource implements DataSource<ITransaction> {
 		return this._onPageChange$.next({ direction: 'prev', pageSize });
 	}
 
-	private _setCursors(snapshots: DocumentChangeAction<ITransaction>[]) {
+	private _setCursors(snapshots: DocumentChangeAction<T>[]) {
 		if (snapshots.length === 0) {
 			return;
 		}
@@ -75,9 +82,7 @@ class TransactionsDataSource implements DataSource<ITransaction> {
 		this._lastSeen = snapshots[snapshots.length - 1].payload.doc;
 	}
 
-	private _convertSnapshotsIntoDocs(
-		snapshots: DocumentChangeAction<ITransaction>[]
-	): ITransaction[] {
+	private _convertSnapshotsIntoDocs(snapshots: DocumentChangeAction<T>[]): T[] {
 		return snapshots.map(snap => ({
 			id: snap.payload.doc.id,
 			...snap.payload.doc.data(),
@@ -88,28 +93,38 @@ class TransactionsDataSource implements DataSource<ITransaction> {
 	 * Gets the new batch of documents, relatively to the cursors.
 	 */
 	private _getNewBatch(pageChange: IPageChangeEvent) {
+		let queryFn: QueryFn;
+
 		switch (pageChange.direction) {
 			case 'first':
-				return this._transactionsService.querySnap(queryBuilder =>
-					queryBuilder.orderBy('date', 'desc').limit(pageChange.pageSize)
-				);
+				queryFn = queryBuilder =>
+					queryBuilder
+						.orderBy(this._field, this._orderDirection)
+						.limit(pageChange.pageSize);
+				break;
 
 			case 'next':
-				return this._transactionsService.querySnap(queryBuilder =>
+				queryFn = queryBuilder =>
 					queryBuilder
-						.orderBy('date', 'desc')
+						.orderBy(this._field, this._orderDirection)
 						.startAfter(this._lastSeen)
-						.limit(pageChange.pageSize)
-				);
+						.limit(pageChange.pageSize);
+				break;
 
 			case 'prev':
-				return this._transactionsService.querySnap(queryBuilder =>
+				queryFn = queryBuilder =>
 					queryBuilder
-						.orderBy('date', 'desc')
+						.orderBy(this._field, this._orderDirection)
 						.endBefore(this._firstSeen)
-						.limitToLast(pageChange.pageSize)
-				);
+						.limitToLast(pageChange.pageSize);
+				break;
 		}
+
+		return this._collection$.pipe(
+			switchMap(collection =>
+				this._afStore.collection<T>(collection.ref, queryFn).snapshotChanges()
+			)
+		);
 	}
 }
 
@@ -123,7 +138,8 @@ export class PaginatedTransactionsTableComponent implements OnInit {
 	constructor(
 		private readonly _transactions: TransactionsService,
 		private readonly _categories: CategoriesService,
-		private readonly _wallets: WalletsService
+		private readonly _wallets: WalletsService,
+		private readonly _afStore: AngularFirestore
 	) {}
 
 	@Input('transactionsPerPage') pageSize: number = 1;
@@ -131,7 +147,12 @@ export class PaginatedTransactionsTableComponent implements OnInit {
 
 	displayedColumns: string[] = ['category', 'wallet', 'date', 'amount'];
 	pageIndex: number = 0;
-	transactionsDataSource = new TransactionsDataSource(this._transactions);
+	transactionsDataSource = new PaginatedCollectionDataSource<ITransaction>(
+		this._afStore,
+		<any>this._transactions.collection$,
+		'date',
+		'desc'
+	);
 
 	readonly data$ = combineLatest([
 		this._categories.list(),
