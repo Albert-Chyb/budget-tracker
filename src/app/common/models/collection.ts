@@ -101,7 +101,7 @@ export class FirestoreConverter implements FirestoreDataConverter<unknown> {
 
 /** Base class for all firestore collection mixins. */
 export class FirestoreCollection {
-	protected collection$: Observable<AngularFirestoreCollection<unknown>>;
+	public readonly collection$: Observable<AngularFirestoreCollection<unknown>>;
 
 	constructor(
 		protected readonly _afStore: AngularFirestore,
