@@ -5,3 +5,16 @@
 .mat-table {
 	width: 100%;
 }
+
+.transactions {
+	position: relative;
+
+	&__loader {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		inset: 0;
+		background-color: hsl(0 0% 0% / 0.15);
+	}
+}
