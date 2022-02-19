@@ -22,6 +22,7 @@ import {
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { FormsModule } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import firebase from 'firebase/compat/app';
@@ -33,6 +34,7 @@ import { AppDateAdapter } from './common/app-date-adapter';
 import { cluesDatasets } from './common/clues-datasets';
 import { GlobalErrorHandler } from './common/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
+import { PolishMatPaginatorIntl } from './common/mat-paginator-intl';
 import { AlertComponent } from './components/alert/alert.component';
 import { CategorizedExpensesChartComponent } from './components/categorized-expenses-chart/categorized-expenses-chart.component';
 import { ClueComponent } from './components/clue/clue.component';
@@ -177,6 +179,10 @@ const AppDateAdapterProvider: Provider = {
 		FirebaseCloudFunctionsEmulatorsProvider,
 		FirebaseRegionProvider,
 		AppDateAdapterProvider,
+		{
+			provide: MatPaginatorIntl,
+			useClass: PolishMatPaginatorIntl,
+		},
 	],
 	bootstrap: [AppComponent],
 })
