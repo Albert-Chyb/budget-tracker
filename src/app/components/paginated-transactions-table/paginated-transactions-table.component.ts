@@ -34,13 +34,13 @@ export class PaginatedTransactionsTableComponent implements OnInit {
 	@Input('transactionsPerPage') pageSize: number = 1;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 
-	pageIndex: number = 0;
 	readonly displayedColumns: string[] = [
 		'category',
 		'wallet',
 		'date',
 		'amount',
 	];
+
 	readonly transactionsDataSource =
 		new PaginatedCollectionDataSource<ITransaction>(
 			this._afStore,
