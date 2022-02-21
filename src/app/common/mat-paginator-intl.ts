@@ -16,6 +16,6 @@ export class PolishMatPaginatorIntl extends MatPaginatorIntl {
 		pageSize: number,
 		length: number
 	) => {
-		return `Strona ${page + 1} z ${length}`;
+		return `Strona ${page + 1} z ${Math.ceil(length / pageSize)}`;
 	};
 }
