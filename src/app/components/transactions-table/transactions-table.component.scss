@@ -5,3 +5,10 @@
 .mat-table {
 	width: 100%;
 }
+
+tr.table-row:hover {
+	@media screen and (hover: hover) {
+		background-color: hsl(0 0% 100% / 0.1);
+		cursor: pointer;
+	}
+}
