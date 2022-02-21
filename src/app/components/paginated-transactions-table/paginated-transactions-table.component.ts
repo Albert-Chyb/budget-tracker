@@ -7,6 +7,7 @@ import { ITransaction } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
 import { PaginatedCollectionDataSource } from 'src/app/common/models/paginated-collection-data-source';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
+import { CollectionsInfoService } from 'src/app/services/collections-info/collections-info.service';
 import { TransactionsService } from 'src/app/services/transactions/transactions.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
@@ -21,7 +22,8 @@ export class PaginatedTransactionsTableComponent {
 		private readonly _transactions: TransactionsService,
 		private readonly _categories: CategoriesService,
 		private readonly _wallets: WalletsService,
-		private readonly _afStore: AngularFirestore
+		private readonly _afStore: AngularFirestore,
+		private readonly _collectionsInfo: CollectionsInfoService
 	) {}
 
 	readonly dataSource: PaginatedCollectionDataSource<ITransaction> =
@@ -42,10 +44,12 @@ export class PaginatedTransactionsTableComponent {
 	readonly data$ = combineLatest([
 		this._categories.list(),
 		this._wallets.list(),
+		this._collectionsInfo.read('transactions'),
 	]).pipe(
-		map(([categories, wallets]) => ({
+		map(([categories, wallets, transactionsCollInfo]) => ({
 			wallets,
 			categories,
+			transactionsCount: transactionsCollInfo.docCount,
 		}))
 	);
 

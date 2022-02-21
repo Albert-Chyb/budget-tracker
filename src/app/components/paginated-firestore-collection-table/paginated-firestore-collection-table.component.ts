@@ -17,9 +17,12 @@ import { PaginatedCollectionDataSource } from 'src/app/common/models/paginated-c
 })
 export class PaginatedFirestoreCollectionTableComponent<T> implements OnInit {
 	private _dataSource: PaginatedCollectionDataSource<T>;
+	private _prevPageEvent: PageEvent = null;
+
+	@ViewChild(MatPaginator) paginator: MatPaginator;
 
 	@Input('pageSize') pageSize: number = 10;
-	@Input('length') length: number = 9;
+	@Input('length') length: number = 0;
 	@Input('pageSizeOptions') pageSizeOptions: number[] = [5, 10, 25, 50, 100];
 
 	@Input('dataSource')
@@ -31,15 +34,12 @@ export class PaginatedFirestoreCollectionTableComponent<T> implements OnInit {
 		return this._dataSource;
 	}
 
-	@ViewChild(MatPaginator) paginator: MatPaginator;
-
 	isLoading$: Observable<boolean>;
 
 	ngOnInit(): void {
 		this.dataSource.firstPage(this.pageSize);
 	}
 
-	private _prevPageEvent: PageEvent = null;
 	handlePageChange(pageEvent: PageEvent) {
 		const { pageIndex, previousPageIndex, pageSize } = pageEvent;
 		const prevPageSize = this._prevPageEvent?.pageSize ?? this.pageSize;

@@ -1,5 +1,8 @@
 <ng-container *ngIf="data$ | async as data">
-	<paginated-firestore-collection-table mat-table [dataSource]="dataSource">
+	<paginated-firestore-collection-table
+		[dataSource]="dataSource"
+		[length]="data.transactionsCount"
+	>
 		<table mat-table [dataSource]="dataSource">
 			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
