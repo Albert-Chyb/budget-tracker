@@ -46,6 +46,7 @@ import { MainNavbarComponent } from './components/main-navbar/main-navbar.compon
 import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
 import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
 import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
+import { PaginatedFirestoreCollectionTableComponent } from './components/paginated-firestore-collection-table/paginated-firestore-collection-table.component';
 import { PaginatedTransactionsTableComponent } from './components/paginated-transactions-table/paginated-transactions-table.component';
 import { PeriodPickerComponent } from './components/period-picker/period-picker.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
@@ -155,6 +156,7 @@ const AppDateAdapterProvider: Provider = {
 		TransactionsTableComponent,
 		TransactionsComponent,
 		PaginatedTransactionsTableComponent,
+		PaginatedFirestoreCollectionTableComponent,
 	],
 	imports: [
 		BrowserModule,
