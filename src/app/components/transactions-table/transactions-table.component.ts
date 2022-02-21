@@ -1,3 +1,4 @@
+import { DataSource } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ICategory } from 'src/app/common/interfaces/category';
 import { ITransaction } from 'src/app/common/interfaces/transaction';
@@ -10,25 +11,18 @@ import { IWallet } from 'src/app/common/interfaces/wallet';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsTableComponent {
-	/** Array of transactions */
-	@Input('transactions') transactions: ITransaction[];
-
-	/** Max number of transactions to display */
-	@Input('maxCount') maxTransactionsCount = Infinity;
-
+	@Input('transactions') transactions:
+		| DataSource<ITransaction>
+		| ITransaction[];
 	@Input('categories') categories: ICategory[] = [];
 	@Input('wallets') wallets: IWallet[] = [];
 
-	readonly displayedColumns: (keyof ITransaction)[] = [
+	readonly displayedColumns: string[] = [
 		'category',
 		'wallet',
 		'date',
 		'amount',
 	];
-
-	limitTransactions(startFrom = 0) {
-		return this.transactions.slice(startFrom, this.maxTransactionsCount);
-	}
 
 	findWalletName(id: string): string {
 		return this._findName(id, this.wallets);
@@ -39,6 +33,14 @@ export class TransactionsTableComponent {
 	}
 
 	private _findName(id: string, array: { name: string; id: string }[]): string {
-		return array.find(item => item.id === id).name;
+		const name = array.find(item => item.id === id)?.name;
+
+		if (!name) {
+			throw new Error(
+				'Name could not be found. Did you forget to pass categories or wallets by inputs ?'
+			);
+		}
+
+		return name;
 	}
 }
