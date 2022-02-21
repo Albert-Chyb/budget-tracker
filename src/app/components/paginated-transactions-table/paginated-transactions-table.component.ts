@@ -6,6 +6,7 @@ import { ICategory } from 'src/app/common/interfaces/category';
 import { ITransaction } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
 import { PaginatedCollectionDataSource } from 'src/app/common/models/paginated-collection-data-source';
+import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { CollectionsInfoService } from 'src/app/services/collections-info/collections-info.service';
 import { TransactionsService } from 'src/app/services/transactions/transactions.service';
@@ -16,6 +17,12 @@ import { WalletsService } from 'src/app/services/wallets/wallets.service';
 	templateUrl: './paginated-transactions-table.component.html',
 	styleUrls: ['./paginated-transactions-table.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [
+		{
+			provide: DEFAULT_CLUE_NAME,
+			useValue: 'noTransactions',
+		},
+	],
 })
 export class PaginatedTransactionsTableComponent {
 	constructor(
@@ -49,7 +56,7 @@ export class PaginatedTransactionsTableComponent {
 		map(([categories, wallets, transactionsCollInfo]) => ({
 			wallets,
 			categories,
-			transactionsCount: transactionsCollInfo.docCount,
+			transactionsCount: transactionsCollInfo?.docCount ?? 0,
 		}))
 	);
 

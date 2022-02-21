@@ -9,4 +9,8 @@ export const cluesDatasets: { [prop: string]: IClueData } = {
 		message: 'Nie posiadasz żadnych kategorii.',
 		img: 'assets/icons/folder.svg',
 	},
+	noTransactions: {
+		message: 'Nie posiadasz żadnych transakcji',
+		img: 'assets/icons/credit-card.svg',
+	},
 };

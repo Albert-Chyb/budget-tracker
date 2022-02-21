@@ -2,6 +2,7 @@
 	<paginated-firestore-collection-table
 		[dataSource]="dataSource"
 		[length]="data.transactionsCount"
+		*clueIf="data.transactionsCount === 0"
 	>
 		<transactions-table
 			[transactions]="dataSource"
