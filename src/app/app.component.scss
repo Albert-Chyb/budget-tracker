@@ -30,7 +30,7 @@ main {
 			}
 		}
 
-		@media only screen and (min-width: map.get(containers.$containers-widths, 'xxl') + vars.$sidenav-width - 0.2) {
+		@media only screen and (min-width: (map.get(containers.$containers-widths, 'xxl') + vars.$sidenav-width - 0.2)) {
 			@include containers.make-container('xxl', false);
 		}
 	}
