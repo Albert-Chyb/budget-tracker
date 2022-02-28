@@ -35,10 +35,3 @@ main {
 		}
 	}
 }
-
-.global-fab-button {
-	position: fixed;
-	bottom: max(2vw, #{vars.$global-spacing});
-	right: max(2vw, #{vars.$global-spacing});
-	z-index: 1000;
-}
