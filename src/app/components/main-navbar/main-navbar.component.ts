@@ -1,14 +1,9 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	EventEmitter,
-	OnInit,
-	Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
+import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
 import {
 	RouteNameChange,
 	RouteNameService,
@@ -26,10 +21,9 @@ export class MainNavbarComponent implements OnInit {
 		private readonly _auth: AuthService,
 		private readonly _user: UserService,
 		private readonly _loading: LoadingService,
-		private readonly _routeName: RouteNameService
+		private readonly _routeName: RouteNameService,
+		private readonly _sidenav: MainSidenavService
 	) {}
-
-	@Output('onHamburgerClick') onHamburgerClick = new EventEmitter();
 
 	isLoggedIn$ = this._user.isLoggedIn$;
 	shouldDisplayLoader$ = this._loading.isLoading$.pipe(debounceTime(50));
@@ -56,5 +50,9 @@ export class MainNavbarComponent implements OnInit {
 
 	logout() {
 		this._auth.logout();
+	}
+
+	toggleSidenav() {
+		this._sidenav.toggle();
 	}
 }

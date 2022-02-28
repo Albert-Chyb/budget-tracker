@@ -1,7 +1,7 @@
-<main-navbar (onHamburgerClick)="sidenav.toggle()"></main-navbar>
+<main-navbar></main-navbar>
 
-<main-sidenav #sidenav>
-	<main [class.sidenav-opened]="sidenav.isOpened">
+<main-sidenav>
+	<main [class.sidenav-opened]="mainSidenav.isOpened$ | async">
 		<router-outlet></router-outlet>
 	</main>
 </main-sidenav>

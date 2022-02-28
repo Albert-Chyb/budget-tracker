@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MainSidenavService } from './services/main-sidenav/main-sidenav.service';
 
 @Component({
 	selector: 'app-root',
@@ -8,4 +9,6 @@ import { Component } from '@angular/core';
 		class: 'with-fixed-mat-toolbar',
 	},
 })
-export class AppComponent {}
+export class AppComponent {
+	constructor(public mainSidenav: MainSidenavService) {}
+}

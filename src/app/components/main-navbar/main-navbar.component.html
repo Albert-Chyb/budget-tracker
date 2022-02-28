@@ -1,6 +1,6 @@
 <div class="main-navbar-wrapper" *ngIf="data$ | async as data">
 	<mat-toolbar color="primary" role="heading">
-		<button mat-icon-button (click)="onHamburgerClick.emit()">
+		<button mat-icon-button (click)="toggleSidenav()">
 			<mat-icon>menu</mat-icon>
 		</button>
 

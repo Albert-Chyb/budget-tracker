@@ -1,5 +1,6 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import {
+	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
 	Component,
@@ -17,16 +18,12 @@ import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.s
 	styleUrls: ['./main-sidenav.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainSidenavComponent {
+export class MainSidenavComponent implements AfterViewInit {
 	constructor(
 		private readonly _breakpointObserver: BreakpointObserver,
-		private readonly _changeDetector: ChangeDetectorRef,
-		private readonly _mainSidenav: MainSidenavService
-	) {
-		this._mainSidenav.isOpened$.subscribe(isOpened =>
-			isOpened ? this.sidenav?.open() : this.sidenav?.close()
-		);
-	}
+		private readonly _mainSidenav: MainSidenavService,
+		private readonly _changeDetector: ChangeDetectorRef
+	) {}
 
 	@ViewChild(MatSidenav) sidenav: MatSidenav;
 
@@ -59,12 +56,10 @@ export class MainSidenavComponent {
 			distinctUntilChanged()
 		);
 
-	toggle() {
-		this._mainSidenav.toggle();
-		this._changeDetector.detectChanges();
-	}
-
-	get isOpened(): boolean {
-		return this.sidenav?.opened ?? false;
+	ngAfterViewInit(): void {
+		this._mainSidenav.matSidenav = this.sidenav;
+		this._mainSidenav.stateChange.subscribe(() =>
+			this._changeDetector.detectChanges()
+		);
 	}
 }

@@ -1,22 +1,46 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { MatSidenav } from '@angular/material/sidenav';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class MainSidenavService {
-	private readonly _isOpened$ = new BehaviorSubject(false);
-	readonly isOpened$ = this._isOpened$.asObservable();
+	private _matSidenav: MatSidenav;
+	private _isSidenavAttached = false;
+	private readonly _stateChange = new Subject();
+
+	/** Emits whenever side nav changes its opened state. */
+	isOpened$: Observable<boolean>;
+
+	/** Emits whenever change detection should be run in the main navbar component. */
+	readonly stateChange = this._stateChange.asObservable();
 
 	open() {
-		this._isOpened$.next(true);
+		this._matSidenav?.open();
+		this._stateChange.next();
 	}
 
 	close() {
-		this._isOpened$.next(false);
+		this._matSidenav?.close();
+		this._stateChange.next();
 	}
 
 	toggle() {
-		this._isOpened$.next(!this._isOpened$.value);
+		this._matSidenav?.toggle();
+		this._stateChange.next();
+	}
+
+	/**
+	 * Sets the reference to the main mat-sidenav.
+	 */
+	set matSidenav(sidenav: MatSidenav) {
+		if (this._isSidenavAttached) {
+			throw new Error('A sidenav can be attached only once.');
+		}
+
+		this.isOpened$ = sidenav.openedChange;
+		this._matSidenav = sidenav;
+		this._isSidenavAttached = true;
 	}
 }
