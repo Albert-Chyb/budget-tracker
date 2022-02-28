@@ -21,7 +21,7 @@ import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.s
 export class MainSidenavComponent implements AfterViewInit {
 	constructor(
 		private readonly _breakpointObserver: BreakpointObserver,
-		private readonly _mainSidenav: MainSidenavService,
+		private readonly _sidenavService: MainSidenavService,
 		private readonly _changeDetector: ChangeDetectorRef
 	) {}
 
@@ -57,8 +57,9 @@ export class MainSidenavComponent implements AfterViewInit {
 		);
 
 	ngAfterViewInit(): void {
-		this._mainSidenav.matSidenav = this.sidenav;
-		this._mainSidenav.stateChange.subscribe(() =>
+		this._sidenavService.matSidenav = this.sidenav;
+
+		this._sidenavService.stateChange$.subscribe(() =>
 			this._changeDetector.detectChanges()
 		);
 	}

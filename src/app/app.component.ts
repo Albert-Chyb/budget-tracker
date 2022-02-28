@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { tap } from 'rxjs/operators';
 import { MainSidenavService } from './services/main-sidenav/main-sidenav.service';
 
 @Component({
@@ -11,4 +12,8 @@ import { MainSidenavService } from './services/main-sidenav/main-sidenav.service
 })
 export class AppComponent {
 	constructor(public mainSidenav: MainSidenavService) {}
+
+	log(a: any) {
+		return a.pipe(tap(console.log));
+	}
 }
