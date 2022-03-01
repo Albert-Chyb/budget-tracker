@@ -28,9 +28,13 @@
 
 	// The height of the Angular Material sidenav component is based on content height, and there is no way of setting it from outside.
 	// This is why we set min height of the content to 100 vh - main navbar height.
-	min-height: calc(100vh - (#{vars.$mat-toolbar-desktop-height}));
+	min-height: calc(
+		var(--viewport-height) - (#{vars.$mat-toolbar-desktop-height})
+	);
 
 	@media only screen and (max-width: vars.$mat-toolbar-size-change-breakpoint) {
-		min-height: calc(100vh - (#{vars.$mat-toolbar-mobile-height}));
+		min-height: calc(
+			var(--viewport-height) - (#{vars.$mat-toolbar-mobile-height})
+		);
 	}
 }
