@@ -18,7 +18,7 @@
 	}
 }
 
-.content {
+.mat-sidenav-content {
 	padding: {
 		top: calc(env(safe-area-inset-top) + #{vars.$global-spacing});
 		bottom: calc(env(safe-area-inset-bottom) + #{vars.$global-spacing});
