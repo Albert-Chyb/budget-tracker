@@ -6,7 +6,6 @@ import {
 	Renderer2,
 	RendererStyleFlags2,
 } from '@angular/core';
-import { MainSidenavService } from './services/main-sidenav/main-sidenav.service';
 
 @Component({
 	selector: 'app-root',
@@ -18,7 +17,6 @@ import { MainSidenavService } from './services/main-sidenav/main-sidenav.service
 })
 export class AppComponent implements OnInit {
 	constructor(
-		public mainSidenav: MainSidenavService,
 		private readonly _renderer: Renderer2,
 		@Inject(DOCUMENT) private readonly _doc: Document
 	) {}

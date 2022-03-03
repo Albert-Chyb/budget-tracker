@@ -56,6 +56,8 @@ export class MainSidenavComponent implements AfterViewInit {
 			distinctUntilChanged()
 		);
 
+	isOpened$ = this._sidenavService.isOpened$;
+
 	ngAfterViewInit(): void {
 		this._sidenavService.matSidenav = this.sidenav;
 
