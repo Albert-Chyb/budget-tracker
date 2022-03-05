@@ -21,6 +21,13 @@ export interface IClueData {
 	img: string;
 }
 
+export interface IClueConditionObj {
+	showWhen: boolean;
+	clueName: string;
+}
+
+export type TClueExpression = IClueConditionObj | boolean;
+
 /**
  * Use this injection token to provide a default clue name.
  * By default it provides '**' wildcard.
@@ -60,20 +67,23 @@ export class ClueIfDirective {
 	) {}
 
 	private _isClueShown: boolean;
-
-	@Input('clueIfUse') clueName: string;
+	private _clueName: string;
 
 	@Input('clueIf')
-	set clueIf(showClue: boolean) {
-		if (this._isClueShown === showClue) return;
+	set clueIf(showClue: TClueExpression) {
+		const isShown =
+			typeof showClue === 'boolean' ? showClue : showClue.showWhen;
+		const clueName =
+			typeof showClue === 'boolean' ? this._defaultClueName : showClue.clueName;
 
-		this._isClueShown = showClue;
+		if (this._isClueShown === showClue && this._clueName === clueName) return;
+
+		this._isClueShown = isShown;
+		this._clueName = clueName;
 		this._viewContainer.clear();
 
-		if (showClue) {
-			const { img, message } = this._getClueData(
-				this.clueName ?? this._defaultClueName
-			);
+		if (isShown) {
+			const { img, message } = this._getClueData(clueName);
 
 			this._insertClueIntoView(ClueComponent, message, img);
 		} else {
