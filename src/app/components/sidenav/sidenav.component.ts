@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	EventEmitter,
+	OnInit,
+	Output,
+} from '@angular/core';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -10,7 +16,7 @@ import { UserService } from 'src/app/services/user/user.service';
 export class SidenavComponent implements OnInit {
 	constructor(private readonly _user: UserService) {}
 
-	currentlyActivatedRouteIndex: number;
+	@Output('onItemClick') onItemClick = new EventEmitter<void>();
 
 	sidenavItems = [
 		{

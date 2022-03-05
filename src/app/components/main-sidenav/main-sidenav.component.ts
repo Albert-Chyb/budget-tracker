@@ -38,6 +38,11 @@ export class MainSidenavComponent implements AfterViewInit {
 		]
 	);
 
+	private readonly _dismissibleAfterClickModes: MatDrawerMode[] = [
+		'over',
+		'push',
+	];
+
 	sidenavMode$: Observable<MatDrawerMode> = this._breakpointObserver
 		.observe([
 			Breakpoint.XSmall,
@@ -64,5 +69,11 @@ export class MainSidenavComponent implements AfterViewInit {
 		this._sidenavService.stateChange$.subscribe(() =>
 			this._changeDetector.detectChanges()
 		);
+	}
+
+	handleSidenavItemClick() {
+		if (this._dismissibleAfterClickModes.includes(this.sidenav.mode)) {
+			this.sidenav.close();
+		}
 	}
 }

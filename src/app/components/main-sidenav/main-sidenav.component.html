@@ -1,6 +1,6 @@
 <mat-sidenav-container>
 	<mat-sidenav [mode]="sidenavMode$ | async">
-		<sidenav></sidenav>
+		<sidenav (onItemClick)="handleSidenavItemClick()"></sidenav>
 	</mat-sidenav>
 
 	<mat-sidenav-content>
