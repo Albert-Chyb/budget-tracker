@@ -101,7 +101,7 @@ export class ClueIfDirective {
 	private _getClueData(name: string): IClueData {
 		if (this._cluesDatasets.has(name)) {
 			return this._cluesDatasets.get(name);
-		} else if ((name = '**')) {
+		} else if (name === '**') {
 			throw new Error(
 				`The default clue was not created. Use the '**' wildcard as a name to create it.`
 			);
