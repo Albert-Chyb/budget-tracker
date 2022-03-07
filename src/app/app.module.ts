@@ -59,6 +59,7 @@ import {
 	ClueIfDirective,
 	CLUES_DATASETS,
 } from './directives/clue-if/clue-if.directive';
+import { CurrencyInputDirective } from './directives/currency-input/currency-input.directive';
 import { FileSizeValidatorDirective } from './directives/file-size-validator/file-size-validator.directive';
 import { FileTypeValidatorDirective } from './directives/file-type-validator/file-type-validator.directive';
 import { GlobalFabDirective } from './directives/global-fab/global-fab.directive';
@@ -157,6 +158,7 @@ const AppDateAdapterProvider: Provider = {
 		TransactionsComponent,
 		PaginatedTransactionsTableComponent,
 		PaginatedFirestoreCollectionTableComponent,
+		CurrencyInputDirective,
 	],
 	imports: [
 		BrowserModule,
