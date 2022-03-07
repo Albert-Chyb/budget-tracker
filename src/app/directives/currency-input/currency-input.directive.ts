@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isNullish } from 'src/app/common/helpers/isNullish';
+import { moneyAmountPattern } from 'src/app/common/validators/money-amount-pattern';
 
 @Directive({
 	selector: '[currencyInput]',
@@ -77,7 +78,7 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 	@HostListener('blur')
 	handleInputBlur() {
 		const value = this._inputRef.value.trim();
-		const isValid = /^([\d\s]*)([\d],?\d{0,2})$/.test(value);
+		const isValid = moneyAmountPattern.test(value);
 
 		if (!isValid) {
 			this.setAmount(null);
