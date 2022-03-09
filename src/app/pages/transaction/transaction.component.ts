@@ -131,7 +131,7 @@ export class TransactionComponent implements OnInit {
 		transaction: ITransaction
 	): ITransactionFormValue {
 		return {
-			amount: String(transaction.amount),
+			amount: transaction.amount,
 			type: transaction.type,
 			date: transaction.date,
 			category: transaction.category,
@@ -142,7 +142,7 @@ export class TransactionComponent implements OnInit {
 }
 
 interface ITransactionFormValue {
-	amount: string;
+	amount: number;
 	type: TTransactionType;
 	date: Date;
 	category: string;
@@ -155,7 +155,7 @@ class TransactionDTO implements ITransactionCreatePayload {
 	constructor(formValue: ITransactionFormValue) {
 		const { amount, type, date, category, wallet, description } = formValue;
 
-		this.amount = Number(amount.replace(',', '.'));
+		this.amount = amount;
 		this.type = type;
 		this.date = date;
 		this.category = category;

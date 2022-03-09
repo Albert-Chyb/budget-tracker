@@ -74,6 +74,7 @@ import { TransactionsComponent } from './pages/transactions/transactions.compone
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
+import { MinValidatorDirective } from './directives/min-validator/min-validator.directive';
 
 // TODO: Add Progressive Web App
 
@@ -159,6 +160,7 @@ const AppDateAdapterProvider: Provider = {
 		PaginatedTransactionsTableComponent,
 		PaginatedFirestoreCollectionTableComponent,
 		CurrencyInputDirective,
+  MinValidatorDirective,
 	],
 	imports: [
 		BrowserModule,

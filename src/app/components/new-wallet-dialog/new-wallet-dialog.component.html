@@ -37,12 +37,11 @@
 					matInput
 					type="text"
 					name="balance"
-					[pattern]="moneyAmountPattern"
+					currencyInput
 					[(ngModel)]="wallet.balance"
 					#balance="ngModel"
 					inputmode="decimal"
 					required
-					min="0"
 					[textMax]="maxMoneyAmount"
 				/>
 				<mat-label>Wartość</mat-label>
@@ -69,7 +68,7 @@
 				type="submit"
 				mat-raised-button
 				color="accent"
-				[mat-dialog-close]="processForm(walletForm.value)"
+				[mat-dialog-close]="walletForm.value"
 				[disabled]="walletForm.invalid"
 			>
 				Dodaj

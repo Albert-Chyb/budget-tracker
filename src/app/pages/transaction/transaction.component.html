@@ -11,30 +11,31 @@
 			<input
 				matInput
 				type="text"
-				name="amount"
+				currencyInput
 				required
-				[pattern]="moneyAmountPattern"
+				name="amount"
 				inputmode="decimal"
 				[(ngModel)]="formValue.amount"
-				#amount="ngModel"
 				[textMax]="maxAmount"
-				black-list="0"
+				[textMin]="0"
+				[isInclusive]="false"
+				#amount="ngModel"
 			/>
 			<mat-icon matPrefix>paid</mat-icon>
 
 			<mat-error *ngIf="amount.hasError('required')">
 				Kwota jest wymagana.
 			</mat-error>
-			<mat-error *ngIf="amount.hasError('pattern')">
-				Podaj <strong>poprawnie sformatowaną</strong> kwotę.
-			</mat-error>
+
 			<mat-error *ngIf="amount.hasError('max') && type.value === 'expense'">
 				Wybrany portfel <strong>nie posiada wystarczających środków</strong>.
 			</mat-error>
+
 			<mat-error *ngIf="amount.hasError('max') && type.value === 'income'">
 				Portfel <strong>nie może przechowywać</strong> więcej niż 1 milion.
 			</mat-error>
-			<mat-error *ngIf="amount.hasError('hasBlackListedValue')">
+
+			<mat-error *ngIf="amount.hasError('min')">
 				Wartość transakcji <strong>nie może</strong> być równa 0.
 			</mat-error>
 		</mat-form-field>
