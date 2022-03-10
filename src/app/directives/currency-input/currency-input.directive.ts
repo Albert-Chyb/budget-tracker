@@ -7,15 +7,14 @@ import {
 	DEFAULT_CURRENCY_CODE,
 	Directive,
 	ElementRef,
-	EventEmitter,
 	HostListener,
 	Inject,
 	LOCALE_ID,
-	Output,
+	Renderer2,
+	Self,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isNullish } from 'src/app/common/helpers/isNullish';
-import { moneyAmountPattern } from 'src/app/common/validators/money-amount-pattern';
 
 @Directive({
 	selector: '[currencyInput]',
@@ -29,7 +28,8 @@ import { moneyAmountPattern } from 'src/app/common/validators/money-amount-patte
 })
 export class CurrencyInputDirective implements ControlValueAccessor {
 	constructor(
-		elementRef: ElementRef<HTMLInputElement>,
+		@Self() elementRef: ElementRef<HTMLInputElement>,
+		private readonly _renderer: Renderer2,
 		@Inject(LOCALE_ID) private readonly _localeId: string,
 		@Inject(DEFAULT_CURRENCY_CODE) private readonly _currencyCode: string
 	) {
@@ -39,6 +39,7 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 	private _changeNgFormValue: (newValue: number) => void;
 	private _setNgTouchedState: () => void;
 	private _inputRef: HTMLInputElement;
+	private _HTMLInputValue: string = '';
 
 	private readonly _decimalSeparator = getLocaleNumberSymbol(
 		this._localeId,
@@ -50,12 +51,14 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		'[^\\d' + this._decimalSeparator + ']',
 		'g'
 	);
+	private readonly _amountPattern = /(^[\d\s]*)((?<!\s)\,?\d{0,2})?$/;
 
-	@Output('onInvalidInput')
-	onInvalidInput = new EventEmitter<void>();
-
-	writeValue(value: any): void {
-		this.setAmount(value);
+	writeValue(amount: number): void {
+		if (!isNullish(amount)) {
+			this._setHTMLInputValue(this._formatCurrency(amount));
+		} else {
+			this._setHTMLInputValue('');
+		}
 	}
 
 	registerOnChange(fn: any): void {
@@ -68,6 +71,12 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 
 	setDisabledState(isDisabled: boolean): void {
 		this._inputRef.disabled = isDisabled;
+
+		if (isDisabled) {
+			this._renderer.setAttribute(this._inputRef, 'disabled', '');
+		} else {
+			this._renderer.removeAttribute(this._inputRef, 'disabled');
+		}
 	}
 
 	@HostListener('focus')
@@ -75,35 +84,39 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		this._inputRef.select();
 	}
 
+	@HostListener('input')
+	handleInput() {
+		const value = this._inputRef.value.trimLeft();
+		const isValid = this._amountPattern.test(value);
+
+		if (value.length === 0) {
+			this._setHTMLInputValue(value);
+			this._changeNgFormValue(null);
+		} else if (!isValid) {
+			this._setHTMLInputValue(this._HTMLInputValue);
+		} else {
+			const amount = +this._formatRawAmount(value);
+
+			this._setHTMLInputValue(value);
+			this._changeNgFormValue(amount);
+		}
+	}
+
 	@HostListener('blur')
 	handleInputBlur() {
 		const value = this._inputRef.value.trim();
-		const isValid = moneyAmountPattern.test(value);
+		const isValid = this._amountPattern.test(value);
 
-		if (!isValid) {
-			this.setAmount(null);
-			this.onInvalidInput.emit();
+		if (isValid && value.length > 0) {
+			const amount = +this._formatRawAmount(value);
+
+			this._setHTMLInputValue(this._formatCurrency(amount));
+			this._changeNgFormValue(amount);
 		} else {
-			const amount = value
-				.replace(this._unwantedChars, '')
-				.replace(this._decimalSeparator, '.');
-
-			this.setAmount(+amount);
+			this._changeNgFormValue(null);
 		}
 
 		this._setNgTouchedState();
-	}
-
-	setAmount(amount: number) {
-		if (isNullish(amount)) {
-			this._setHTMLInputValue('');
-			this._changeNgFormValue?.(null);
-		} else if (typeof amount === 'number') {
-			this._setHTMLInputValue(this._formatCurrency(amount));
-			this._changeNgFormValue?.(amount);
-		} else {
-			throw new Error('The amount must be a number.');
-		}
 	}
 
 	private _formatCurrency(value: number) {
@@ -111,6 +124,13 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 	}
 
 	private _setHTMLInputValue(newValue: string) {
-		this._inputRef.value = newValue;
+		this._renderer.setProperty(this._inputRef, 'value', newValue);
+		this._HTMLInputValue = newValue;
+	}
+
+	private _formatRawAmount(value: string) {
+		return value
+			.replace(this._unwantedChars, '')
+			.replace(this._decimalSeparator, '.');
 	}
 }
