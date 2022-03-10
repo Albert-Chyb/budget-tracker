@@ -46,12 +46,19 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		NumberSymbol.CurrencyDecimal
 	);
 
+	private readonly _thousandsSeparator = getLocaleNumberSymbol(
+		this._localeId,
+		NumberSymbol.CurrencyGroup
+	);
+
 	/** Matches all characters except decimal separator and digits. */
 	private readonly _unwantedChars = new RegExp(
 		'[^\\d' + this._decimalSeparator + ']',
 		'g'
 	);
-	private readonly _amountPattern = /(^[\d\s]*)((?<!\s)\,?\d{0,2})?$/;
+
+	// /(^[\d\s]*)((?<!\s)\,?\d{0,2})?$/
+	private readonly _amountPattern = this._buildAmountPattern();
 
 	writeValue(amount: number): void {
 		if (!isNullish(amount)) {
@@ -132,5 +139,15 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		return value
 			.replace(this._unwantedChars, '')
 			.replace(this._decimalSeparator, '.');
+	}
+
+	private _buildAmountPattern(): RegExp {
+		const separator: string = /\s/.test(this._thousandsSeparator)
+			? /\s/.source
+			: this._thousandsSeparator;
+
+		return new RegExp(
+			`(^[\\d${separator}]*)((?<!${separator})\\${this._decimalSeparator}?\\d{0,2})?$`
+		);
 	}
 }
