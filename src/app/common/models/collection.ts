@@ -12,6 +12,7 @@ import {
 	FirestoreDataConverter,
 	QueryDocumentSnapshot,
 } from '../interfaces/firestore';
+import { FirestoreTransactionConverter } from './firestore-transaction-converter';
 
 type Constructor<T> = new (...args: any[]) => T;
 
@@ -201,8 +202,12 @@ export function UpdateMixin<TBase extends Constructor<FirestoreCollection>>(
 						.get()
 						.pipe(
 							switchMap(doc => {
+								const converter = new FirestoreTransactionConverter();
+
 								if (doc.exists) {
-									return from(doc.ref.update(data));
+									return from(
+										doc.ref.update(converter.toFirestore(data as any))
+									);
 								} else {
 									throw new Error(`Cannot update a non existing document.`);
 								}
