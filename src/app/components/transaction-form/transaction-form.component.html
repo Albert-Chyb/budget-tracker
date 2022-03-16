@@ -1,0 +1,177 @@
+<form #transactionForm="ngForm" (ngSubmit)="onSubmit.emit(transaction)">
+	<mat-form-field>
+		<mat-label>Kwota</mat-label>
+		<input
+			matInput
+			type="text"
+			currencyInput
+			required
+			name="amount"
+			inputmode="decimal"
+			[(ngModel)]="transaction.amount"
+			[textMax]="maxAmount"
+			[textMin]="0"
+			[isInclusive]="false"
+			#amount="ngModel"
+		/>
+		<mat-icon matPrefix>paid</mat-icon>
+
+		<mat-error *ngIf="amount.hasError('required')">
+			Kwota jest wymagana.
+		</mat-error>
+
+		<mat-error *ngIf="amount.hasError('max') && type.value === 'expense'">
+			Wybrany portfel <strong>nie posiada wystarczających środków</strong>.
+		</mat-error>
+
+		<mat-error *ngIf="amount.hasError('max') && type.value === 'income'">
+			Portfel <strong>nie może przechowywać</strong> więcej niż 1 milion.
+		</mat-error>
+
+		<mat-error *ngIf="amount.hasError('min')">
+			Wartość transakcji <strong>nie może</strong> być równa 0.
+		</mat-error>
+	</mat-form-field>
+
+	<div class="transaction-type">
+		<mat-radio-group
+			aria-label="Wybierz typ transakcji"
+			name="type"
+			[(ngModel)]="transaction.type"
+			#type="ngModel"
+			required
+		>
+			<mat-radio-button value="expense">Wydatek</mat-radio-button>
+			<mat-radio-button value="income">Przychód</mat-radio-button>
+		</mat-radio-group>
+
+		<div class="transaction-type-errors mat-small" *ngIf="type.touched">
+			<mat-error *ngIf="type.hasError('required')">
+				Typ transakcji jest <strong>wymagany</strong>.
+			</mat-error>
+		</div>
+	</div>
+
+	<mat-form-field>
+		<mat-label>Data</mat-label>
+		<input
+			matInput
+			type="text"
+			name="date"
+			[max]="maxDatepickerDate"
+			[matDatepicker]="datepicker"
+			required
+			[(ngModel)]="transaction.date"
+			#date="ngModel"
+		/>
+		<mat-icon matPrefix>today</mat-icon>
+
+		<mat-datepicker-toggle matSuffix [for]="datepicker">
+			<mat-icon matDatepickerToggleIcon>expand_more</mat-icon>
+		</mat-datepicker-toggle>
+		<mat-datepicker #datepicker></mat-datepicker>
+
+		<mat-error
+			*ngIf="date.hasError('required') && !date.hasError('matDatepickerParse')"
+		>
+			Data jest <strong>wymagana</strong>
+		</mat-error>
+
+		<mat-error
+			*ngIf="date.hasError('required') && date.hasError('matDatepickerParse')"
+		>
+			Data ma zły format lub wskazuje na przyszłość
+		</mat-error>
+	</mat-form-field>
+
+	<mat-form-field [class.no-content]="categories.length === 0">
+		<mat-label>Kategoria</mat-label>
+		<mat-select
+			name="category"
+			required
+			[(ngModel)]="transaction.category"
+			[compareWith]="compareCategories"
+			#category="ngModel"
+		>
+			<mat-option *ngFor="let category of categories" [value]="category">
+				{{ category.name }}
+			</mat-option>
+		</mat-select>
+		<mat-icon matPrefix>category</mat-icon>
+
+		<mat-error *ngIf="category.hasError('required')">
+			Kategoria jest wymagana
+		</mat-error>
+	</mat-form-field>
+
+	<ng-container
+		*ngIf="categories.length === 0; then noCategoriesInfo"
+	></ng-container>
+
+	<mat-form-field [class.no-content]="wallets.length === 0">
+		<mat-label>Portfel</mat-label>
+		<mat-select
+			name="wallet"
+			required
+			[(ngModel)]="transaction.wallet"
+			[compareWith]="compareWallets"
+			#wallet="ngModel"
+		>
+			<mat-option *ngFor="let wallet of wallets" [value]="wallet">
+				{{ wallet.name }} ({{ wallet.balance | currency }})
+			</mat-option>
+		</mat-select>
+		<mat-icon matPrefix>account_balance_wallet</mat-icon>
+
+		<mat-error *ngIf="wallet.hasError('required')">
+			Portfel jest wymagany
+		</mat-error>
+	</mat-form-field>
+
+	<ng-container *ngIf="wallets.length === 0; then noWalletsInfo"></ng-container>
+
+	<mat-form-field>
+		<mat-label>Opis</mat-label>
+		<input
+			matInput
+			type="text"
+			name="description"
+			minlength="3"
+			maxlength="128"
+			[(ngModel)]="transaction.description"
+			#description="ngModel"
+		/>
+		<mat-icon matPrefix>description</mat-icon>
+
+		<mat-error *ngIf="description.hasError('minlength')">
+			Opis <strong>musi posiadać</strong> przynjamniej
+			{{ description.getError('minlength').requiredLength }} znaków
+		</mat-error>
+		<mat-error *ngIf="description.hasError('maxlength')">
+			Opis <strong>nie może posiadać</strong> więcej niż
+			{{ description.getError('maxlength').requiredLength }} znaków
+		</mat-error>
+	</mat-form-field>
+
+	<div class="form-actions">
+		<ng-container *ngTemplateOutlet="templateRef; context: { ngForm: ngForm }">
+		</ng-container>
+	</div>
+</form>
+
+<ng-template #noCategoriesInfo>
+	<a
+		mat-flat-button
+		routerLink="/categories"
+		color="warn"
+		class="no-content-info"
+	>
+		Utwórz kategorię, aby kontynuować.
+	</a>
+</ng-template>
+
+<ng-template #noWalletsInfo>
+	<a mat-flat-button routerLink="/wallets" color="warn" class="no-content-info">
+		Utwórz portfel, aby kontynuować.
+	</a>
+</ng-template>

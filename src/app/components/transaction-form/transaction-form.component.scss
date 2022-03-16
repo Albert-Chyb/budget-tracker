@@ -1,0 +1,40 @@
+:host {
+	display: block;
+}
+
+.mat-form-field {
+	width: 100%;
+
+	&.no-content {
+		display: none;
+	}
+}
+
+.form-actions {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	column-gap: 1rem;
+}
+
+.no-content-info {
+	display: block;
+	margin-bottom: 2.35rem;
+}
+
+.transaction-type {
+	margin: {
+		top: 0.25rem;
+		bottom: 2rem;
+	}
+}
+
+.transaction-type-errors {
+	font-size: 1.1rem;
+	padding: 0 1em;
+	margin-top: 0.25rem;
+}
+
+.mat-radio-group {
+	display: flex;
+	justify-content: space-evenly;
+}

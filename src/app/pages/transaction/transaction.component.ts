@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { first, map, tap } from 'rxjs/operators';
-import { MAX_MONEY_AMOUNT_VALUE } from 'src/app/common/constants';
 import { ICategory } from 'src/app/common/interfaces/category';
 import {
 	ITransaction,
@@ -10,7 +9,6 @@ import {
 	TTransactionType,
 } from 'src/app/common/interfaces/transaction';
 import { IWallet } from 'src/app/common/interfaces/wallet';
-import { moneyAmountPattern } from 'src/app/common/validators/money-amount-pattern';
 import { CategoriesService } from 'src/app/services/categories/categories.service';
 import { TransactionsService } from 'src/app/services/transactions/transactions.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
@@ -31,11 +29,8 @@ export class TransactionComponent implements OnInit {
 
 	readonly transactionId = this._route.snapshot.paramMap.get('id');
 	readonly isInEditMode = !!this.transactionId;
-	readonly moneyAmountPattern = moneyAmountPattern;
 	readonly maxDatepickerDate = new Date();
 
-	selectedWallet: IWallet;
-	selectedCategory: ICategory;
 	formValue: ITransactionFormValue = {
 		amount: null,
 		type: 'expense',
@@ -97,34 +92,6 @@ export class TransactionComponent implements OnInit {
 			.pipe(first())
 			.toPromise();
 		return this._router.navigateByUrl('/transaction');
-	}
-
-	setWallet(wallet: IWallet) {
-		this.formValue.wallet = wallet?.id ?? null;
-		this.selectedWallet = wallet;
-	}
-
-	findWallet(wallets: IWallet[], id: string) {
-		return wallets.find(wallet => wallet.id === id);
-	}
-
-	setCategory(category: ICategory): void {
-		this.formValue.category = category?.id;
-		this.selectedCategory = category;
-		this.formValue.type = category?.defaultTransactionsType;
-	}
-
-	findCategory(categories: ICategory[], id: string): ICategory {
-		return categories.find(category => category.id === id);
-	}
-
-	get maxAmount(): number | null {
-		return this.formValue.type === 'expense'
-			? this.selectedWallet?.balance
-			: Math.max(
-					MAX_MONEY_AMOUNT_VALUE - (this.selectedWallet?.balance ?? 0),
-					0
-			  );
 	}
 
 	private _transactionToFormValue(
