@@ -94,12 +94,14 @@ export class TransactionFormComponent {
 	@Input('wallets') wallets: IWallet[];
 	@Input('categories') categories: ICategory[];
 
-	@Output('onSubmit') onSubmit = new EventEmitter<ITransactionFormValue>();
+	@Output('onSubmit') onSubmit = new EventEmitter<TransactionFormValue>();
 
 	@ContentChild(TemplateRef) templateRef: TemplateRef<any>;
 	@ViewChild(NgForm, { static: true }) ngForm: NgForm;
 
 	readonly maxDatepickerDate = new Date();
+
+	@Input('transaction')
 	transaction = new TransactionFormValue();
 
 	compareCategories(category1: ICategory, category2: ICategory): boolean {

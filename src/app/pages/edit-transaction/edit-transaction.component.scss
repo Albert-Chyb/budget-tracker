@@ -1,0 +1,7 @@
+@use '../../sass/layout/containers';
+
+:host {
+	@include containers.make-container('sm');
+
+	display: block;
+}

@@ -10,9 +10,10 @@ import {
 	DEFAULT_QUERY_PARAMETERS,
 } from './guards/default-query-parameters/default-query-parameters.guard';
 import { CategoriesComponent } from './pages/categories/categories.component';
+import { CreateTransactionComponent } from './pages/create-transaction/create-transaction.component';
+import { EditTransactionComponent } from './pages/edit-transaction/edit-transaction.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
-import { TransactionComponent } from './pages/transaction/transaction.component';
 import { TransactionsComponent } from './pages/transactions/transactions.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 
@@ -64,7 +65,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'transaction',
-		component: TransactionComponent,
+		component: CreateTransactionComponent,
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
@@ -73,7 +74,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'transaction/:id',
-		component: TransactionComponent,
+		component: EditTransactionComponent,
 		canActivate: [AngularFireAuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,

@@ -51,6 +51,7 @@ import { PaginatedTransactionsTableComponent } from './components/paginated-tran
 import { PeriodPickerComponent } from './components/period-picker/period-picker.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { TransactionFormComponent } from './components/transaction-form/transaction-form.component';
 import { TransactionsTableComponent } from './components/transactions-table/transactions-table.component';
 import { WalletPickerComponent } from './components/wallet-picker/wallet-picker.component';
 import { WalletComponent } from './components/wallet/wallet.component';
@@ -64,18 +65,18 @@ import { FileSizeValidatorDirective } from './directives/file-size-validator/fil
 import { FileTypeValidatorDirective } from './directives/file-type-validator/file-type-validator.directive';
 import { GlobalFabDirective } from './directives/global-fab/global-fab.directive';
 import { MaxValidatorDirective } from './directives/max-validator/max-validator.directive';
+import { MinValidatorDirective } from './directives/min-validator/min-validator.directive';
 import { SelectOnFocusDirective } from './directives/select-on-focus/select-on-focus.directive';
 import { MatModule } from './mat.module';
 import { CategoriesComponent } from './pages/categories/categories.component';
+import { CreateTransactionComponent } from './pages/create-transaction/create-transaction.component';
+import { EditTransactionComponent } from './pages/edit-transaction/edit-transaction.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
-import { TransactionComponent } from './pages/transaction/transaction.component';
 import { TransactionsComponent } from './pages/transactions/transactions.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
-import { MinValidatorDirective } from './directives/min-validator/min-validator.directive';
-import { TransactionFormComponent } from './components/transaction-form/transaction-form.component';
 
 // TODO: Add Progressive Web App
 
@@ -142,7 +143,6 @@ const AppDateAdapterProvider: Provider = {
 		WalletPickerComponent,
 		AlertComponent,
 		GlobalFabComponent,
-		TransactionComponent,
 
 		SelectOnFocusDirective,
 		ClueIfDirective,
@@ -161,8 +161,10 @@ const AppDateAdapterProvider: Provider = {
 		PaginatedTransactionsTableComponent,
 		PaginatedFirestoreCollectionTableComponent,
 		CurrencyInputDirective,
-  MinValidatorDirective,
-  TransactionFormComponent,
+		MinValidatorDirective,
+		TransactionFormComponent,
+		CreateTransactionComponent,
+		EditTransactionComponent,
 	],
 	imports: [
 		BrowserModule,
