@@ -1,4 +1,4 @@
-<ng-container *ngIf="user$ | async as user; else unauthorized">
+<ng-container *ngIf="user$ | async as user; else unauthenticated">
 	<section class="user" *ngIf="!user.isAnonymous; else isAnonymous">
 		<div class="user-avatar">
 			<img [src]="user.photoURL" alt="Zdjęcie profilowe" />
@@ -32,7 +32,7 @@
 	</mat-nav-list>
 </ng-container>
 
-<ng-template #unauthorized>
+<ng-template #unauthenticated>
 	<div class="login-info">
 		<a mat-raised-button color="accent" routerLink="/login">Zaloguj się</a>
 	</div>
