@@ -46,7 +46,6 @@ import { MainNavbarComponent } from './components/main-navbar/main-navbar.compon
 import { MainSidenavComponent } from './components/main-sidenav/main-sidenav.component';
 import { NewCategoryDialogComponent } from './components/new-category-dialog/new-category-dialog.component';
 import { NewWalletDialogComponent } from './components/new-wallet-dialog/new-wallet-dialog.component';
-import { PaginatedFirestoreCollectionTableComponent } from './components/paginated-firestore-collection-table/paginated-firestore-collection-table.component';
 import { PaginatedTransactionsTableComponent } from './components/paginated-transactions-table/paginated-transactions-table.component';
 import { PeriodPickerComponent } from './components/period-picker/period-picker.component';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
@@ -60,6 +59,7 @@ import {
 	ClueIfDirective,
 	CLUES_DATASETS,
 } from './directives/clue-if/clue-if.directive';
+import { CollectionPaginatorDirective } from './directives/collection-paginator/collection-paginator.directive';
 import { CurrencyInputDirective } from './directives/currency-input/currency-input.directive';
 import { FileSizeValidatorDirective } from './directives/file-size-validator/file-size-validator.directive';
 import { FileTypeValidatorDirective } from './directives/file-type-validator/file-type-validator.directive';
@@ -159,12 +159,12 @@ const AppDateAdapterProvider: Provider = {
 		TransactionsTableComponent,
 		TransactionsComponent,
 		PaginatedTransactionsTableComponent,
-		PaginatedFirestoreCollectionTableComponent,
 		CurrencyInputDirective,
 		MinValidatorDirective,
 		TransactionFormComponent,
 		CreateTransactionComponent,
 		EditTransactionComponent,
+		CollectionPaginatorDirective,
 	],
 	imports: [
 		BrowserModule,

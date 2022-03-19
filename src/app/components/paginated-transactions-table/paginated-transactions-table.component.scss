@@ -1,3 +1,14 @@
 :host {
 	display: block;
+	position: relative;
+}
+
+.loader-backdrop {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0 0 0 / 0.2);
 }

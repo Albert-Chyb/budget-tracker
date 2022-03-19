@@ -1,13 +1,21 @@
-<ng-container *ngIf="data$ | async as data">
-	<paginated-firestore-collection-table
-		[dataSource]="dataSource"
-		[length]="data.transactionsCount"
-		*clueIf="data.transactionsCount === 0"
-	>
+<ng-container *ngIf="data$ | loading | async as data">
+	<ng-container *clueIf="data.transactionsCount === 0">
 		<transactions-table
 			[transactions]="dataSource"
 			[categories]="data.categories"
 			[wallets]="data.wallets"
 		></transactions-table>
-	</paginated-firestore-collection-table>
+
+		<mat-paginator
+			[dataSource]="dataSource"
+			[length]="data.transactionsCount"
+			[pageSize]="10"
+			[pageSizeOptions]="[5, 10, 25, 50, 100]"
+			collection-paginator
+		></mat-paginator>
+
+		<div *ngIf="dataSource.isLoading$ | async" class="loader-backdrop">
+			<mat-spinner></mat-spinner>
+		</div>
+	</ng-container>
 </ng-container>
