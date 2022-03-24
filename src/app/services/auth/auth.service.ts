@@ -58,13 +58,13 @@ export class AuthService {
 	}
 
 	private async _executeAuthorization(
-		handler: () => Promise<any>
+		handler: () => Promise<firebase.auth.UserCredential>
 	): Promise<[firebase.auth.UserCredential | null, FirebaseError | null]> {
 		let credential: firebase.auth.UserCredential | null = null;
 		let error: FirebaseError | null = null;
 
 		try {
-			await handler();
+			credential = await handler();
 
 			// Wait until user data of the newly logged in user is stored in the user$ observable (only then app can be sure that the user is logged in).
 			await this._user.user$
