@@ -35,9 +35,10 @@ export class AuthService {
 		return this._executeAuthorization(() => this._afAuth.signInAnonymously());
 	}
 
-	async convertAnonymousAccountToPermanent() {
+	async upgradeAnonymousAccount() {
 		const user = await this._afAuth.currentUser;
-		if (!user) throw new Error('User is not logged in !');
+		if (!user) throw new Error('User is not logged in.');
+		if (!user.isAnonymous) throw new Error('Current account is not anonymous.');
 
 		const googleProvider = new firebase.auth.GoogleAuthProvider();
 
@@ -73,8 +74,6 @@ export class AuthService {
 					take(1)
 				)
 				.toPromise();
-
-			this._router.navigateByUrl('/');
 		} catch (ex) {
 			error = new FirebaseError(ex as any);
 			this._errorHandler.handleError(error);
