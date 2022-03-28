@@ -6,19 +6,30 @@
 	width: vars.$sidenav-width;
 }
 
-.user {
-	padding: vars.$global-spacing 0rem;
+.sidenav-section {
+	padding: vars.$global-spacing;
 
+	& *:not(:first-child) {
+		margin-top: vars.$global-spacing;
+	}
+
+	.mat-button {
+		width: 100%;
+	}
+}
+
+.user {
 	&-avatar {
-		max-height: 10rem;
+		aspect-ratio: 1 / 1;
 		max-width: 10rem;
 		margin: 0px auto;
 
 		img {
 			display: block;
 			width: 100%;
-			height: auto;
+			height: 100%;
 			border-radius: 50%;
+			object-fit: cover;
 		}
 	}
 
@@ -26,28 +37,8 @@
 	&-email {
 		@include ellipsis.text-ellipsis();
 
-		margin: 0px auto;
-		margin-top: vars.$global-spacing;
 		text-align: center;
 	}
-
-	&-name {
-		width: 17ch;
-	}
-
-	&-email {
-		margin-top: 0.5rem;
-		width: 30ch;
-	}
-}
-
-.login-info {
-	text-align: center;
-	margin-top: 3rem;
-}
-
-.anonymous-account-info {
-	padding: 1rem;
 }
 
 // The height of a single material list item.

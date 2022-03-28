@@ -2,9 +2,10 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	EventEmitter,
-	OnInit,
 	Output,
 } from '@angular/core';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoadingService } from 'src/app/services/loading/loading.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -13,8 +14,12 @@ import { UserService } from 'src/app/services/user/user.service';
 	styleUrls: ['./sidenav.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavComponent implements OnInit {
-	constructor(private readonly _user: UserService) {}
+export class SidenavComponent {
+	constructor(
+		private readonly _user: UserService,
+		private readonly _auth: AuthService,
+		private readonly _loading: LoadingService
+	) {}
 
 	@Output('onItemClick') onItemClick = new EventEmitter<void>();
 
@@ -48,5 +53,7 @@ export class SidenavComponent implements OnInit {
 
 	user$ = this._user.user$;
 
-	ngOnInit(): void {}
+	upgradeAccount() {
+		return this._loading.add(this._auth.upgradeAnonymousAccount());
+	}
 }

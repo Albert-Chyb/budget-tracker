@@ -23,7 +23,9 @@ export class AuthService {
 		map(user => !!user)
 	);
 
-	async loginWithGoogle() {
+	async loginWithGoogle(): Promise<
+		[firebase.auth.UserCredential, FirebaseError]
+	> {
 		const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 		return this._executeAuthorization(() =>
@@ -31,21 +33,39 @@ export class AuthService {
 		);
 	}
 
-	async loginAnonymously() {
+	async loginAnonymously(): Promise<
+		[firebase.auth.UserCredential, FirebaseError]
+	> {
 		return this._executeAuthorization(() => this._afAuth.signInAnonymously());
 	}
 
-	async upgradeAnonymousAccount() {
+	async upgradeAnonymousAccount(): Promise<firebase.auth.UserCredential> {
 		const user = await this._afAuth.currentUser;
 		if (!user) throw new Error('User is not logged in.');
 		if (!user.isAnonymous) throw new Error('Current account is not anonymous.');
 
 		const googleProvider = new firebase.auth.GoogleAuthProvider();
+		let credential;
 
-		return this._executeAuthorization(() => user.linkWithPopup(googleProvider));
+		try {
+			credential = await user.linkWithPopup(googleProvider);
+		} catch (error) {
+			this._errorHandler.handleError(new FirebaseError(error as any));
+			return Promise.reject(error);
+		}
+
+		const { displayName, photoURL } = credential.user.providerData[0];
+
+		await credential.user.updateProfile({
+			displayName: displayName ?? '',
+			photoURL: photoURL ?? '',
+		});
+		await this._afAuth.updateCurrentUser(credential.user);
+
+		return credential;
 	}
 
-	async logout() {
+	async logout(): Promise<void> {
 		await this._afAuth.signOut();
 		// Wait until user$ observable emits null which means that user data is no longer present (only then app can be sure that the user is logged out).
 		await this._user.user$
@@ -82,7 +102,9 @@ export class AuthService {
 		return [credential, error];
 	}
 
-	private _signInWithProvider(provider: firebase.auth.AuthProvider) {
+	private _signInWithProvider(
+		provider: firebase.auth.AuthProvider
+	): Promise<firebase.auth.UserCredential> {
 		return this._afAuth.signInWithPopup(provider);
 	}
 

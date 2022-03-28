@@ -1,10 +1,13 @@
 <ng-container *ngIf="user$ | async as user; else unauthenticated">
-	<section class="user" *ngIf="!user.isAnonymous; else isAnonymous">
+	<section
+		class="user sidenav-section"
+		*ngIf="!user.isAnonymous; else isAnonymous"
+	>
 		<div class="user-avatar">
 			<img [src]="user.photoURL" alt="Zdjęcie profilowe" />
 		</div>
 
-		<div class="user-name mat-headline">
+		<div class="user-name mat-title">
 			{{ user.displayName }}
 		</div>
 
@@ -33,14 +36,19 @@
 </ng-container>
 
 <ng-template #unauthenticated>
-	<div class="login-info">
-		<a mat-raised-button color="accent" routerLink="/login">Zaloguj się</a>
-	</div>
+	<section class="sidenav-section">
+		<a mat-button color="accent" routerLink="/login">Zaloguj się</a>
+	</section>
 </ng-template>
 
 <ng-template #isAnonymous>
-	<p class="anonymous-account-info">
-		Jesteś zalogowany jako gość, przejdź do strony profilowej, aby założyć
-		konto.
-	</p>
+	<section class="sidenav-section">
+		<p class="mat-small">
+			Jesteś zalogowany jako gość. Kliknij w przycisk poniżej, aby założyć stałe
+			konto.
+		</p>
+		<button type="button" mat-button color="accent" (click)="upgradeAccount()">
+			Utwórz konto
+		</button>
+	</section>
 </ng-template>
