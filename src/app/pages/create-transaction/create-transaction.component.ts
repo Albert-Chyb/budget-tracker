@@ -30,8 +30,7 @@ export class CreateTransactionComponent {
 
 	createTransaction(transaction: ITransactionCreatePayload) {
 		this._loading
-			.add(this._transactions.create(transaction))
-			.pipe(first())
+			.add(this._transactions.create(transaction).pipe(first()))
 			.subscribe(() => this._router.navigateByUrl('/'));
 	}
 
