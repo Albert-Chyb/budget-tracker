@@ -3,7 +3,12 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
 import { from, Observable, of } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import {
+	distinctUntilChanged,
+	map,
+	shareReplay,
+	switchMap,
+} from 'rxjs/operators';
 import {
 	IUser,
 	IUserBase,
@@ -32,6 +37,11 @@ export class UserService {
 	}
 
 	private _user$: Observable<IUser | null>;
+	private readonly _uid$ = this._afAuth.authState.pipe(
+		map(user => user?.uid),
+		distinctUntilChanged(),
+		shareReplay(1)
+	);
 
 	/**
 	 * Gets currently logged in user's id (promise way).
@@ -50,7 +60,7 @@ export class UserService {
 	 * @returns Observable of currently logged in user.
 	 */
 	getUid$(): Observable<string | null> {
-		return this.user$.pipe(map(user => user?.uid));
+		return this._uid$;
 	}
 
 	/**
