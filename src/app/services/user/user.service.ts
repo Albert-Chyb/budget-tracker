@@ -20,7 +20,7 @@ export class UserService {
 		private readonly _afAuth: AngularFireAuth,
 		private readonly _afFirestore: AngularFirestore
 	) {
-		this._user$ = this._afAuth.authState.pipe(
+		this._user$ = this._afAuth.user.pipe(
 			switchMap(user =>
 				user ? from(this._updateOrCreateUserData(user)) : of(null)
 			),
