@@ -7,7 +7,7 @@ import {
 } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat';
 import { from, Observable } from 'rxjs';
-import { map, mapTo, switchMap } from 'rxjs/operators';
+import { map, mapTo, shareReplay, switchMap } from 'rxjs/operators';
 import {
 	FirestoreDataConverter,
 	QueryDocumentSnapshot,
@@ -116,7 +116,8 @@ export class FirestoreCollection {
 					.ref.withConverter(this._converter);
 
 				return this._afStore.collection(collRef);
-			})
+			}),
+			shareReplay(1)
 		);
 	}
 
