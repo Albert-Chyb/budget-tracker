@@ -63,7 +63,7 @@ export class WalletsComponent {
 			.toPromise();
 
 		if (data)
-			this._loading.add(this._wallets.create(data)).pipe(first()).subscribe();
+			this._loading.add(this._wallets.create(data).pipe(first())).subscribe();
 	}
 
 	trackById(index: number, wallet: IWallet) {
