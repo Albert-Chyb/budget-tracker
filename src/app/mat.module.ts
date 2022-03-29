@@ -24,14 +24,22 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+	MatSnackBarConfig,
+	MatSnackBarModule,
+	MAT_SNACK_BAR_DEFAULT_OPTIONS,
+} from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
+const MAT_FORM_FIELD_OPTIONS: MatFormFieldDefaultOptions = {
 	appearance: 'outline',
+};
+
+const MAT_SNACKBAR_OPTIONS: MatSnackBarConfig = {
+	duration: 4000,
 };
 
 @NgModule({
@@ -68,10 +76,12 @@ const MAT_FORM_FIELD_SETTINGS: MatFormFieldDefaultOptions = {
 	providers: [
 		{
 			provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-			useValue: MAT_FORM_FIELD_SETTINGS,
+			useValue: MAT_FORM_FIELD_OPTIONS,
+		},
+		{
+			provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+			useValue: MAT_SNACKBAR_OPTIONS,
 		},
 	],
 })
-export class MatModule {
-	constructor() {}
-}
+export class MatModule {}
