@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
@@ -8,28 +8,20 @@ import { LoadingService } from 'src/app/services/loading/loading.service';
 	styleUrls: ['./login.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 	constructor(
 		private readonly _auth: AuthService,
 		private readonly _router: Router,
 		private readonly _loading: LoadingService
 	) {}
 
-	ngOnInit(): void {}
-
 	async loginWithGoogle() {
-		this._loginUser(this._auth.loginWithGoogle());
+		await this._loading.add(this._auth.loginWithGoogle());
+		this._router.navigateByUrl('/');
 	}
 
 	async loginAnonymously() {
-		this._loginUser(this._auth.loginAnonymously());
-	}
-
-	private async _loginUser(auth: Promise<any>) {
-		const [, error] = await this._loading.add(auth);
-
-		if (!error) {
-			this._router.navigateByUrl('/');
-		}
+		await this._loading.add(this._auth.loginAnonymously());
+		this._router.navigateByUrl('/');
 	}
 }

@@ -1,11 +1,18 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import {
+	Auth,
+	GoogleAuthProvider,
+	linkWithPopup,
+	signInAnonymously,
+	signInWithPopup,
+	updateCurrentUser,
+	updateProfile,
+	user,
+	UserCredential,
+} from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import firebase from 'firebase/compat/app';
 import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
-import { FirebaseError } from 'src/app/common/errors/firebase-errors';
-import { GlobalErrorHandler } from 'src/app/common/global-error-handler';
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -13,60 +20,51 @@ import { UserService } from '../user/user.service';
 })
 export class AuthService {
 	constructor(
-		private readonly _afAuth: AngularFireAuth,
-		private readonly _errorHandler: GlobalErrorHandler,
+		private readonly _afAuth: Auth,
 		private readonly _user: UserService,
 		private readonly _router: Router
 	) {}
 
-	private readonly _isLoggedIn$: Observable<boolean> = this._afAuth.user.pipe(
+	private readonly _isLoggedIn$: Observable<boolean> = user(this._afAuth).pipe(
 		map(user => !!user)
 	);
 
-	async loginWithGoogle(): Promise<
-		[firebase.auth.UserCredential, FirebaseError]
-	> {
-		const googleProvider = new firebase.auth.GoogleAuthProvider();
+	loginWithGoogle(): Promise<UserCredential> {
+		const googleProvider = new GoogleAuthProvider();
 
 		return this._executeAuthorization(() =>
-			this._signInWithProvider(googleProvider)
+			signInWithPopup(this._afAuth, googleProvider)
 		);
 	}
 
-	async loginAnonymously(): Promise<
-		[firebase.auth.UserCredential, FirebaseError]
-	> {
-		return this._executeAuthorization(() => this._afAuth.signInAnonymously());
+	loginAnonymously(): Promise<UserCredential> {
+		return this._executeAuthorization(() => signInAnonymously(this._afAuth));
 	}
 
-	async upgradeAnonymousAccount(): Promise<firebase.auth.UserCredential> {
-		const user = await this._afAuth.currentUser;
+	async upgradeAnonymousAccount(): Promise<UserCredential> {
+		const user = this._afAuth.currentUser;
 		if (!user) throw new Error('User is not logged in.');
 		if (!user.isAnonymous) throw new Error('Current account is not anonymous.');
 
-		const googleProvider = new firebase.auth.GoogleAuthProvider();
-		let credential;
-
-		try {
-			credential = await user.linkWithPopup(googleProvider);
-		} catch (error) {
-			this._errorHandler.handleError(new FirebaseError(error as any));
-			return Promise.reject(error);
-		}
-
+		const googleProvider = new GoogleAuthProvider();
+		const credential = await linkWithPopup(
+			this._afAuth.currentUser,
+			googleProvider
+		);
 		const { displayName, photoURL } = credential.user.providerData[0];
 
-		await credential.user.updateProfile({
+		await updateProfile(this._afAuth.currentUser, {
 			displayName: displayName ?? '',
 			photoURL: photoURL ?? '',
 		});
-		await this._afAuth.updateCurrentUser(credential.user);
+		await updateCurrentUser(this._afAuth, credential.user);
 
 		return credential;
 	}
 
 	async logout(): Promise<void> {
 		await this._afAuth.signOut();
+
 		// Wait until user$ observable emits null which means that user data is no longer present (only then app can be sure that the user is logged out).
 		await this._user.user$
 			.pipe(
@@ -79,33 +77,19 @@ export class AuthService {
 	}
 
 	private async _executeAuthorization(
-		handler: () => Promise<firebase.auth.UserCredential>
-	): Promise<[firebase.auth.UserCredential | null, FirebaseError | null]> {
-		let credential: firebase.auth.UserCredential | null = null;
-		let error: FirebaseError | null = null;
+		handler: () => Promise<UserCredential>
+	): Promise<UserCredential> {
+		const credential: UserCredential = await handler();
 
-		try {
-			credential = await handler();
+		// Wait until user data of the newly logged in user is stored in the user$ observable (only then app can be sure that the user is logged in).
+		await this._user.user$
+			.pipe(
+				filter(user => !!user),
+				take(1)
+			)
+			.toPromise();
 
-			// Wait until user data of the newly logged in user is stored in the user$ observable (only then app can be sure that the user is logged in).
-			await this._user.user$
-				.pipe(
-					filter(user => !!user),
-					take(1)
-				)
-				.toPromise();
-		} catch (ex) {
-			error = new FirebaseError(ex as any);
-			this._errorHandler.handleError(error);
-		}
-
-		return [credential, error];
-	}
-
-	private _signInWithProvider(
-		provider: firebase.auth.AuthProvider
-	): Promise<firebase.auth.UserCredential> {
-		return this._afAuth.signInWithPopup(provider);
+		return credential;
 	}
 
 	get isLoggedIn$() {

@@ -1,7 +1,6 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import firebase from 'firebase/compat/app';
 import { ErrorsService } from '../services/errors/errors.service';
-import { FirebaseError } from './errors/firebase-errors';
 
 @Injectable({
 	providedIn: 'root',
@@ -15,11 +14,11 @@ export class GlobalErrorHandler implements ErrorHandler {
 		const actualThrown =
 			'rejection' in unhandled ? unhandled.rejection : unhandled;
 
-		if (actualThrown instanceof FirebaseError) {
+		if (this._isFirebaseError(actualThrown)) {
 			this._handleFirebaseError(<any>actualThrown);
 		} else {
 			// Throw other errors back to the console.
-			throw unhandled;
+			console.error(actualThrown);
 		}
 	}
 
@@ -54,6 +53,10 @@ export class GlobalErrorHandler implements ErrorHandler {
 		}
 
 		if (msg) this._showMessage(msg);
+	}
+
+	private _isFirebaseError(error: any): boolean {
+		return 'name' in error && error?.name === 'FirebaseError';
 	}
 
 	private _showMessage(message: string) {

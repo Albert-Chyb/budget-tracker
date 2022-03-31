@@ -11,10 +11,6 @@ import {
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire/compat';
-import {
-	AngularFireAuthModule,
-	USE_EMULATOR as USE_AUTH_EMULATOR,
-} from '@angular/fire/compat/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
 import {
 	AngularFireFunctionsModule,
@@ -107,10 +103,6 @@ const FirestoreEmulatorProvider: Provider = {
 	provide: USE_FIRESTORE_EMULATOR,
 	useValue: environment.firestoreEmulators.firestore,
 };
-const FirebaseAuthEmulatorProvider: Provider = {
-	provide: USE_AUTH_EMULATOR,
-	useValue: ['http://' + environment.firestoreEmulators.auth.join(':')],
-};
 const FirebaseCloudFunctionsEmulatorsProvider: Provider = {
 	provide: USE_CLOUD_FUNCTIONS_EMULATOR,
 	useValue: environment.firestoreEmulators.functions,
@@ -185,7 +177,6 @@ const AppDateAdapterProvider: Provider = {
 		BrowserAnimationsModule,
 		MatModule,
 		AngularFireModule.initializeApp(environment.firestore),
-		AngularFireAuthModule,
 		FormsModule,
 		AngularFireStorageModule,
 		AngularFireFunctionsModule,
@@ -239,7 +230,6 @@ const AppDateAdapterProvider: Provider = {
 	providers: [
 		PolishLocaleProvider,
 		PolishCurrencyCodeProvider,
-		FirebaseAuthEmulatorProvider,
 		FirestoreEmulatorProvider,
 		ErrorHandlerProvider,
 		UserInitializerProvider,
