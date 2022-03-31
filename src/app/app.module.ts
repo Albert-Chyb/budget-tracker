@@ -8,6 +8,8 @@ import {
 	NgModule,
 	Provider,
 } from '@angular/core';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire/compat';
 import {
 	AngularFireAuthModule,
@@ -20,6 +22,21 @@ import {
 	USE_EMULATOR as USE_CLOUD_FUNCTIONS_EMULATOR,
 } from '@angular/fire/compat/functions';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import {
+	connectFirestoreEmulator,
+	getFirestore,
+	provideFirestore,
+} from '@angular/fire/firestore';
+import {
+	connectFunctionsEmulator,
+	getFunctions,
+	provideFunctions,
+} from '@angular/fire/functions';
+import {
+	connectStorageEmulator,
+	getStorage,
+	provideStorage,
+} from '@angular/fire/storage';
 import { FormsModule } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
@@ -77,8 +94,6 @@ import { TransactionsComponent } from './pages/transactions/transactions.compone
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
 import { UserService } from './services/user/user.service';
-
-// TODO: Add Progressive Web App
 
 const PolishLocaleProvider: Provider = {
 	provide: LOCALE_ID,
@@ -143,7 +158,6 @@ const AppDateAdapterProvider: Provider = {
 		WalletPickerComponent,
 		AlertComponent,
 		GlobalFabComponent,
-
 		SelectOnFocusDirective,
 		ClueIfDirective,
 		GlobalFabDirective,
@@ -151,7 +165,6 @@ const AppDateAdapterProvider: Provider = {
 		BlackListValidatorDirective,
 		FileTypeValidatorDirective,
 		FileSizeValidatorDirective,
-
 		LoadingPipe,
 		PeriodPickerComponent,
 		GroupedTransactionsChartComponent,
@@ -177,6 +190,51 @@ const AppDateAdapterProvider: Provider = {
 		AngularFireStorageModule,
 		AngularFireFunctionsModule,
 		NgChartsModule,
+		provideFirebaseApp(() => initializeApp(environment.firestore)),
+		provideAuth(() => {
+			const auth = getAuth();
+
+			if (environment.firestoreEmulators.useEmulators) {
+				const [host, port] = environment.firestoreEmulators.auth;
+
+				connectAuthEmulator(auth, `http://${host}:${port}`);
+			}
+
+			return auth;
+		}),
+		provideFirestore(() => {
+			const firestore = getFirestore();
+
+			if (environment.firestoreEmulators.useEmulators) {
+				const [host, port] = environment.firestoreEmulators.firestore;
+
+				connectFirestoreEmulator(firestore, <string>host, <number>port);
+			}
+
+			return firestore;
+		}),
+		provideStorage(() => {
+			const storage = getStorage();
+
+			if (environment.firestoreEmulators.useEmulators) {
+				const [host, port] = environment.firestoreEmulators.storage;
+
+				connectStorageEmulator(storage, <string>host, <number>port);
+			}
+
+			return storage;
+		}),
+		provideFunctions(() => {
+			const functions = getFunctions();
+
+			if (environment.firestoreEmulators.useEmulators) {
+				const [host, port] = environment.firestoreEmulators.functions;
+
+				connectFunctionsEmulator(functions, <string>host, <number>port);
+			}
+
+			return functions;
+		}),
 	],
 	providers: [
 		PolishLocaleProvider,
