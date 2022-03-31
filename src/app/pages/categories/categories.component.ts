@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { getDownloadURL } from '@angular/fire/storage';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { filter, first, map, take } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 import { ICategory, ICategoryBase } from 'src/app/common/interfaces/category';
 import {
 	INewCategoryDialogResult,
@@ -98,14 +99,12 @@ export class CategoriesComponent {
 		let iconPath: string;
 
 		if (iconChanged) {
-			const { URL, path } = await this._loading.add(
+			const { url, path } = await this._loading.add(
 				this._uploadIcon(category.icon, id)
 			);
 
-			const [url, filePath] = await Promise.all([URL, path]);
-
 			iconUrl = url;
-			iconPath = filePath;
+			iconPath = path;
 		}
 
 		const payload: ICategoryBase = {
@@ -155,21 +154,20 @@ export class CategoriesComponent {
 	private async _uploadIcon(
 		icon: File,
 		id: string
-	): Promise<{ URL: Promise<string>; path: Promise<string> }> {
+	): Promise<{ url: string; path: string }> {
 		const upload = await this._storage.upload('categories-icons', icon, id);
-		const URL = upload.getURL$.toPromise();
-		const path = upload.snapshot$
+
+		return upload.snapshot$
 			.pipe(
 				filter(snap => snap.bytesTransferred === snap.totalBytes),
-				map(snap => snap.ref.fullPath),
-				take(1)
+				switchMap(snap =>
+					from(getDownloadURL(snap.ref)).pipe(
+						map(url => ({ path: snap.ref.fullPath, url }))
+					)
+				),
+				first()
 			)
 			.toPromise();
-
-		return {
-			URL,
-			path,
-		};
 	}
 
 	private _handleError(error: any) {

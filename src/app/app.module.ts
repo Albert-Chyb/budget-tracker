@@ -17,7 +17,6 @@ import {
 	REGION,
 	USE_EMULATOR as USE_CLOUD_FUNCTIONS_EMULATOR,
 } from '@angular/fire/compat/functions';
-import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import {
 	connectFirestoreEmulator,
 	getFirestore,
@@ -38,7 +37,6 @@ import { DateAdapter } from '@angular/material/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import firebase from 'firebase/compat/app';
 import { NgChartsModule } from 'ng2-charts';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -89,6 +87,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { TransactionsComponent } from './pages/transactions/transactions.component';
 import { WalletsComponent } from './pages/wallets/wallets.component';
 import { LoadingPipe } from './pipes/loading/loading.pipe';
+import { AuthService } from './services/auth/auth.service';
 import { UserService } from './services/user/user.service';
 
 const PolishLocaleProvider: Provider = {
@@ -118,7 +117,7 @@ const ErrorHandlerProvider: Provider = {
 const UserInitializerProvider: Provider = {
 	provide: APP_INITIALIZER,
 	useFactory: initializeUser,
-	deps: [UserService],
+	deps: [UserService, AuthService],
 	multi: true,
 };
 const CluesDatasetsProvider: Provider = {
@@ -178,7 +177,6 @@ const AppDateAdapterProvider: Provider = {
 		MatModule,
 		AngularFireModule.initializeApp(environment.firestore),
 		FormsModule,
-		AngularFireStorageModule,
 		AngularFireFunctionsModule,
 		NgChartsModule,
 		provideFirebaseApp(() => initializeApp(environment.firestore)),
@@ -247,10 +245,5 @@ const AppDateAdapterProvider: Provider = {
 export class AppModule {
 	constructor() {
 		registerLocaleData(localePL, 'pl-PL');
-
-		if (environment.firestoreEmulators.useEmulators) {
-			const [host, port] = environment.firestoreEmulators.storage;
-			firebase.storage().useEmulator(<string>host, <number>port);
-		}
 	}
 }
