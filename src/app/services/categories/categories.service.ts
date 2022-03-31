@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AngularFireFunctions } from '@angular/fire/compat/functions';
-import { Observable } from 'rxjs';
+import { Functions, httpsCallable } from '@angular/fire/functions';
+import { from, Observable } from 'rxjs';
 import { map, mapTo } from 'rxjs/operators';
 import { FirebaseCallableFunctionsNames } from 'src/app/common/firebase-callable-functions';
 import {
@@ -36,18 +36,19 @@ export class CategoriesService extends Collection<Methods>(...ALL_MIXINS) {
 	constructor(
 		afStore: AngularFirestore,
 		user: UserService,
-		private readonly _afFunctions: AngularFireFunctions
+		private readonly _afFunctions: Functions
 	) {
 		super(afStore, user.getUid$().pipe(map(uid => `/users/${uid}/categories`)));
 	}
 
 	delete(id: string): Observable<void> {
-		const deleteCategory = this._afFunctions.httpsCallable(
+		const deleteCategory = httpsCallable(
+			this._afFunctions,
 			FirebaseCallableFunctionsNames.DeleteCategory
 		);
 
-		return deleteCategory({ id }).pipe(
-			map(res => {
+		return from(deleteCategory({ id })).pipe(
+			map((res: any) => {
 				if (res.result === 'error') {
 					throw res;
 				}

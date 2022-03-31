@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AngularFireFunctions } from '@angular/fire/compat/functions';
-import { Observable } from 'rxjs';
+import { Functions, httpsCallable } from '@angular/fire/functions';
+import { from, Observable } from 'rxjs';
 import { map, mapTo } from 'rxjs/operators';
 import { FirebaseCallableFunctionsNames } from 'src/app/common/firebase-callable-functions';
 import {
@@ -37,7 +37,7 @@ export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 	constructor(
 		afStore: AngularFirestore,
 		user: UserService,
-		private readonly _afFunctions: AngularFireFunctions
+		private readonly _afFunctions: Functions
 	) {
 		super(
 			afStore,
@@ -47,13 +47,14 @@ export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 	}
 
 	delete(id: string): Observable<void> {
-		const deleteWallet = this._afFunctions.httpsCallable(
+		const deleteWallet = httpsCallable(
+			this._afFunctions,
 			FirebaseCallableFunctionsNames.DeleteWallet
 		);
-		const res$ = deleteWallet({ id });
+		const res$ = from(deleteWallet({ id }));
 
 		return res$.pipe(
-			map(res => {
+			map((res: any) => {
 				if (res.result === 'error') throw res;
 			}),
 			mapTo(null)

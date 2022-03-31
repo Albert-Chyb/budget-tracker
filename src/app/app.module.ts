@@ -11,12 +11,10 @@ import {
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire/compat';
-import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
 import {
-	AngularFireFunctionsModule,
-	REGION,
-	USE_EMULATOR as USE_CLOUD_FUNCTIONS_EMULATOR,
-} from '@angular/fire/compat/functions';
+	AngularFirestoreModule,
+	USE_EMULATOR as USE_FIRESTORE_EMULATOR,
+} from '@angular/fire/compat/firestore';
 import {
 	connectFirestoreEmulator,
 	getFirestore,
@@ -102,14 +100,6 @@ const FirestoreEmulatorProvider: Provider = {
 	provide: USE_FIRESTORE_EMULATOR,
 	useValue: environment.firestoreEmulators.firestore,
 };
-const FirebaseCloudFunctionsEmulatorsProvider: Provider = {
-	provide: USE_CLOUD_FUNCTIONS_EMULATOR,
-	useValue: environment.firestoreEmulators.functions,
-};
-const FirebaseRegionProvider: Provider = {
-	provide: REGION,
-	useValue: 'us-central1',
-};
 const ErrorHandlerProvider: Provider = {
 	provide: ErrorHandler,
 	useClass: GlobalErrorHandler,
@@ -177,8 +167,8 @@ const AppDateAdapterProvider: Provider = {
 		MatModule,
 		AngularFireModule.initializeApp(environment.firestore),
 		FormsModule,
-		AngularFireFunctionsModule,
 		NgChartsModule,
+		AngularFirestoreModule,
 		provideFirebaseApp(() => initializeApp(environment.firestore)),
 		provideAuth(() => {
 			const auth = getAuth();
@@ -232,8 +222,6 @@ const AppDateAdapterProvider: Provider = {
 		ErrorHandlerProvider,
 		UserInitializerProvider,
 		CluesDatasetsProvider,
-		FirebaseCloudFunctionsEmulatorsProvider,
-		FirebaseRegionProvider,
 		AppDateAdapterProvider,
 		{
 			provide: MatPaginatorIntl,
