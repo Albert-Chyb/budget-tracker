@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Auth, authState, user, User } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
 import { from, Observable, of } from 'rxjs';
@@ -22,10 +22,10 @@ import {
 })
 export class UserService {
 	constructor(
-		private readonly _afAuth: AngularFireAuth,
+		private readonly _afAuth: Auth,
 		private readonly _afFirestore: AngularFirestore
 	) {
-		this._user$ = this._afAuth.user.pipe(
+		this._user$ = user(this._afAuth).pipe(
 			switchMap(user =>
 				user ? from(this._updateOrCreateUserData(user)) : of(null)
 			),
@@ -37,7 +37,7 @@ export class UserService {
 	}
 
 	private _user$: Observable<IUser | null>;
-	private readonly _uid$ = this._afAuth.authState.pipe(
+	private readonly _uid$ = authState(this._afAuth).pipe(
 		map(user => user?.uid),
 		distinctUntilChanged(),
 		shareReplay(1)
@@ -49,7 +49,7 @@ export class UserService {
 	 * @returns Promise of currently logged in user.
 	 */
 	async getUid(): Promise<string | null> {
-		const user = await this._afAuth.currentUser;
+		const user = this._afAuth.currentUser;
 
 		return user?.uid;
 	}
@@ -68,9 +68,7 @@ export class UserService {
 	 * @param user Firebase user object
 	 * @returns Promise of firebase user object
 	 */
-	private async _updateOrCreateUserData(
-		user: firebase.User
-	): Promise<typeof user> {
+	private async _updateOrCreateUserData(user: User): Promise<typeof user> {
 		const userData: IUserBase = {
 			displayName: user.displayName || '',
 			email: user.email || '',
