@@ -1,4 +1,4 @@
-import { ErrorHandler, Injectable, Injector } from '@angular/core';
+import { ErrorHandler, Injectable, NgZone } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { ErrorsService } from '../services/errors/errors.service';
 
@@ -6,7 +6,10 @@ import { ErrorsService } from '../services/errors/errors.service';
 	providedIn: 'root',
 })
 export class GlobalErrorHandler implements ErrorHandler {
-	constructor(private readonly _injector: Injector) {}
+	constructor(
+		private readonly _errors: ErrorsService,
+		private readonly _zone: NgZone
+	) {}
 
 	handleError(unhandled: any) {
 		// Angular wraps unhandled errors in an Error object.
@@ -60,9 +63,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 	}
 
 	private _showMessage(message: string) {
-		const matSnackBar = this._injector.get(ErrorsService);
-
-		matSnackBar.show(message);
+		this._zone.run(() => this._errors.show(message));
 	}
 
 	private _handleUnknownError(error: any) {
