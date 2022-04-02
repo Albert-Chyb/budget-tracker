@@ -1,12 +1,18 @@
 import { DataSource } from '@angular/cdk/collections';
 import {
-	AngularFirestore,
-	AngularFirestoreCollection,
-	DocumentChangeAction,
+	CollectionReference,
+	collectionSnapshots,
+	endBefore,
+	FieldPath,
+	limit,
+	limitToLast,
+	orderBy,
+	OrderByDirection,
+	query,
+	QueryConstraint,
 	QueryDocumentSnapshot,
-	QueryFn,
-} from '@angular/fire/compat/firestore';
-import firebase from 'firebase/compat';
+	startAfter,
+} from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import {
 	debounceTime,
@@ -24,10 +30,9 @@ export interface IPageChangeEvent {
 
 export class PaginatedCollectionDataSource<T> implements DataSource<T> {
 	constructor(
-		private readonly _afStore: AngularFirestore,
-		private readonly _collection$: Observable<AngularFirestoreCollection<T>>,
-		private readonly _field: firebase.firestore.FieldPath | string,
-		private readonly _orderDirection: firebase.firestore.OrderByDirection
+		private readonly _collection$: Observable<CollectionReference<T>>,
+		private readonly _field: FieldPath | string,
+		private readonly _orderDirection: OrderByDirection
 	) {}
 
 	/** First document in the latest batch. */
@@ -81,19 +86,21 @@ export class PaginatedCollectionDataSource<T> implements DataSource<T> {
 		return this._onPageChange$.next({ direction: 'prev', pageSize });
 	}
 
-	private _setCursors(snapshots: DocumentChangeAction<T>[]) {
+	private _setCursors(snapshots: QueryDocumentSnapshot<T>[]) {
 		if (snapshots.length === 0) {
 			return;
 		}
 
-		this._firstSeen = snapshots[0].payload.doc;
-		this._lastSeen = snapshots[snapshots.length - 1].payload.doc;
+		this._firstSeen = snapshots[0];
+		this._lastSeen = snapshots[snapshots.length - 1];
 	}
 
-	private _convertSnapshotsIntoDocs(snapshots: DocumentChangeAction<T>[]): T[] {
+	private _convertSnapshotsIntoDocs(
+		snapshots: QueryDocumentSnapshot<T>[]
+	): T[] {
 		return snapshots.map(snap => ({
-			id: snap.payload.doc.id,
-			...snap.payload.doc.data(),
+			id: snap.id,
+			...snap.data(),
 		}));
 	}
 
@@ -101,36 +108,36 @@ export class PaginatedCollectionDataSource<T> implements DataSource<T> {
 	 * Gets the new batch of documents, relatively to the cursors.
 	 */
 	private _getNewBatch(pageChange: IPageChangeEvent) {
-		let queryFn: QueryFn;
+		let queries: QueryConstraint[];
 
 		switch (pageChange.direction) {
 			case 'first':
-				queryFn = queryBuilder =>
-					queryBuilder
-						.orderBy(this._field, this._orderDirection)
-						.limit(pageChange.pageSize);
+				queries = [
+					orderBy(this._field, this._orderDirection),
+					limit(pageChange.pageSize),
+				];
 				break;
 
 			case 'next':
-				queryFn = queryBuilder =>
-					queryBuilder
-						.orderBy(this._field, this._orderDirection)
-						.startAfter(this._lastSeen)
-						.limit(pageChange.pageSize);
+				queries = [
+					orderBy(this._field, this._orderDirection),
+					limit(pageChange.pageSize),
+					startAfter(this._lastSeen),
+				];
 				break;
 
 			case 'prev':
-				queryFn = queryBuilder =>
-					queryBuilder
-						.orderBy(this._field, this._orderDirection)
-						.endBefore(this._firstSeen)
-						.limitToLast(pageChange.pageSize);
+				queries = [
+					orderBy(this._field, this._orderDirection),
+					endBefore(this._firstSeen),
+					limitToLast(pageChange.pageSize),
+				];
 				break;
 		}
 
 		return this._collection$.pipe(
 			switchMap(collection =>
-				this._afStore.collection<T>(collection.ref, queryFn).snapshotChanges()
+				collectionSnapshots(query(collection, ...queries))
 			)
 		);
 	}

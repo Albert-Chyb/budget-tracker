@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { collection, doc, docData, Firestore } from '@angular/fire/firestore';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { WalletYearStatistics } from 'src/app/common/models/wallet-statistics';
@@ -11,23 +11,24 @@ import { UserService } from '../user/user.service';
 })
 export class WalletsStatisticsService {
 	constructor(
-		private readonly _afStore: AngularFirestore,
+		private readonly _afStore: Firestore,
 		private readonly _user: UserService
 	) {}
 
-	private readonly _collection$ = this._user.getUid$().pipe(
-		map(uid => {
-			const collRef = this._afStore.firestore
-				.collection(`users/${uid}/wallets-statistics/`)
-				.withConverter(new WalletStatisticsConverter());
-
-			return this._afStore.collection(collRef);
-		})
-	);
+	private readonly _collection$ = this._user
+		.getUid$()
+		.pipe(
+			map(uid =>
+				collection(
+					this._afStore,
+					`users/${uid}/wallets-statistics/`
+				).withConverter(new WalletStatisticsConverter())
+			)
+		);
 
 	year(year: number): Observable<WalletYearStatistics> {
 		return this._collection$.pipe(
-			switchMap(collection => collection.doc<any>(String(year)).valueChanges()),
+			switchMap(collection => docData(doc(collection, String(year)))),
 			map(statistics => new WalletYearStatistics(statistics, year))
 		);
 	}
@@ -35,9 +36,7 @@ export class WalletsStatisticsService {
 	wallet(walletId: string, year: number): Observable<WalletYearStatistics> {
 		return this._collection$.pipe(
 			switchMap(collection =>
-				collection
-					.doc<any>(`${year}/year-by-wallets/${walletId}`)
-					.valueChanges()
+				docData(doc(collection, `${year}/year-by-wallets/${walletId}`))
 			),
 			map(statistics => new WalletYearStatistics(statistics, year))
 		);

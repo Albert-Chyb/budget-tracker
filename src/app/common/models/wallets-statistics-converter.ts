@@ -1,27 +1,27 @@
-import firebase from 'firebase/compat';
-import { FirestoreDataConverter } from '../interfaces/firestore';
+import {
+	DocumentData,
+	FirestoreDataConverter,
+	QueryDocumentSnapshot,
+	SetOptions,
+	SnapshotOptions,
+} from '@angular/fire/firestore';
 import { IWalletPeriodStatistics } from '../interfaces/wallet-statistics';
 
 export class WalletStatisticsConverter
 	implements FirestoreDataConverter<IWalletPeriodStatistics>
 {
-	toFirestore(
-		modelObject: IWalletPeriodStatistics
-	): firebase.firestore.DocumentData;
+	toFirestore(modelObject: IWalletPeriodStatistics): DocumentData;
 	toFirestore(
 		modelObject: Partial<IWalletPeriodStatistics>,
-		options: firebase.firestore.SetOptions
-	): firebase.firestore.DocumentData;
-	toFirestore(
-		modelObject: any,
-		options?: any
-	): import('firebase/compat').default.firestore.DocumentData {
+		options: SetOptions
+	): DocumentData;
+	toFirestore(modelObject: any, options?: any): DocumentData {
 		throw new Error('The wallet statistics are read only.');
 	}
 
 	fromFirestore(
-		snapshot: firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>,
-		options: firebase.firestore.SnapshotOptions
+		snapshot: QueryDocumentSnapshot<DocumentData>,
+		options: SnapshotOptions
 	): IWalletPeriodStatistics {
 		const statistics = snapshot.data() as IWalletPeriodStatistics;
 

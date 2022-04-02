@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import {
 	ref,
 	Storage,
@@ -8,6 +8,7 @@ import {
 	UploadTaskSnapshot,
 } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
+import { generateUniqueString } from 'src/app/common/helpers/generateUniqueString';
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -17,7 +18,7 @@ export class StorageService {
 	constructor(
 		private readonly _afStorage: Storage,
 		private readonly _user: UserService,
-		private readonly _afStore: AngularFirestore
+		private readonly _afStore: Firestore
 	) {}
 
 	/**
@@ -29,7 +30,7 @@ export class StorageService {
 	 * @returns An object with useful observables.
 	 */
 	async upload(folder: string, file: File, name?: string) {
-		const fileName = name ?? this._afStore.createId();
+		const fileName = name ?? this._createId();
 		const uid = await this._user.getUid();
 		const reference = ref(this._afStorage, `${uid}/${folder}/${fileName}`);
 		const task = uploadBytesResumable(reference, file);
@@ -65,5 +66,9 @@ export class StorageService {
 				() => subscriber.complete()
 			);
 		});
+	}
+
+	private _createId() {
+		return generateUniqueString();
 	}
 }

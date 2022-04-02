@@ -1,5 +1,8 @@
-import firebase from 'firebase/compat/app';
-import { FirestoreDataConverter } from '../interfaces/firestore';
+import {
+	FirestoreDataConverter,
+	QueryDocumentSnapshot,
+	SnapshotOptions,
+} from '@angular/fire/firestore';
 import { IWallet, IWalletBase } from '../interfaces/wallet';
 
 export class FirestoreWalletConverter
@@ -12,8 +15,8 @@ export class FirestoreWalletConverter
 	}
 
 	fromFirestore(
-		snapshot: firebase.firestore.QueryDocumentSnapshot<IWalletBase>,
-		options: firebase.firestore.SnapshotOptions
+		snapshot: QueryDocumentSnapshot<IWalletBase>,
+		options: SnapshotOptions
 	): IWallet {
 		const data = snapshot.data();
 

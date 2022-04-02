@@ -1,4 +1,4 @@
-import { Timestamp } from './firestore';
+import { Timestamp } from '@angular/fire/firestore';
 
 export type TTransactionType = 'expense' | 'income';
 

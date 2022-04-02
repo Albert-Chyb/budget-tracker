@@ -1,18 +1,25 @@
 import {
-	AngularFirestore,
-	AngularFirestoreCollection,
-	AngularFirestoreDocument,
+	collection,
+	collectionData,
+	CollectionReference,
+	deleteDoc,
+	doc,
+	docData,
 	DocumentData,
-	QueryFn,
-} from '@angular/fire/compat/firestore';
-import firebase from 'firebase/compat';
+	DocumentReference,
+	Firestore,
+	FirestoreDataConverter,
+	getDoc,
+	query,
+	QueryConstraint,
+	QueryDocumentSnapshot,
+	setDoc,
+	SnapshotOptions,
+	updateDoc,
+} from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap } from 'rxjs/operators';
-import {
-	FirestoreDataConverter,
-	QueryDocumentSnapshot,
-} from '../interfaces/firestore';
-import { FirestoreTransactionConverter } from './firestore-transaction-converter';
+import { generateUniqueString } from '../helpers/generateUniqueString';
 
 type Constructor<T> = new (...args: any[]) => T;
 
@@ -35,7 +42,7 @@ export interface Create<T = unknown, K = unknown> {
 	 * @param data Document data
 	 * @param id Id of the document (generated automatically if not present).
 	 */
-	create(data: T, id?: string): Observable<AngularFirestoreDocument<K>>;
+	create(data: T, id?: string): Observable<DocumentReference<K>>;
 }
 
 /**
@@ -58,7 +65,7 @@ export interface List<T = unknown> {
 	/** Reads all documents from the database. */
 	list(): Observable<T[]>;
 
-	query(setQueriesFn: QueryFn): Observable<T[]>;
+	query(...queries: QueryConstraint[]): Observable<T[]>;
 }
 
 /**
@@ -91,7 +98,7 @@ export class FirestoreConverter implements FirestoreDataConverter<unknown> {
 
 	fromFirestore(
 		snapshot: QueryDocumentSnapshot<DocumentData>,
-		options: firebase.firestore.SnapshotOptions
+		options: SnapshotOptions
 	): { id: string } & unknown {
 		return {
 			id: snapshot.id,
@@ -102,27 +109,23 @@ export class FirestoreConverter implements FirestoreDataConverter<unknown> {
 
 /** Base class for all firestore collection mixins. */
 export class FirestoreCollection {
-	public readonly collection$: Observable<AngularFirestoreCollection<unknown>>;
+	public readonly collection$: Observable<CollectionReference<unknown>>;
 
 	constructor(
-		protected readonly _afStore: AngularFirestore,
+		protected readonly _afStore: Firestore,
 		private readonly _path$: Observable<string>,
-		private readonly _converter: FirestoreDataConverter<unknown> = new FirestoreConverter()
+		protected readonly _converter: FirestoreDataConverter<unknown> = new FirestoreConverter()
 	) {
 		this.collection$ = this._path$.pipe(
-			map(path => {
-				const collRef = this._afStore
-					.collection(path)
-					.ref.withConverter(this._converter);
-
-				return this._afStore.collection(collRef);
-			}),
+			map(path =>
+				collection(this._afStore, path).withConverter(this._converter)
+			),
 			shareReplay(1)
 		);
 	}
 
 	generateId(): string {
-		return this._afStore.createId();
+		return generateUniqueString();
 	}
 }
 
@@ -134,13 +137,13 @@ export function CreateMixin<TBase extends Constructor<FirestoreCollection>>(
 		create(
 			data: DocumentData,
 			id?: string
-		): Observable<AngularFirestoreDocument<unknown>> {
+		): Observable<DocumentReference<unknown>> {
 			return this.collection$.pipe(
 				switchMap(coll => {
 					const docId = id ?? this.generateId();
-					const docRef = coll.doc(docId);
+					const docRef = doc(coll, docId);
 
-					return from(docRef.set(data)).pipe(mapTo(docRef));
+					return from(setDoc(docRef, data)).pipe(mapTo(docRef));
 				})
 			);
 		}
@@ -155,11 +158,11 @@ export function ReadMixin<TBase extends Constructor<FirestoreCollection>>(
 		read(id: string, once = false): Observable<unknown> {
 			return this.collection$.pipe(
 				switchMap(coll => {
-					const docRef = coll.doc(id);
+					const docRef = doc(coll, id);
 
 					return once
-						? docRef.get().pipe(map(doc => doc.data()))
-						: docRef.valueChanges();
+						? from(getDoc(docRef)).pipe(map(doc => doc.data()))
+						: docData(docRef);
 				})
 			);
 		}
@@ -172,18 +175,13 @@ export function ListMixin<TBase extends Constructor<FirestoreCollection>>(
 ) {
 	return class extends Base implements List<unknown> {
 		list(): Observable<unknown[]> {
-			return this.collection$.pipe(switchMap(coll => coll.valueChanges()));
+			return this.collection$.pipe(switchMap(coll => collectionData(coll)));
 		}
 
-		query(setQueriesFn: QueryFn): Observable<unknown[]> {
+		query(...queries: QueryConstraint[]): Observable<unknown[]> {
 			return this.collection$.pipe(
 				switchMap(coll => {
-					const queriedCollection = this._afStore.collection(
-						coll.ref,
-						setQueriesFn
-					);
-
-					return queriedCollection.valueChanges();
+					return collectionData(query(coll, ...queries));
 				})
 			);
 		}
@@ -197,24 +195,21 @@ export function UpdateMixin<TBase extends Constructor<FirestoreCollection>>(
 	return class extends Base implements Update<unknown> {
 		update(id: string, data: DocumentData): Observable<void> {
 			return this.collection$.pipe(
-				switchMap(coll =>
-					coll
-						.doc(id)
-						.get()
-						.pipe(
-							switchMap(doc => {
-								const converter = new FirestoreTransactionConverter();
+				switchMap(coll => {
+					const docRef = doc(coll, id);
 
-								if (doc.exists) {
-									return from(
-										doc.ref.update(converter.toFirestore(data as any))
-									);
-								} else {
-									throw new Error(`Cannot update a non existing document.`);
-								}
-							})
-						)
-				)
+					return from(getDoc(docRef)).pipe(
+						switchMap(document => {
+							if (document.exists()) {
+								return from(
+									updateDoc(docRef, this._converter.toFirestore(data))
+								);
+							} else {
+								throw new Error(`Cannot update a non existing document.`);
+							}
+						})
+					);
+				})
 			);
 		}
 	};
@@ -226,8 +221,14 @@ export function PutMixin<TBase extends Constructor<FirestoreCollection>>(
 ) {
 	return class extends Base implements Put<unknown> {
 		put(id: string, data: DocumentData): Observable<void> {
+			// from(coll.doc(id).set(data))
+
 			return this.collection$.pipe(
-				switchMap(coll => from(coll.doc(id).set(data)))
+				switchMap(coll => {
+					const docRef = doc(coll, id);
+
+					return from(setDoc(docRef, data));
+				})
 			);
 		}
 	};
@@ -240,7 +241,11 @@ export function DeleteMixin<TBase extends Constructor<FirestoreCollection>>(
 	return class extends Base implements Delete {
 		delete(id: string): Observable<void> {
 			return this.collection$.pipe(
-				switchMap(coll => from(coll.doc(id).delete()))
+				switchMap(coll => {
+					const docRef = doc(coll, id);
+
+					return from(deleteDoc(docRef));
+				})
 			);
 		}
 	};
@@ -249,7 +254,7 @@ export function DeleteMixin<TBase extends Constructor<FirestoreCollection>>(
 export function Collection<T>(
 	...mixins: any[]
 ): new (
-	_afStore: AngularFirestore,
+	_afStore: Firestore,
 	path$: Observable<string>,
 	converter?: FirestoreDataConverter<unknown>
 ) => FirestoreCollection & T {

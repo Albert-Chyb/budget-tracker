@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { from, Observable } from 'rxjs';
 import { map, mapTo } from 'rxjs/operators';
@@ -34,7 +34,7 @@ interface Methods
 })
 export class CategoriesService extends Collection<Methods>(...ALL_MIXINS) {
 	constructor(
-		afStore: AngularFirestore,
+		afStore: Firestore,
 		user: UserService,
 		private readonly _afFunctions: Functions
 	) {

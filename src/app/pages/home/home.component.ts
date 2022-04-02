@@ -7,6 +7,7 @@ import {
 	OnDestroy,
 	OnInit,
 } from '@angular/core';
+import { limit, orderBy } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
 import { combineLatest, Observable, Subscription } from 'rxjs';
@@ -171,8 +172,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 		this._wallets$,
 		this._categories.list(),
 		this._statistics$,
-		this._transactions.query(queries =>
-			queries.limit(this.maxTransactionsCount).orderBy('date', 'desc')
+		this._transactions.query(
+			limit(this.maxTransactionsCount),
+			orderBy('date', 'desc')
 		),
 	]).pipe(
 		map(([wallets, categories, statistics, transactions]) => ({

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ICategory } from 'src/app/common/interfaces/category';
@@ -29,13 +28,11 @@ export class PaginatedTransactionsTableComponent {
 		private readonly _transactions: TransactionsService,
 		private readonly _categories: CategoriesService,
 		private readonly _wallets: WalletsService,
-		private readonly _afStore: AngularFirestore,
 		private readonly _collectionsInfo: CollectionsInfoService
 	) {}
 
 	readonly dataSource: PaginatedCollectionDataSource<ITransaction> =
 		new PaginatedCollectionDataSource<ITransaction>(
-			this._afStore,
 			<any>this._transactions.collection$,
 			'date',
 			'desc'

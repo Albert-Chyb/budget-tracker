@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import {
-	AngularFireAuthGuard,
+	AuthGuard,
 	redirectLoggedInTo,
 	redirectUnauthorizedTo,
-} from '@angular/fire/compat/auth-guard';
+} from '@angular/fire/auth-guard';
 import { RouterModule, Routes } from '@angular/router';
 import {
 	DefaultQueryParametersGuard,
@@ -24,7 +24,7 @@ const routes: Routes = [
 	{
 		path: '',
 		component: HomeComponent,
-		canActivate: [AngularFireAuthGuard, DefaultQueryParametersGuard],
+		canActivate: [AuthGuard, DefaultQueryParametersGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
 			name: 'Strona główna',
@@ -39,7 +39,7 @@ const routes: Routes = [
 	{
 		path: 'login',
 		component: LoginComponent,
-		canActivate: [AngularFireAuthGuard],
+		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedInToHome,
 			name: 'Zaloguj się',
@@ -48,7 +48,7 @@ const routes: Routes = [
 	{
 		path: 'wallets',
 		component: WalletsComponent,
-		canActivate: [AngularFireAuthGuard],
+		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
 			name: 'Portfele',
@@ -57,7 +57,7 @@ const routes: Routes = [
 	{
 		path: 'categories',
 		component: CategoriesComponent,
-		canActivate: [AngularFireAuthGuard],
+		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
 			name: 'Kategorie',
@@ -66,7 +66,7 @@ const routes: Routes = [
 	{
 		path: 'transaction',
 		component: CreateTransactionComponent,
-		canActivate: [AngularFireAuthGuard],
+		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
 			name: 'Nowa transakcja',
@@ -75,7 +75,7 @@ const routes: Routes = [
 	{
 		path: 'transaction/:id',
 		component: EditTransactionComponent,
-		canActivate: [AngularFireAuthGuard],
+		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
 			name: 'Edytuj transakcję',
@@ -84,7 +84,7 @@ const routes: Routes = [
 	{
 		path: 'transactions',
 		component: TransactionsComponent,
-		canActivate: [AngularFireAuthGuard],
+		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
 			name: 'Transakcje',

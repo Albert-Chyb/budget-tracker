@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import {
@@ -32,7 +32,7 @@ interface Methods
 	providedIn: 'root',
 })
 export class TransactionsService extends Collection<Methods>(...ALL_MIXINS) {
-	constructor(afStore: AngularFirestore, user: UserService) {
+	constructor(afStore: Firestore, user: UserService) {
 		super(
 			afStore,
 			user.getUid$().pipe(switchMap(uid => of(`users/${uid}/transactions`))),

@@ -10,11 +10,7 @@ import {
 } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
-import { AngularFireModule } from '@angular/fire/compat';
-import {
-	AngularFirestoreModule,
-	USE_EMULATOR as USE_FIRESTORE_EMULATOR,
-} from '@angular/fire/compat/firestore';
+import { AuthGuardModule } from '@angular/fire/auth-guard';
 import {
 	connectFirestoreEmulator,
 	getFirestore,
@@ -96,10 +92,6 @@ const PolishCurrencyCodeProvider: Provider = {
 	provide: DEFAULT_CURRENCY_CODE,
 	useValue: 'PLN',
 };
-const FirestoreEmulatorProvider: Provider = {
-	provide: USE_FIRESTORE_EMULATOR,
-	useValue: environment.firestoreEmulators.firestore,
-};
 const ErrorHandlerProvider: Provider = {
 	provide: ErrorHandler,
 	useClass: GlobalErrorHandler,
@@ -165,10 +157,9 @@ const AppDateAdapterProvider: Provider = {
 		AppRoutingModule,
 		BrowserAnimationsModule,
 		MatModule,
-		AngularFireModule.initializeApp(environment.firestore),
 		FormsModule,
 		NgChartsModule,
-		AngularFirestoreModule,
+		AuthGuardModule,
 		provideFirebaseApp(() => initializeApp(environment.firestore)),
 		provideAuth(() => {
 			const auth = getAuth();
@@ -218,7 +209,6 @@ const AppDateAdapterProvider: Provider = {
 	providers: [
 		PolishLocaleProvider,
 		PolishCurrencyCodeProvider,
-		FirestoreEmulatorProvider,
 		ErrorHandlerProvider,
 		UserInitializerProvider,
 		CluesDatasetsProvider,

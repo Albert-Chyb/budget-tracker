@@ -1,4 +1,4 @@
-import { FieldValue, Timestamp } from './firestore';
+import { FieldValue, Timestamp } from '@angular/fire/firestore';
 
 /**
  * Represents a general user object.

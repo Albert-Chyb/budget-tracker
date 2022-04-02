@@ -1,9 +1,9 @@
-import firebase from 'firebase/compat/app';
 import {
 	DocumentData,
 	FirestoreDataConverter,
 	QueryDocumentSnapshot,
-} from '../interfaces/firestore';
+	SnapshotOptions,
+} from '@angular/fire/firestore';
 import {
 	ITransaction,
 	ITransactionBase,
@@ -31,7 +31,7 @@ export class FirestoreTransactionConverter
 
 	fromFirestore(
 		snapshot: QueryDocumentSnapshot<ITransactionReadPayload>,
-		options: firebase.firestore.SnapshotOptions
+		options: SnapshotOptions
 	): ITransaction {
 		const data = snapshot.data();
 

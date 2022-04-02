@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { getDownloadURL } from '@angular/fire/storage';
 import { MatDialog } from '@angular/material/dialog';
 import { from, Observable } from 'rxjs';
 import { filter, first, map, switchMap } from 'rxjs/operators';
+import { generateUniqueString } from 'src/app/common/helpers/generateUniqueString';
 import { ICategory, ICategoryBase } from 'src/app/common/interfaces/category';
 import {
 	INewCategoryDialogResult,
@@ -32,7 +33,7 @@ export class CategoriesComponent {
 		private readonly _loading: LoadingService,
 		private readonly _dialog: MatDialog,
 		private readonly _storage: StorageService,
-		private readonly _afStore: AngularFirestore,
+		private readonly _afStore: Firestore,
 		private readonly _alert: AlertService
 	) {}
 
@@ -43,7 +44,7 @@ export class CategoriesComponent {
 	 */
 	addCategory() {
 		this._openDialog().subscribe(async result => {
-			const id = this._afStore.createId();
+			const id = generateUniqueString();
 
 			this._loading.add(
 				this._categories

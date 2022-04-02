@@ -1,5 +1,5 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
-import firebase from 'firebase/compat/app';
+import { FirebaseError } from '@angular/fire/app';
 import { ErrorsService } from '../services/errors/errors.service';
 
 @Injectable({
@@ -18,11 +18,11 @@ export class GlobalErrorHandler implements ErrorHandler {
 			this._handleFirebaseError(<any>actualThrown);
 		} else {
 			// Throw other errors back to the console.
-			console.error(actualThrown);
+			this._handleUnknownError(actualThrown);
 		}
 	}
 
-	private _handleFirebaseError(error: firebase.FirebaseError) {
+	private _handleFirebaseError(error: FirebaseError) {
 		let msg: string = '';
 
 		switch (error.code) {
@@ -48,7 +48,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 				break;
 
 			default:
-				msg = 'Podczas uwierzytelniania wystąpił nieoczekiwany błąd.';
+				this._handleUnknownError(error);
 				break;
 		}
 
@@ -63,5 +63,9 @@ export class GlobalErrorHandler implements ErrorHandler {
 		const matSnackBar = this._injector.get(ErrorsService);
 
 		matSnackBar.show(message);
+	}
+
+	private _handleUnknownError(error: any) {
+		console.error(error);
 	}
 }

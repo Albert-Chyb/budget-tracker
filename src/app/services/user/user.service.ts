@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Auth, authState, user, User } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import firebase from 'firebase/compat/app';
+import {
+	doc,
+	docSnapshots,
+	Firestore,
+	getDoc,
+	serverTimestamp,
+	setDoc,
+	updateDoc,
+} from '@angular/fire/firestore';
 import { from, Observable, of } from 'rxjs';
 import {
 	distinctUntilChanged,
@@ -23,7 +30,7 @@ import {
 export class UserService {
 	constructor(
 		private readonly _afAuth: Auth,
-		private readonly _afFirestore: AngularFirestore
+		private readonly _afFirestore: Firestore
 	) {
 		this._user$ = user(this._afAuth).pipe(
 			switchMap(user =>
@@ -76,20 +83,21 @@ export class UserService {
 			isAnonymous: user.isAnonymous,
 			photoURL: user.photoURL || '',
 		};
-		const userDocRef = this._afFirestore.doc(`users/${user.uid}`);
-		const userDoc = await userDocRef.get().toPromise();
+		const userDocRef = doc(this._afFirestore, `users/${user.uid}`);
 
-		if (userDoc.exists) {
+		const userDoc = await getDoc(userDocRef);
+
+		if (userDoc.exists()) {
 			const updatePayload: IUserUpdatePayload = userData;
 
-			await userDoc.ref.update(updatePayload);
+			await updateDoc(userDocRef, updatePayload);
 		} else {
 			const createPayload: IUserCreatePayload = {
 				...userData,
-				createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+				createdAt: serverTimestamp(),
 			};
 
-			await userDoc.ref.set(createPayload);
+			await setDoc(userDocRef, createPayload);
 		}
 
 		return user;
@@ -101,14 +109,11 @@ export class UserService {
 	 * @returns Observable of the user data
 	 */
 	private _getUserFromDatabase(uid: string): Observable<IUser> {
-		const userRef = this._afFirestore
-			.doc<IUserReadPayload>(`users/${uid}`)
-			.snapshotChanges();
-
-		return userRef.pipe(
+		return docSnapshots(doc(this._afFirestore, `users/${uid}`)).pipe(
 			map(user => {
-				if (user.payload.exists) {
-					const data = user.payload.data();
+				if (user.exists()) {
+					const data = user.data() as IUserReadPayload;
+
 					return {
 						...data,
 						uid,

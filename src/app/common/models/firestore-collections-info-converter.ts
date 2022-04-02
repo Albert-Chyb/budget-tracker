@@ -1,27 +1,29 @@
-import firebase from 'firebase/compat';
+import {
+	DocumentData,
+	FirestoreDataConverter,
+	QueryDocumentSnapshot,
+	SetOptions,
+	SnapshotOptions,
+} from '@angular/fire/firestore';
 import { ICollectionInfo } from '../interfaces/collection-info';
-import { FirestoreDataConverter } from '../interfaces/firestore';
 
 export class FirestoreCollectionsInfoConverter
 	implements FirestoreDataConverter<ICollectionInfo>
 {
-	toFirestore(modelObject: ICollectionInfo): firebase.firestore.DocumentData;
+	toFirestore(modelObject: ICollectionInfo): DocumentData;
 	toFirestore(
 		modelObject: Partial<ICollectionInfo>,
-		options: firebase.firestore.SetOptions
-	): firebase.firestore.DocumentData;
-	toFirestore(
-		modelObject: any,
-		options?: any
-	): firebase.firestore.DocumentData {
+		options: SetOptions
+	): DocumentData;
+	toFirestore(modelObject: any, options?: any): DocumentData {
 		throw new Error(
 			'You cannot perform write operations on the collections-info collection.'
 		);
 	}
 
 	fromFirestore(
-		snapshot: firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>,
-		options: firebase.firestore.SnapshotOptions
+		snapshot: QueryDocumentSnapshot<DocumentData>,
+		options: SnapshotOptions
 	): ICollectionInfo {
 		const receivedInfo = snapshot.data();
 
