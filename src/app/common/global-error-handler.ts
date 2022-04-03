@@ -1,6 +1,8 @@
 import { ErrorHandler, Injectable, NgZone } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { ErrorsService } from '../services/errors/errors.service';
+import { AppError } from './errors/app-error';
+import { ErrorCode } from './errors/error-code';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,10 +23,28 @@ export class GlobalErrorHandler implements ErrorHandler {
 			actualThrown.code.startsWith('auth')
 		) {
 			this._handleFirebaseAuthError(<any>actualThrown);
+		} else if (actualThrown instanceof AppError) {
+			this._handleAppError(actualThrown);
 		} else {
 			// Throw other errors back to the console.
 			console.error(actualThrown);
 		}
+	}
+
+	private _handleAppError(error: AppError) {
+		let msg: string;
+
+		switch (error.code) {
+			case ErrorCode.TransactionNotFound:
+				msg = 'Transakcja nie została znaleziona.';
+				break;
+
+			default:
+				msg = 'Wystąpił nieoczekiwany błąd.';
+				break;
+		}
+
+		this._errors.show(msg);
 	}
 
 	private _handleFirebaseAuthError(error: FirebaseError) {
