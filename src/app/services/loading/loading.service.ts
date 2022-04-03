@@ -3,10 +3,10 @@ import { BehaviorSubject, isObservable, Observable } from 'rxjs';
 import {
 	distinctUntilChanged,
 	finalize,
-	first,
 	map,
 	shareReplay,
 	switchMapTo,
+	take,
 } from 'rxjs/operators';
 
 type LoadingTask = Observable<any> | Promise<any>;
@@ -42,7 +42,7 @@ export class LoadingService {
 			const original$ = task.pipe(shareReplay(1));
 
 			trapped = original$.pipe(
-				first(),
+				take(1),
 				finalize(() => this._decreaseCount()),
 				switchMapTo(original$)
 			);
