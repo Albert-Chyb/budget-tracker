@@ -14,18 +14,20 @@ export class GlobalErrorHandler implements ErrorHandler {
 	handleError(unhandled: any) {
 		// Angular wraps unhandled errors in an Error object.
 		// Actual thrown error is placed in the 'rejection' property.
-		const actualThrown =
-			'rejection' in unhandled ? unhandled.rejection : unhandled;
+		const actualThrown = this._extractThrownError(unhandled);
 
-		if (this._isFirebaseError(actualThrown)) {
-			this._handleFirebaseError(<any>actualThrown);
+		if (
+			actualThrown instanceof FirebaseError &&
+			actualThrown.code.startsWith('auth')
+		) {
+			this._handleFirebaseAuthError(<any>actualThrown);
 		} else {
 			// Throw other errors back to the console.
-			this._handleUnknownError(actualThrown);
+			console.error(actualThrown);
 		}
 	}
 
-	private _handleFirebaseError(error: FirebaseError) {
+	private _handleFirebaseAuthError(error: FirebaseError) {
 		let msg: string = '';
 
 		switch (error.code) {
@@ -51,22 +53,18 @@ export class GlobalErrorHandler implements ErrorHandler {
 				break;
 
 			default:
-				this._handleUnknownError(error);
+				msg = 'Podczas autoryzacji wystąpił nieoczekiwany błąd.';
 				break;
 		}
 
 		if (msg) this._showMessage(msg);
 	}
 
-	private _isFirebaseError(error: any): boolean {
-		return 'name' in error && error?.name === 'FirebaseError';
-	}
-
 	private _showMessage(message: string) {
 		this._zone.run(() => this._errors.show(message));
 	}
 
-	private _handleUnknownError(error: any) {
-		console.error(error);
+	private _extractThrownError(error: any) {
+		return 'rejection' in error ? error.rejection : error;
 	}
 }
