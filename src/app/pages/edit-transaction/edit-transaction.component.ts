@@ -3,6 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, of, throwError } from 'rxjs';
 import { catchError, first, map, switchMap, takeWhile } from 'rxjs/operators';
+import { AppError } from 'src/app/common/errors/app-error';
+import { ErrorCode } from 'src/app/common/errors/error-code';
 import { isNullish } from 'src/app/common/helpers/isNullish';
 import { ITransactionUpdatePayload } from 'src/app/common/interfaces/transaction';
 import { TransactionFormValue } from 'src/app/components/transaction-form/transaction-form.component';
@@ -11,6 +13,13 @@ import { ErrorsService } from 'src/app/services/errors/errors.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { TransactionsService } from 'src/app/services/transactions/transactions.service';
 import { WalletsService } from 'src/app/services/wallets/wallets.service';
+
+const TRANSACTION_NOT_FOUND_ERROR = new AppError(
+	'Transaction does not exist.',
+	ErrorCode.TransactionNotFound,
+	`This error was thrown in the edit-transaction page. It is thrown when the id in the 
+		route params points to a non-existing transaction.`
+);
 
 @Component({
 	templateUrl: './edit-transaction.component.html',
@@ -41,13 +50,12 @@ export class EditTransactionComponent {
 						switchMap(exists =>
 							exists
 								? this._transactions.read(transactionId)
-								: throwError(new Error('Transaction does not exist.'))
+								: throwError(TRANSACTION_NOT_FOUND_ERROR)
 						)
 					)
 			),
 			catchError(error => {
-				this._errors.show('Nie odnaleziono transakcji');
-				this._router.navigateByUrl('/transactions');
+				this._handleError(error);
 				return of(null);
 			}),
 			takeWhile(transaction => !isNullish(transaction))
@@ -104,5 +112,17 @@ export class EditTransactionComponent {
 
 	handleFormSubmit(formValue: TransactionFormValue) {
 		this.update(formValue.toTransaction());
+	}
+
+	private _handleError(error: any) {
+		if (
+			error instanceof AppError &&
+			error.code === ErrorCode.TransactionNotFound
+		) {
+			this._errors.show('Próbowano edytować nieistniejącą transakcje.');
+			this._router.navigateByUrl('/transactions');
+		} else {
+			throw error;
+		}
 	}
 }
