@@ -127,6 +127,13 @@ export class FirestoreCollection {
 	generateId(): string {
 		return generateUniqueString();
 	}
+
+	exists(id: string): Observable<boolean> {
+		return this.collection$.pipe(
+			switchMap(collection => from(getDoc(doc(collection, id)))),
+			map(snapshot => snapshot.exists())
+		);
+	}
 }
 
 /** Allows to create documents in the collection. */
