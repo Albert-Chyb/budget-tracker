@@ -51,11 +51,11 @@ export class UserService {
 	);
 
 	/**
-	 * Gets currently logged in user's id (promise way).
+	 * Gets currently logged in user's id.
 	 *
-	 * @returns Promise of currently logged in user.
+	 * @returns User id or null.
 	 */
-	async getUid(): Promise<string | null> {
+	getUid(): string | null {
 		const user = this._afAuth.currentUser;
 
 		return user?.uid;

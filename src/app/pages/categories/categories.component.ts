@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Firestore } from '@angular/fire/firestore';
 import { getDownloadURL } from '@angular/fire/storage';
 import { MatDialog } from '@angular/material/dialog';
 import { from, Observable } from 'rxjs';
@@ -33,7 +32,6 @@ export class CategoriesComponent {
 		private readonly _loading: LoadingService,
 		private readonly _dialog: MatDialog,
 		private readonly _storage: StorageService,
-		private readonly _afStore: Firestore,
 		private readonly _alert: AlertService
 	) {}
 
@@ -152,11 +150,11 @@ export class CategoriesComponent {
 	 * @param icon Icon that will be uploaded to the storage.
 	 * @returns Url to the file.
 	 */
-	private async _uploadIcon(
+	private _uploadIcon(
 		icon: File,
 		id: string
 	): Promise<{ url: string; path: string }> {
-		const upload = await this._storage.upload('categories-icons', icon, id);
+		const upload = this._storage.upload('categories-icons', icon, id);
 
 		return upload.snapshot$
 			.pipe(

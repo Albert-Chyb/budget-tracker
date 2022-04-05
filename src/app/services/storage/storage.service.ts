@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Firestore } from '@angular/fire/firestore';
 import {
 	ref,
 	Storage,
@@ -17,8 +16,7 @@ import { UserService } from '../user/user.service';
 export class StorageService {
 	constructor(
 		private readonly _afStorage: Storage,
-		private readonly _user: UserService,
-		private readonly _afStore: Firestore
+		private readonly _user: UserService
 	) {}
 
 	/**
@@ -29,9 +27,9 @@ export class StorageService {
 	 * @param name Name that the file will be saved under (unique string is generated automatically if it's unspecified)
 	 * @returns An object with useful observables.
 	 */
-	async upload(folder: string, file: File, name?: string) {
+	upload(folder: string, file: File, name?: string) {
 		const fileName = name ?? this._createId();
-		const uid = await this._user.getUid();
+		const uid = this._user.getUid();
 		const reference = ref(this._afStorage, `${uid}/${folder}/${fileName}`);
 		const task = uploadBytesResumable(reference, file);
 
