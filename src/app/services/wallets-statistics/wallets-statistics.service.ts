@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { collection, doc, docData, Firestore } from '@angular/fire/firestore';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { WalletYearStatistics } from 'src/app/common/models/wallet-statistics';
 import { WalletStatisticsConverter } from 'src/app/common/models/wallets-statistics-converter';
+import { CollectionsInfoService } from '../collections-info/collections-info.service';
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -12,7 +13,8 @@ import { UserService } from '../user/user.service';
 export class WalletsStatisticsService {
 	constructor(
 		private readonly _afStore: Firestore,
-		private readonly _user: UserService
+		private readonly _user: UserService,
+		private readonly _collectionsInfo: CollectionsInfoService
 	) {}
 
 	private readonly _collection$ = this._user
@@ -45,9 +47,11 @@ export class WalletsStatisticsService {
 	/**
 	 * Gets years for which statistics exists in the database.
 	 *
-	 * Not implemented yet. For now it returns static array of years.
+	 * @returns Observable of array of years.
 	 */
 	availableYears(): Observable<number[]> {
-		return of([2020, 2021, 2022, 2023]);
+		return this._collectionsInfo
+			.read('wallets-statistics', true)
+			.pipe(map(info => info.distinct?.map(Number) ?? []));
 	}
 }
