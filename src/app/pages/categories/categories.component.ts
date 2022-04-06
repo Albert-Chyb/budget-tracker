@@ -81,11 +81,6 @@ export class CategoriesComponent {
 		}
 	}
 
-	/** Function for ngFor directive. */
-	trackById(index: number, category: ICategory) {
-		return category.id;
-	}
-
 	/**
 	 * Builds a category object with data returned from the dialog. If icon is available it is uploaded to the storage.
 	 */

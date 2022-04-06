@@ -1,0 +1,9 @@
+<mat-list role="list" class="categories">
+	<category
+		class="categories__category"
+		*ngFor="let category of categories; trackBy: trackById"
+		[category]="category"
+		(onCategoryDelete)="onCategoryDelete.emit($event)"
+		(onCategoryEdit)="onCategoryEdit.emit($event)"
+	></category>
+</mat-list>

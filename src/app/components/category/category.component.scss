@@ -1,0 +1,9 @@
+:host {
+	display: block;
+
+	.category {
+		&__icon {
+			border-radius: 0px;
+		}
+	}
+}

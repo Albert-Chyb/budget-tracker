@@ -1,34 +1,12 @@
 <section>
 	<h1>Kategorie</h1>
 
-	<mat-list role="list" *ngIf="categories$ | loading | async as categories">
-		<ng-container *clueIf="categories.length === 0">
-			<mat-list-item
-				role="listitem"
-				*ngFor="let category of categories; trackBy: trackById"
-			>
-				<img [src]="category.icon" mat-list-avatar />
-
-				<span mat-line>{{ category.name }}</span>
-
-				<button mat-icon-button [mat-menu-trigger-for]="menu">
-					<mat-icon>more_vert</mat-icon>
-				</button>
-
-				<mat-menu #menu="matMenu">
-					<button mat-menu-item (click)="editCategory(category)">
-						<mat-icon>edit</mat-icon>
-						<span>Edytuj</span>
-					</button>
-
-					<button mat-menu-item (click)="deleteCategory(category)">
-						<mat-icon>delete</mat-icon>
-						<span>Usuń</span>
-					</button>
-				</mat-menu>
-			</mat-list-item>
-		</ng-container>
-	</mat-list>
+	<categories-list
+		*ngIf="categories$ | loading | async as categories"
+		[categories]="categories"
+		(onCategoryDelete)="deleteCategory($event)"
+		(onCategoryEdit)="editCategory($event)"
+	></categories-list>
 </section>
 
 <button

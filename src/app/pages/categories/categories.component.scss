@@ -1,25 +1,7 @@
 @use '../../sass/layout/containers';
 
 :host {
-	display: block;
-
-	.mat-list-avatar {
-		border-radius: 0px;
-	}
-}
-
-.mat-list {
 	@include containers.make-container('sm');
-}
 
-header {
-	display: flex;
-}
-
-h1 {
-	margin: 0px;
-}
-
-.spacer {
-	flex: 1 1 auto;
+	display: block;
 }

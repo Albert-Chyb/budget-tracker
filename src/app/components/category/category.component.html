@@ -1,0 +1,23 @@
+<mat-card>
+	<mat-list-item role="listitem" class="category">
+		<img class="category__icon" [src]="category.icon" mat-list-avatar />
+
+		<span mat-line>{{ category.name }}</span>
+
+		<button mat-icon-button [mat-menu-trigger-for]="menu">
+			<mat-icon>more_vert</mat-icon>
+		</button>
+
+		<mat-menu #menu="matMenu">
+			<button mat-menu-item (click)="onCategoryEdit.emit(category)">
+				<mat-icon>edit</mat-icon>
+				<span>Edytuj</span>
+			</button>
+
+			<button mat-menu-item (click)="onCategoryDelete.emit(category)">
+				<mat-icon>delete</mat-icon>
+				<span>Usuń</span>
+			</button>
+		</mat-menu>
+	</mat-list-item>
+</mat-card>

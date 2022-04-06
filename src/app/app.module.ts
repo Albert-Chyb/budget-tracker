@@ -41,7 +41,9 @@ import { GlobalErrorHandler } from './common/errors/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
 import { PolishMatPaginatorIntl } from './common/mat-paginator-intl';
 import { AlertComponent } from './components/alert/alert.component';
+import { CategoriesListComponent } from './components/categories-list/categories-list.component';
 import { CategorizedExpensesChartComponent } from './components/categorized-expenses-chart/categorized-expenses-chart.component';
+import { CategoryComponent } from './components/category/category.component';
 import { ClueComponent } from './components/clue/clue.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
 import { GlobalFabComponent } from './components/global-fab/global-fab.component';
@@ -151,6 +153,8 @@ const AppDateAdapterProvider: Provider = {
 		CreateTransactionComponent,
 		EditTransactionComponent,
 		CollectionPaginatorDirective,
+		CategoriesListComponent,
+		CategoryComponent,
 	],
 	imports: [
 		BrowserModule,
