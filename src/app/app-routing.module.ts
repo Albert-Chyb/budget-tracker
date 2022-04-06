@@ -23,6 +23,11 @@ const redirectLoggedOutToLogin = () => redirectUnauthorizedTo(['/login']);
 const routes: Routes = [
 	{
 		path: '',
+		pathMatch: 'full',
+		redirectTo: 'dashboard',
+	},
+	{
+		path: 'dashboard',
 		component: HomeComponent,
 		canActivate: [AuthGuard, DefaultQueryParametersGuard],
 		data: {

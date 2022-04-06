@@ -23,7 +23,7 @@
 			[routerLink]="item.routerLink"
 			*ngFor="let item of sidenavItems"
 			routerLinkActive="activated-route"
-			[routerLinkActiveOptions]="{ exact: true }"
+			[routerLinkActiveOptions]="item.linkOptions"
 			(click)="onItemClick.emit()"
 		>
 			<mat-icon mat-list-icon>{{ item.icon }}</mat-icon>
