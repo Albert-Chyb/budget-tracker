@@ -37,7 +37,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppDateAdapter } from './common/app-date-adapter';
 import { cluesDatasets } from './common/clues-datasets';
-import { GlobalErrorHandler } from './common/global-error-handler';
+import { GlobalErrorHandler } from './common/errors/global-error-handler';
 import { initializeUser } from './common/initializers/user-auth-status';
 import { PolishMatPaginatorIntl } from './common/mat-paginator-intl';
 import { AlertComponent } from './components/alert/alert.component';
