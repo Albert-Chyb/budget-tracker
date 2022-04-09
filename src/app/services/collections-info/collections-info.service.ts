@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { FirestoreCollectionsInfoConverter } from 'src/app/common/firebase/firestore/collections-info-converter';
-import { ICollectionInfo } from 'src/app/common/interfaces/collection-info';
+import { FirestoreCollectionsInfoConverter } from '@common/firebase/firestore/collections-info-converter';
+import { ICollectionInfo } from '@interfaces/collection-info';
 import {
 	Collection,
 	List,
 	ListMixin,
 	Read,
 	ReadMixin,
-} from 'src/app/common/models/collection';
-import { UserService } from '../user/user.service';
+} from '@models/collection';
+import { UserService } from '@services/user/user.service';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 interface Methods extends Read<ICollectionInfo>, List<ICollectionInfo> {}
 

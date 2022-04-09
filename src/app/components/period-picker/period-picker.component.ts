@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { numberOfWeeksInMonth } from '@helpers/date';
 import { Observable } from 'rxjs';
-import { numberOfWeeksInMonth } from 'src/app/common/helpers/date';
 
 export type TPeriodName = 'year' | 'month' | 'week';
 

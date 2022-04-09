@@ -10,6 +10,32 @@ import {
 import { limit, orderBy } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
+import { Breakpoint } from '@common/breakpoints';
+import { distinctUntilKeysChanged } from '@common/rxjs-custom-operators/distinctUntilKeysChanged';
+import {
+	PeriodPickerComponent,
+	TPeriodName,
+	TPeriodPickerInjectorData,
+	TPeriodPickerValue,
+} from '@components/period-picker/period-picker.component';
+import {
+	IWalletPickerInjectorData,
+	TWalletPickerValue,
+	WalletPickerComponent,
+} from '@components/wallet-picker/wallet-picker.component';
+import { DEFAULT_CLUE_NAME } from '@directives/clue-if/clue-if.directive';
+import { IWallet } from '@interfaces/wallet';
+import { PrevPeriodComparison } from '@models/prev-period-comparison';
+import {
+	WalletStatistics,
+	WalletYearStatistics,
+} from '@models/wallet-statistics';
+import { CategoriesService } from '@services/categories/categories.service';
+import { LoadingService } from '@services/loading/loading.service';
+import { MainSidenavService } from '@services/main-sidenav/main-sidenav.service';
+import { TransactionsService } from '@services/transactions/transactions.service';
+import { WalletsStatisticsService } from '@services/wallets-statistics/wallets-statistics.service';
+import { WalletsService } from '@services/wallets/wallets.service';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import {
 	distinctUntilChanged,
@@ -19,32 +45,6 @@ import {
 	shareReplay,
 	switchMap,
 } from 'rxjs/operators';
-import { Breakpoint } from 'src/app/common/breakpoints';
-import { IWallet } from 'src/app/common/interfaces/wallet';
-import { PrevPeriodComparison } from 'src/app/common/models/prev-period-comparison';
-import {
-	WalletStatistics,
-	WalletYearStatistics,
-} from 'src/app/common/models/wallet-statistics';
-import { distinctUntilKeysChanged } from 'src/app/common/rxjs-custom-operators/distinctUntilKeysChanged';
-import {
-	PeriodPickerComponent,
-	TPeriodName,
-	TPeriodPickerInjectorData,
-	TPeriodPickerValue,
-} from 'src/app/components/period-picker/period-picker.component';
-import {
-	IWalletPickerInjectorData,
-	TWalletPickerValue,
-	WalletPickerComponent,
-} from 'src/app/components/wallet-picker/wallet-picker.component';
-import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
-import { CategoriesService } from 'src/app/services/categories/categories.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
-import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
-import { TransactionsService } from 'src/app/services/transactions/transactions.service';
-import { WalletsStatisticsService } from 'src/app/services/wallets-statistics/wallets-statistics.service';
-import { WalletsService } from 'src/app/services/wallets/wallets.service';
 import {
 	largeLayout,
 	mediumLayout,

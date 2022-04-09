@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { DEFAULT_CLUE_NAME } from '@directives/clue-if/clue-if.directive';
+import { ICategory } from '@interfaces/category';
+import { ITransaction } from '@interfaces/transaction';
+import { IWallet } from '@interfaces/wallet';
+import { PaginatedCollectionDataSource } from '@models/paginated-collection-data-source';
+import { CategoriesService } from '@services/categories/categories.service';
+import { CollectionsInfoService } from '@services/collections-info/collections-info.service';
+import { TransactionsService } from '@services/transactions/transactions.service';
+import { WalletsService } from '@services/wallets/wallets.service';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ICategory } from 'src/app/common/interfaces/category';
-import { ITransaction } from 'src/app/common/interfaces/transaction';
-import { IWallet } from 'src/app/common/interfaces/wallet';
-import { PaginatedCollectionDataSource } from 'src/app/common/models/paginated-collection-data-source';
-import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
-import { CategoriesService } from 'src/app/services/categories/categories.service';
-import { CollectionsInfoService } from 'src/app/services/collections-info/collections-info.service';
-import { TransactionsService } from 'src/app/services/transactions/transactions.service';
-import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
 @Component({
 	selector: 'paginated-transactions-table',

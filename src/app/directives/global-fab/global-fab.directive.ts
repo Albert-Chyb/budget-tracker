@@ -1,5 +1,5 @@
 import { Directive, OnDestroy, OnInit, Self, TemplateRef } from '@angular/core';
-import { FABService } from 'src/app/services/FAB/fab.service';
+import { FABService } from '@services/FAB/fab.service';
 
 /**
  * Structural directive that displays the element that is attached to as a global floating action button.

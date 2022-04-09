@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { collection, doc, docData, Firestore } from '@angular/fire/firestore';
+import { WalletYearStatistics } from '@models/wallet-statistics';
+import { WalletStatisticsConverter } from '@models/wallets-statistics-converter';
+import { CollectionsInfoService } from '@services/collections-info/collections-info.service';
+import { UserService } from '@services/user/user.service';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { WalletYearStatistics } from 'src/app/common/models/wallet-statistics';
-import { WalletStatisticsConverter } from 'src/app/common/models/wallets-statistics-converter';
-import { CollectionsInfoService } from '../collections-info/collections-info.service';
-import { UserService } from '../user/user.service';
 
 @Injectable({
 	providedIn: 'root',

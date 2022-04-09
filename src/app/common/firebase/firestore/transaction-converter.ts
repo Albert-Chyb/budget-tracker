@@ -8,7 +8,7 @@ import {
 	ITransaction,
 	ITransactionBase,
 	ITransactionReadPayload,
-} from '../../interfaces/transaction';
+} from '@interfaces/transaction';
 
 export class FirestoreTransactionConverter
 	implements FirestoreDataConverter<ITransactionBase>

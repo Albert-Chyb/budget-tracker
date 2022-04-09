@@ -1,4 +1,4 @@
-import { IClueData } from '../directives/clue-if/clue-if.directive';
+import { IClueData } from '@directives/clue-if/clue-if.directive';
 
 export const cluesDatasets: { [prop: string]: IClueData } = {
 	noWallets: {

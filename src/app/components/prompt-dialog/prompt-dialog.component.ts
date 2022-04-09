@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PromptDialogData } from 'src/app/services/prompt/prompt.service';
+import { PromptDialogData } from '@services/prompt/prompt.service';
 
 @Component({
 	templateUrl: './prompt-dialog.component.html',

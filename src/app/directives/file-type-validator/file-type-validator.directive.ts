@@ -5,7 +5,7 @@ import {
 	ValidationErrors,
 	Validator,
 } from '@angular/forms';
-import { fileTypeValidator } from 'src/app/common/validators/file-type-validator';
+import { fileTypeValidator } from '@validators/file-type-validator';
 
 @Directive({
 	selector: '[allowed-files]',

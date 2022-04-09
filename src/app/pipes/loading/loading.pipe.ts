@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { LoadingService } from '@services/loading/loading.service';
 import { Observable } from 'rxjs';
-import { LoadingService } from 'src/app/services/loading/loading.service';
 
 @Pipe({
 	name: 'loading',

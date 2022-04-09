@@ -17,9 +17,9 @@ import {
 	SnapshotOptions,
 	updateDoc,
 } from '@angular/fire/firestore';
+import { generateUniqueString } from '@common/helpers/generateUniqueString';
 import { from, Observable } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap } from 'rxjs/operators';
-import { generateUniqueString } from '../helpers/generateUniqueString';
 
 type Constructor<T> = new (...args: any[]) => T;
 

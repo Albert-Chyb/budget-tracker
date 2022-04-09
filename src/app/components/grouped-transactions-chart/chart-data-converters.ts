@@ -1,17 +1,9 @@
 import { formatDate } from '@angular/common';
-import { capitalize } from 'src/app/common/helpers/capitalize';
-import {
-	addDays,
-	beginningOfWeek,
-	firstDayInMonth,
-} from 'src/app/common/helpers/date';
-import { IWalletStatisticsAggregatedFields } from 'src/app/common/interfaces/wallet-statistics';
-import {
-	DataConverter,
-	LabelConverter,
-	TChartData,
-} from 'src/app/common/models/chart-base';
-import { WalletStatistics } from 'src/app/common/models/wallet-statistics';
+import { capitalize } from '@helpers/capitalize';
+import { addDays, beginningOfWeek, firstDayInMonth } from '@helpers/date';
+import { IWalletStatisticsAggregatedFields } from '@interfaces/wallet-statistics';
+import { DataConverter, LabelConverter, TChartData } from '@models/chart-base';
+import { WalletStatistics } from '@models/wallet-statistics';
 
 export class StatisticsDataConverter extends DataConverter<WalletStatistics> {
 	constructor(

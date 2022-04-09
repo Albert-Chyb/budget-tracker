@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
-import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
+import { AuthService } from '@services/auth/auth.service';
+import { LoadingService } from '@services/loading/loading.service';
+import { MainSidenavService } from '@services/main-sidenav/main-sidenav.service';
 import {
 	RouteNameChange,
 	RouteNameService,
-} from 'src/app/services/route-name/route-name.service';
-import { UserService } from 'src/app/services/user/user.service';
+} from '@services/route-name/route-name.service';
+import { UserService } from '@services/user/user.service';
+import { combineLatest, Observable } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 
 @Component({
 	selector: 'main-navbar',

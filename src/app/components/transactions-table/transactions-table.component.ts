@@ -1,8 +1,8 @@
 import { DataSource } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ICategory } from 'src/app/common/interfaces/category';
-import { ITransaction } from 'src/app/common/interfaces/transaction';
-import { IWallet } from 'src/app/common/interfaces/wallet';
+import { ICategory } from '@interfaces/category';
+import { ITransaction } from '@interfaces/transaction';
+import { IWallet } from '@interfaces/wallet';
 
 @Component({
 	selector: 'transactions-table',

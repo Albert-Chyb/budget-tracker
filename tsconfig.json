@@ -18,7 +18,19 @@
 		"module": "es2020",
 		"lib": ["es2018", "dom"],
 		"strictNullChecks": false,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"paths": {
+			"@components/*": ["src/app/components/*"],
+			"@services/*": ["src/app/services/*"],
+			"@pages/*": ["src/app/pages/*"],
+			"@pipes/*": ["src/app/pipes/*"],
+			"@directives/*": ["src/app/directives/*"],
+			"@common/*": ["src/app/common/*"],
+			"@interfaces/*": ["src/app/common/interfaces/*"],
+			"@models/*": ["src/app/common/models/*"],
+			"@helpers/*": ["src/app/common/helpers/*"],
+			"@validators/*": ["src/app/common/validators/*"]
+		}
 	},
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false,

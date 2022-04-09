@@ -1,6 +1,6 @@
 import { Directive, HostListener, Input, OnInit, Self } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { PaginatedCollectionDataSource } from 'src/app/common/models/paginated-collection-data-source';
+import { PaginatedCollectionDataSource } from '@models/paginated-collection-data-source';
 
 @Directive({
 	selector: 'mat-paginator[collection-paginator]',

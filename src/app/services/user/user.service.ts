@@ -9,6 +9,13 @@ import {
 	setDoc,
 	updateDoc,
 } from '@angular/fire/firestore';
+import {
+	IUser,
+	IUserBase,
+	IUserCreatePayload,
+	IUserReadPayload,
+	IUserUpdatePayload,
+} from '@interfaces/user';
 import { from, Observable, of } from 'rxjs';
 import {
 	distinctUntilChanged,
@@ -16,13 +23,6 @@ import {
 	shareReplay,
 	switchMap,
 } from 'rxjs/operators';
-import {
-	IUser,
-	IUserBase,
-	IUserCreatePayload,
-	IUserReadPayload,
-	IUserUpdatePayload,
-} from 'src/app/common/interfaces/user';
 
 @Injectable({
 	providedIn: 'root',

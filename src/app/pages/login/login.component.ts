@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
+import { AuthService } from '@services/auth/auth.service';
+import { LoadingService } from '@services/loading/loading.service';
 
 @Component({
 	templateUrl: './login.component.html',

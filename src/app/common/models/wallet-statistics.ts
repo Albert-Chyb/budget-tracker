@@ -4,7 +4,7 @@ import {
 	IWalletPeriodStatistics,
 	IWalletStatisticsAggregatedFields,
 	TWalletCategorizedStatistics,
-} from '../interfaces/wallet-statistics';
+} from '@interfaces/wallet-statistics';
 
 const EMPTY_PERIOD_STATISTICS: Readonly<IWalletPeriodStatistics> = {
 	expenses: 0,

@@ -5,7 +5,7 @@ import {
 	ValidationErrors,
 	Validator,
 } from '@angular/forms';
-import { fileSizeValidator } from 'src/app/common/validators/file-size-validator';
+import { fileSizeValidator } from '@validators/file-size-validator';
 
 @Directive({
 	selector: '[max-file-size]',

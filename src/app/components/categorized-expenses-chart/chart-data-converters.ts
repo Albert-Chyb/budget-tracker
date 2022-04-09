@@ -1,10 +1,6 @@
-import { ICategory } from 'src/app/common/interfaces/category';
-import {
-	DataConverter,
-	LabelConverter,
-	TChartData,
-} from 'src/app/common/models/chart-base';
-import { WalletCategorizedStatistics } from 'src/app/common/models/wallet-statistics';
+import { ICategory } from '@interfaces/category';
+import { DataConverter, LabelConverter, TChartData } from '@models/chart-base';
+import { WalletCategorizedStatistics } from '@models/wallet-statistics';
 
 export class CategorizedExpensesChartLabelConverter extends LabelConverter {
 	constructor(private readonly _categories: ICategory[]) {

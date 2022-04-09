@@ -9,9 +9,9 @@ import {
 	Output,
 } from '@angular/core';
 import { Constructor } from '@angular/material/core/common-behaviors/constructor';
+import { Chart, LabelConverter } from '@models/chart-base';
+import { WalletStatistics } from '@models/wallet-statistics';
 import { ChartOptions } from 'chart.js';
-import { Chart, LabelConverter } from 'src/app/common/models/chart-base';
-import { WalletStatistics } from 'src/app/common/models/wallet-statistics';
 import {
 	MonthLabelConverter,
 	StatisticsDataConverter,

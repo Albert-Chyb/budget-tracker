@@ -5,9 +5,9 @@ import {
 	Output,
 } from '@angular/core';
 import { RouterLinkActive } from '@angular/router';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
-import { UserService } from 'src/app/services/user/user.service';
+import { AuthService } from '@services/auth/auth.service';
+import { LoadingService } from '@services/loading/loading.service';
+import { UserService } from '@services/user/user.service';
 
 interface ISidenavItem {
 	icon: string;

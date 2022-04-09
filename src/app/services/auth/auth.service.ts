@@ -11,9 +11,9 @@ import {
 	UserCredential,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { UserService } from '@services/user/user.service';
 import { Observable } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
-import { UserService } from '../user/user.service';
 
 @Injectable({
 	providedIn: 'root',

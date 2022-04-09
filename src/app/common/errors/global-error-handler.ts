@@ -1,6 +1,6 @@
 import { ErrorHandler, Injectable, NgZone } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
-import { ErrorsService } from '../../services/errors/errors.service';
+import { ErrorsService } from '@services/errors/errors.service';
 import { AppError } from './app-error';
 import { ErrorCode } from './error-code';
 

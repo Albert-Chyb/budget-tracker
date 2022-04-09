@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { LoadingIndicatorComponent } from '@components/loading-indicator/loading-indicator.component';
+import { NewWalletDialogComponent } from '@components/new-wallet-dialog/new-wallet-dialog.component';
+import { DEFAULT_CLUE_NAME } from '@directives/clue-if/clue-if.directive';
+import { IWallet, IWalletBase } from '@interfaces/wallet';
+import { AlertService } from '@services/alert/alert.service';
+import { LoadingService } from '@services/loading/loading.service';
+import { PromptService } from '@services/prompt/prompt.service';
+import { WalletsService } from '@services/wallets/wallets.service';
 import { first, take } from 'rxjs/operators';
-import { IWallet, IWalletBase } from 'src/app/common/interfaces/wallet';
-import { LoadingIndicatorComponent } from 'src/app/components/loading-indicator/loading-indicator.component';
-import { NewWalletDialogComponent } from 'src/app/components/new-wallet-dialog/new-wallet-dialog.component';
-import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
-import { AlertService } from 'src/app/services/alert/alert.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
-import { PromptService } from 'src/app/services/prompt/prompt.service';
-import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
 @Component({
 	templateUrl: './wallets.component.html',

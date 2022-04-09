@@ -1,19 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { getDownloadURL } from '@angular/fire/storage';
 import { MatDialog } from '@angular/material/dialog';
-import { from, Observable } from 'rxjs';
-import { filter, first, map, switchMap } from 'rxjs/operators';
-import { generateUniqueString } from 'src/app/common/helpers/generateUniqueString';
-import { ICategory, ICategoryBase } from 'src/app/common/interfaces/category';
 import {
 	INewCategoryDialogResult,
 	NewCategoryDialogComponent,
-} from 'src/app/components/new-category-dialog/new-category-dialog.component';
-import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
-import { AlertService } from 'src/app/services/alert/alert.service';
-import { CategoriesService } from 'src/app/services/categories/categories.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
+} from '@components/new-category-dialog/new-category-dialog.component';
+import { DEFAULT_CLUE_NAME } from '@directives/clue-if/clue-if.directive';
+import { generateUniqueString } from '@helpers/generateUniqueString';
+import { ICategory, ICategoryBase } from '@interfaces/category';
+import { AlertService } from '@services/alert/alert.service';
+import { CategoriesService } from '@services/categories/categories.service';
+import { LoadingService } from '@services/loading/loading.service';
+import { StorageService } from '@services/storage/storage.service';
+import { from, Observable } from 'rxjs';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 
 @Component({
 	templateUrl: './categories.component.html',

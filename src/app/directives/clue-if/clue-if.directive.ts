@@ -9,7 +9,7 @@ import {
 	Type,
 	ViewContainerRef,
 } from '@angular/core';
-import { ClueComponent } from 'src/app/components/clue/clue.component';
+import { ClueComponent } from '@components/clue/clue.component';
 
 export type TCluesDatasets = Map<string, IClueData>;
 

@@ -14,7 +14,7 @@ import {
 	Self,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { isNullish } from 'src/app/common/helpers/isNullish';
+import { isNullish } from '@helpers/isNullish';
 
 @Directive({
 	selector: '[currencyInput]',

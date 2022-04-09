@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PromptDialogComponent } from 'src/app/components/prompt-dialog/prompt-dialog.component';
+import { PromptDialogComponent } from '@components/prompt-dialog/prompt-dialog.component';
 
 export interface PromptDialogData {
 	title: string;

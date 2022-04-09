@@ -5,7 +5,7 @@ import {
 	SetOptions,
 	SnapshotOptions,
 } from '@angular/fire/firestore';
-import { IWalletPeriodStatistics } from '../interfaces/wallet-statistics';
+import { IWalletPeriodStatistics } from '@interfaces/wallet-statistics';
 
 export class WalletStatisticsConverter
 	implements FirestoreDataConverter<IWalletPeriodStatistics>

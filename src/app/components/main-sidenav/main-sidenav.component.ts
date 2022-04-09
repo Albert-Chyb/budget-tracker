@@ -7,10 +7,10 @@ import {
 	ViewChild,
 } from '@angular/core';
 import { MatDrawerMode, MatSidenav } from '@angular/material/sidenav';
+import { Breakpoint } from '@common/breakpoints';
+import { MainSidenavService } from '@services/main-sidenav/main-sidenav.service';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { Breakpoint } from 'src/app/common/breakpoints';
-import { MainSidenavService } from 'src/app/services/main-sidenav/main-sidenav.service';
 
 @Component({
 	selector: 'main-sidenav',

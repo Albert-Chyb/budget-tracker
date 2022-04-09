@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DEFAULT_CLUE_NAME } from '@directives/clue-if/clue-if.directive';
+import { IWallet } from '@interfaces/wallet';
 import { Observable } from 'rxjs';
-import { IWallet } from 'src/app/common/interfaces/wallet';
-import { DEFAULT_CLUE_NAME } from 'src/app/directives/clue-if/clue-if.directive';
 
 export type TWalletPickerValue = string | 'all' | undefined | null;
 

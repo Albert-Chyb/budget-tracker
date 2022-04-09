@@ -9,15 +9,15 @@ import {
 	ViewChild,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MAX_MONEY_AMOUNT_VALUE } from 'src/app/common/constants';
-import { isNullish } from 'src/app/common/helpers/isNullish';
-import { ICategory } from 'src/app/common/interfaces/category';
+import { MAX_MONEY_AMOUNT_VALUE } from '@common/constants';
+import { isNullish } from '@helpers/isNullish';
+import { ICategory } from '@interfaces/category';
 import {
 	ITransaction,
 	ITransactionCreatePayload,
 	TTransactionType,
-} from 'src/app/common/interfaces/transaction';
-import { IWallet } from 'src/app/common/interfaces/wallet';
+} from '@interfaces/transaction';
+import { IWallet } from '@interfaces/wallet';
 
 interface ITransactionFormValue {
 	amount: number;

@@ -4,8 +4,8 @@ import {
 	Component,
 	ViewContainerRef,
 } from '@angular/core';
+import { FABService } from '@services/FAB/fab.service';
 import { map } from 'rxjs/operators';
-import { FABService } from 'src/app/services/FAB/fab.service';
 
 /**
  * This component uses FABService to display currently set FAB button.

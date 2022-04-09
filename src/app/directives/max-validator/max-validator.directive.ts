@@ -5,7 +5,7 @@ import {
 	ValidationErrors,
 	Validator,
 } from '@angular/forms';
-import { maxValidator } from 'src/app/common/validators/max-validator';
+import { maxValidator } from '@validators/max-validator';
 
 @Directive({
 	selector: 'input[type="text"][textMax]',

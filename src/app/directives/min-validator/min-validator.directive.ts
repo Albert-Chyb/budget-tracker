@@ -3,9 +3,9 @@ import {
 	AbstractControl,
 	NG_VALIDATORS,
 	ValidationErrors,
-	Validator
+	Validator,
 } from '@angular/forms';
-import { minValidator } from 'src/app/common/validators/min-validator';
+import { minValidator } from '@validators/min-validator';
 
 @Directive({
 	selector: 'input[type="text"][textMin]',

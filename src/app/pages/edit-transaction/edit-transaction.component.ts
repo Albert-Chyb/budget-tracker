@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppError } from '@common/errors/app-error';
+import { ErrorCode } from '@common/errors/error-code';
+import { TransactionFormValue } from '@components/transaction-form/transaction-form.component';
+import { isNullish } from '@helpers/isNullish';
+import { ITransactionUpdatePayload } from '@interfaces/transaction';
+import { CategoriesService } from '@services/categories/categories.service';
+import { ErrorsService } from '@services/errors/errors.service';
+import { LoadingService } from '@services/loading/loading.service';
+import { TransactionsService } from '@services/transactions/transactions.service';
+import { WalletsService } from '@services/wallets/wallets.service';
 import { combineLatest, of, throwError } from 'rxjs';
 import { catchError, first, map, switchMap, takeWhile } from 'rxjs/operators';
-import { AppError } from 'src/app/common/errors/app-error';
-import { ErrorCode } from 'src/app/common/errors/error-code';
-import { isNullish } from 'src/app/common/helpers/isNullish';
-import { ITransactionUpdatePayload } from 'src/app/common/interfaces/transaction';
-import { TransactionFormValue } from 'src/app/components/transaction-form/transaction-form.component';
-import { CategoriesService } from 'src/app/services/categories/categories.service';
-import { ErrorsService } from 'src/app/services/errors/errors.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
-import { TransactionsService } from 'src/app/services/transactions/transactions.service';
-import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
 const TRANSACTION_NOT_FOUND_ERROR = new AppError(
 	'Transaction does not exist.',

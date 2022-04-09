@@ -5,7 +5,7 @@ import {
 	ValidationErrors,
 	Validator,
 } from '@angular/forms';
-import { blackListValidator } from 'src/app/common/validators/black-list-validator';
+import { blackListValidator } from '@validators/black-list-validator';
 
 @Directive({
 	selector: '[black-list]',

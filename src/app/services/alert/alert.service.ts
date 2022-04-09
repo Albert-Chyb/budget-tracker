@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { AlertComponent } from '@components/alert/alert.component';
 import { first } from 'rxjs/operators';
-import { AlertComponent } from 'src/app/components/alert/alert.component';
 
 @Injectable({
 	providedIn: 'root',

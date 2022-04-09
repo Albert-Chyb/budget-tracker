@@ -5,7 +5,7 @@ import {
 	Input,
 	Output,
 } from '@angular/core';
-import { ICategory } from 'src/app/common/interfaces/category';
+import { ICategory } from '@interfaces/category';
 
 @Component({
 	selector: 'category',

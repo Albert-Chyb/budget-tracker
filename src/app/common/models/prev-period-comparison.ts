@@ -1,4 +1,4 @@
-import { WalletStatistics } from './wallet-statistics';
+import { WalletStatistics } from '@models/wallet-statistics';
 
 export class PrevPeriodComparison {
 	constructor(private readonly _period: WalletStatistics) {

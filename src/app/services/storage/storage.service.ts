@@ -6,9 +6,9 @@ import {
 	UploadTask,
 	UploadTaskSnapshot,
 } from '@angular/fire/storage';
+import { generateUniqueString } from '@helpers/generateUniqueString';
+import { UserService } from '@services/user/user.service';
 import { Observable } from 'rxjs';
-import { generateUniqueString } from 'src/app/common/helpers/generateUniqueString';
-import { UserService } from '../user/user.service';
 
 @Injectable({
 	providedIn: 'root',

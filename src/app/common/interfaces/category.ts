@@ -1,4 +1,4 @@
-import { TTransactionType } from './transaction';
+import { TTransactionType } from '@interfaces/transaction';
 
 /**
  * Represents a transaction object that is returned from a service.

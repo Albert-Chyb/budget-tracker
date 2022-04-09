@@ -4,10 +4,10 @@ import {
 	Input,
 	OnInit,
 } from '@angular/core';
+import { ICategory } from '@interfaces/category';
+import { PieChart } from '@models/chart-base';
+import { WalletCategorizedStatistics } from '@models/wallet-statistics';
 import { ChartOptions } from 'chart.js';
-import { ICategory } from 'src/app/common/interfaces/category';
-import { PieChart } from 'src/app/common/models/chart-base';
-import { WalletCategorizedStatistics } from 'src/app/common/models/wallet-statistics';
 import {
 	CategorizedExpensesChartDataConverter,
 	CategorizedExpensesChartLabelConverter,

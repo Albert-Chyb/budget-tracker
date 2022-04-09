@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { TransactionFormValue } from '@components/transaction-form/transaction-form.component';
+import { ITransactionCreatePayload } from '@interfaces/transaction';
+import { CategoriesService } from '@services/categories/categories.service';
+import { LoadingService } from '@services/loading/loading.service';
+import { TransactionsService } from '@services/transactions/transactions.service';
+import { WalletsService } from '@services/wallets/wallets.service';
 import { combineLatest } from 'rxjs';
 import { first, map } from 'rxjs/operators';
-import { ITransactionCreatePayload } from 'src/app/common/interfaces/transaction';
-import { TransactionFormValue } from 'src/app/components/transaction-form/transaction-form.component';
-import { CategoriesService } from 'src/app/services/categories/categories.service';
-import { LoadingService } from 'src/app/services/loading/loading.service';
-import { TransactionsService } from 'src/app/services/transactions/transactions.service';
-import { WalletsService } from 'src/app/services/wallets/wallets.service';
 
 @Component({
 	templateUrl: './create-transaction.component.html',

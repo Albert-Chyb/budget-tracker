@@ -1,11 +1,11 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	EventEmitter,
 	Input,
 	Output,
-	EventEmitter,
 } from '@angular/core';
-import { IWallet } from 'src/app/common/interfaces/wallet';
+import { IWallet } from '@interfaces/wallet';
 
 @Component({
 	selector: 'wallet',
