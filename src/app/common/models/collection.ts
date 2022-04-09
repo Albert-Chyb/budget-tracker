@@ -53,7 +53,7 @@ export interface Read<T = unknown> {
 	 * Reads a single document from the database.
 	 *
 	 * @param id Id of the document.
-	 * @param once If true, object is read in real-time.
+	 * @param once If false, object is read in real-time.
 	 */
 	read(id: string, once?: boolean): Observable<T>;
 }
