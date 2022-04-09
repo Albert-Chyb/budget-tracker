@@ -18,7 +18,6 @@
 		"module": "es2020",
 		"lib": ["es2018", "dom"],
 		"strictNullChecks": false,
-		"skipLibCheck": true,
 		"paths": {
 			"@components/*": ["src/app/components/*"],
 			"@services/*": ["src/app/services/*"],
