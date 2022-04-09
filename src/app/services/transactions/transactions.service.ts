@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { FirestoreTransactionConverter } from 'src/app/common/firebase/firestore/transaction-converter';
 import {
 	ITransaction,
 	ITransactionCreatePayload,
@@ -17,7 +18,6 @@ import {
 	Read,
 	Update,
 } from 'src/app/common/models/collection';
-import { FirestoreTransactionConverter } from 'src/app/common/models/firestore-transaction-converter';
 import { UserService } from '../user/user.service';
 
 interface Methods

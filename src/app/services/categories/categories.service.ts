@@ -3,7 +3,7 @@ import { Firestore } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { from, Observable } from 'rxjs';
 import { map, mapTo } from 'rxjs/operators';
-import { FirebaseCallableFunctionsNames } from 'src/app/common/firebase-callable-functions';
+import { CloudFunction } from 'src/app/common/firebase/cloud-functions/callable-functions';
 import {
 	ICategory,
 	ICategoryCreatePayload,
@@ -44,7 +44,7 @@ export class CategoriesService extends Collection<Methods>(...ALL_MIXINS) {
 	delete(id: string): Observable<void> {
 		const deleteCategory = httpsCallable(
 			this._afFunctions,
-			FirebaseCallableFunctionsNames.DeleteCategory
+			CloudFunction.DeleteCategory
 		);
 
 		return from(deleteCategory({ id })).pipe(

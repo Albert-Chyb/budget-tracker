@@ -3,7 +3,7 @@ import {
 	QueryDocumentSnapshot,
 	SnapshotOptions,
 } from '@angular/fire/firestore';
-import { IWallet, IWalletBase } from '../interfaces/wallet';
+import { IWallet, IWalletBase } from '../../interfaces/wallet';
 
 export class FirestoreWalletConverter
 	implements FirestoreDataConverter<IWalletBase>

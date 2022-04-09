@@ -3,7 +3,8 @@ import { Firestore } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { from, Observable } from 'rxjs';
 import { map, mapTo } from 'rxjs/operators';
-import { FirebaseCallableFunctionsNames } from 'src/app/common/firebase-callable-functions';
+import { CloudFunction } from 'src/app/common/firebase/cloud-functions/callable-functions';
+import { FirestoreWalletConverter } from 'src/app/common/firebase/firestore/wallet-converter';
 import {
 	IWallet,
 	IWalletCreatePayload,
@@ -19,7 +20,6 @@ import {
 	Read,
 	Update,
 } from 'src/app/common/models/collection';
-import { FirestoreWalletConverter } from 'src/app/common/models/firestore-wallet-converter';
 import { UserService } from '../user/user.service';
 
 interface Methods
@@ -49,7 +49,7 @@ export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 	delete(id: string): Observable<void> {
 		const deleteWallet = httpsCallable(
 			this._afFunctions,
-			FirebaseCallableFunctionsNames.DeleteWallet
+			CloudFunction.DeleteWallet
 		);
 		const res$ = from(deleteWallet({ id }));
 

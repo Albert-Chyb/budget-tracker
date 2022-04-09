@@ -5,7 +5,7 @@ import {
 	SetOptions,
 	SnapshotOptions,
 } from '@angular/fire/firestore';
-import { ICollectionInfo } from '../interfaces/collection-info';
+import { ICollectionInfo } from '../../interfaces/collection-info';
 
 export class FirestoreCollectionsInfoConverter
 	implements FirestoreDataConverter<ICollectionInfo>
