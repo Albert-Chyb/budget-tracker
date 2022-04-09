@@ -51,7 +51,7 @@ export class WalletsStatisticsService {
 	 */
 	availableYears(): Observable<number[]> {
 		return this._collectionsInfo
-			.read('wallets-statistics', true)
-			.pipe(map(info => info.distinct?.map(Number) ?? []));
+			.read('wallets-statistics')
+			.pipe(map(info => info?.distinct?.map(Number) ?? []));
 	}
 }
