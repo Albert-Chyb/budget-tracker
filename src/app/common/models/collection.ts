@@ -17,6 +17,8 @@ import {
 	SnapshotOptions,
 	updateDoc,
 } from '@angular/fire/firestore';
+import { AppError } from '@common/errors/app-error';
+import { ErrorCode } from '@common/errors/error-code';
 import { generateUniqueString } from '@common/helpers/generateUniqueString';
 import { from, Observable } from 'rxjs';
 import { map, mapTo, shareReplay, switchMap } from 'rxjs/operators';
@@ -212,7 +214,10 @@ export function UpdateMixin<TBase extends Constructor<FirestoreCollection>>(
 									updateDoc(docRef, this._converter.toFirestore(data))
 								);
 							} else {
-								throw new Error(`Cannot update a non existing document.`);
+								throw new AppError(
+									'Cannot update a non existing document.',
+									ErrorCode.DatabaseObjectNotFound
+								);
 							}
 						})
 					);
@@ -228,8 +233,6 @@ export function PutMixin<TBase extends Constructor<FirestoreCollection>>(
 ) {
 	return class extends Base implements Put<unknown> {
 		put(id: string, data: DocumentData): Observable<void> {
-			// from(coll.doc(id).set(data))
-
 			return this.collection$.pipe(
 				switchMap(coll => {
 					const docRef = doc(coll, id);
