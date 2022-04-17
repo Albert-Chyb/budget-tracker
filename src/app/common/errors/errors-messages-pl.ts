@@ -6,6 +6,14 @@ import { ErrorCode } from './error-code';
 const errorMessages = new Map<string, string>([
 	['default', 'Wystąpił nieoczekiwany błąd.'],
 	[ErrorCode.TransactionNotFound, 'Transakcja nie została znaleziona.'],
+	[
+		ErrorCode.WalletReferenced,
+		'Nie można wykonać operacji, ponieważ w portfelu znajdują się transakcje.',
+	],
+	[
+		ErrorCode.CategoryReferenced,
+		'Nie można wykonać operacji, ponieważ istnieje transakcja z tą kategorią.',
+	],
 
 	// Firebase auth errors.
 	['auth/credential-already-in-use', 'Wybrane konto istnieje już w serwisie.'],
