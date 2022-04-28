@@ -6,7 +6,6 @@ import {
 	RouteNameChange,
 	RouteNameService,
 } from '@services/route-name/route-name.service';
-import { UserService } from '@services/user/user.service';
 import { combineLatest, Observable } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 
@@ -19,13 +18,12 @@ import { debounceTime, map } from 'rxjs/operators';
 export class MainNavbarComponent implements OnInit {
 	constructor(
 		private readonly _auth: AuthService,
-		private readonly _user: UserService,
 		private readonly _loading: LoadingService,
 		private readonly _routeName: RouteNameService,
 		private readonly _sidenav: MainSidenavService
 	) {}
 
-	isLoggedIn$ = this._user.isLoggedIn$;
+	isLoggedIn$ = this._auth.isLoggedIn$;
 	shouldDisplayLoader$ = this._loading.isLoading$.pipe(debounceTime(50));
 
 	data$: Observable<{

@@ -11,9 +11,8 @@ import {
 	UserCredential,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { UserService } from '@services/user/user.service';
 import { Observable } from 'rxjs';
-import { filter, map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,7 +20,6 @@ import { filter, map, take } from 'rxjs/operators';
 export class AuthService {
 	constructor(
 		private readonly _afAuth: Auth,
-		private readonly _user: UserService,
 		private readonly _router: Router
 	) {}
 
@@ -65,14 +63,6 @@ export class AuthService {
 	async logout(): Promise<void> {
 		await this._afAuth.signOut();
 
-		// Wait until user$ observable emits null which means that user data is no longer present (only then app can be sure that the user is logged out).
-		await this._user.user$
-			.pipe(
-				filter(user => !user),
-				take(1)
-			)
-			.toPromise();
-
 		this._router.navigateByUrl('/login');
 	}
 
@@ -80,14 +70,6 @@ export class AuthService {
 		handler: () => Promise<UserCredential>
 	): Promise<UserCredential> {
 		const credential: UserCredential = await handler();
-
-		// Wait until user data of the newly logged in user is stored in the user$ observable (only then app can be sure that the user is logged in).
-		await this._user.user$
-			.pipe(
-				filter(user => !!user),
-				take(1)
-			)
-			.toPromise();
 
 		return credential;
 	}

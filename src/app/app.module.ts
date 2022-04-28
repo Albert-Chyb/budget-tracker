@@ -1,7 +1,6 @@
 import { registerLocaleData } from '@angular/common';
 import localePL from '@angular/common/locales/pl';
 import {
-	APP_INITIALIZER,
 	DEFAULT_CURRENCY_CODE,
 	ErrorHandler,
 	LOCALE_ID,
@@ -34,7 +33,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppDateAdapter } from '@common/app-date-adapter';
 import { cluesDatasets } from '@common/clues-datasets';
 import { GlobalErrorHandler } from '@common/errors/global-error-handler';
-import { initializeUser } from '@common/initializers/user-auth-status';
 import { PolishMatPaginatorIntl } from '@common/mat-paginator-intl';
 import { AlertComponent } from '@components/alert/alert.component';
 import { CategoriesListComponent } from '@components/categories-list/categories-list.component';
@@ -78,8 +76,6 @@ import { LoginComponent } from '@pages/login/login.component';
 import { TransactionsComponent } from '@pages/transactions/transactions.component';
 import { WalletsComponent } from '@pages/wallets/wallets.component';
 import { LoadingPipe } from '@pipes/loading/loading.pipe';
-import { AuthService } from '@services/auth/auth.service';
-import { UserService } from '@services/user/user.service';
 import { NgChartsModule } from 'ng2-charts';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -97,12 +93,6 @@ const PolishCurrencyCodeProvider: Provider = {
 const ErrorHandlerProvider: Provider = {
 	provide: ErrorHandler,
 	useClass: GlobalErrorHandler,
-};
-const UserInitializerProvider: Provider = {
-	provide: APP_INITIALIZER,
-	useFactory: initializeUser,
-	deps: [UserService, AuthService],
-	multi: true,
 };
 const CluesDatasetsProvider: Provider = {
 	provide: CLUES_DATASETS,
@@ -214,7 +204,6 @@ const AppDateAdapterProvider: Provider = {
 		PolishLocaleProvider,
 		PolishCurrencyCodeProvider,
 		ErrorHandlerProvider,
-		UserInitializerProvider,
 		CluesDatasetsProvider,
 		AppDateAdapterProvider,
 		{
