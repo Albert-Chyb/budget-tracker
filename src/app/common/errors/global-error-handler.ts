@@ -18,8 +18,9 @@ export class GlobalErrorHandler implements ErrorHandler {
 			this._showMessage(getErrorMessage(actualThrown.code));
 		} else {
 			this._showMessage(getErrorMessage(DEFAULT_ERROR_CODE));
-			console.error(actualThrown);
 		}
+
+		console.error(unhandled);
 	}
 
 	private _showMessage(message: string) {
