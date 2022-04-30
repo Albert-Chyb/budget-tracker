@@ -151,14 +151,14 @@
 					</mat-card-header>
 
 					<mat-card-content>
-						<div class="chart-wrapper">
-							<grouped-transactions-chart
-								class="chart"
-								[data]="data.periodStatistics"
-								[period]="selectedPeriod"
-								(onPeriodClick)="onBarChartClick($event)"
-							></grouped-transactions-chart>
-						</div>
+						<period-bar-chart
+							[period]="data.periodStatistics"
+							[showAxisLabels]="layout.expensesChart.showAxisLabels"
+							[barPadding]="layout.expensesChart.barPadding"
+							[groupPadding]="layout.expensesChart.groupPadding"
+							class="chart"
+							(onPeriodSelect)="onBarChartClick($event)"
+						></period-bar-chart>
 					</mat-card-content>
 				</mat-card>
 			</mat-grid-tile>

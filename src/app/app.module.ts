@@ -41,7 +41,6 @@ import { CategoryComponent } from '@components/category/category.component';
 import { ClueComponent } from '@components/clue/clue.component';
 import { FileInputComponent } from '@components/file-input/file-input.component';
 import { GlobalFabComponent } from '@components/global-fab/global-fab.component';
-import { GroupedTransactionsChartComponent } from '@components/grouped-transactions-chart/grouped-transactions-chart.component';
 import { LoadingIndicatorComponent } from '@components/loading-indicator/loading-indicator.component';
 import { MainNavbarComponent } from '@components/main-navbar/main-navbar.component';
 import { MainSidenavComponent } from '@components/main-sidenav/main-sidenav.component';
@@ -76,10 +75,12 @@ import { LoginComponent } from '@pages/login/login.component';
 import { TransactionsComponent } from '@pages/transactions/transactions.component';
 import { WalletsComponent } from '@pages/wallets/wallets.component';
 import { LoadingPipe } from '@pipes/loading/loading.pipe';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgChartsModule } from 'ng2-charts';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { PeriodBarChartComponent } from './components/period-bar-chart/period-bar-chart.component';
 import { MatModule } from './mat.module';
 
 const PolishLocaleProvider: Provider = {
@@ -132,7 +133,6 @@ const AppDateAdapterProvider: Provider = {
 		FileSizeValidatorDirective,
 		LoadingPipe,
 		PeriodPickerComponent,
-		GroupedTransactionsChartComponent,
 		CategorizedExpensesChartComponent,
 		TransactionsTableComponent,
 		TransactionsComponent,
@@ -145,8 +145,10 @@ const AppDateAdapterProvider: Provider = {
 		CollectionPaginatorDirective,
 		CategoriesListComponent,
 		CategoryComponent,
+		PeriodBarChartComponent,
 	],
 	imports: [
+		NgxChartsModule,
 		BrowserModule,
 		AppRoutingModule,
 		BrowserAnimationsModule,

@@ -4,6 +4,9 @@ export const xSmallLayout = {
 	},
 	expensesChart: {
 		colspan: 12,
+		showAxisLabels: false,
+		groupPadding: 1,
+		barPadding: 1,
 	},
 	popularCategoriesChart: {
 		colspan: 12,
@@ -19,6 +22,9 @@ export const smallLayout = {
 	},
 	expensesChart: {
 		colspan: 12,
+		showAxisLabels: false,
+		groupPadding: 1,
+		barPadding: 1,
 	},
 	popularCategoriesChart: {
 		colspan: 12,
@@ -34,6 +40,9 @@ export const mediumLayout = {
 	},
 	expensesChart: {
 		colspan: 12,
+		showAxisLabels: true,
+		groupPadding: 16,
+		barPadding: 8,
 	},
 	popularCategoriesChart: {
 		colspan: 12,
@@ -49,6 +58,9 @@ export const largeLayout = {
 	},
 	expensesChart: {
 		colspan: 12,
+		showAxisLabels: true,
+		groupPadding: 16,
+		barPadding: 8,
 	},
 	popularCategoriesChart: {
 		colspan: 5,

@@ -30,13 +30,9 @@
 	line-height: clamp(2.4rem, 5vw, 3rem);
 }
 
-.chart-wrapper {
+.chart {
 	display: flex;
 	height: 40rem;
-
-	.chart {
-		width: 100%;
-	}
 }
 
 .decrease-is-better {
