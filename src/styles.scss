@@ -4,6 +4,11 @@
 
 html {
 	font-size: 62.5%;
+
+	--primary-color: #{vars.$primary-color};
+	--accent-color: #{vars.$accent-color};
+	--warn-color: #{vars.$warn-color};
+	--success-color: #{vars.$success-color};
 }
 
 body {
@@ -46,4 +51,18 @@ body {
 // Remove firebase auth emulator warning.
 .firebase-emulator-warning {
 	display: none;
+}
+
+.ngx-charts .bar-chart {
+	line.gridline-path {
+		stroke: hsla(0, 0%, 100%, 0.7);
+	}
+
+	text {
+		fill: hsla(0, 0%, 100%, 0.7);
+	}
+
+	*[ngx-charts-axis-label] text {
+		fill: hsl(0, 0%, 100%);
+	}
 }
