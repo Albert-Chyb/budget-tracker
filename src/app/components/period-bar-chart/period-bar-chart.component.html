@@ -12,4 +12,13 @@
 	[barPadding]="chartLayoutConfig.barPadding"
 	(select)="handleBarSelect($event)"
 >
+	<ng-template #tooltipTemplate let-model="model">
+		<div class="tooltip">
+			<div class="tooltip__heading">
+				{{ model.series }} &middot; {{ model.name }}
+			</div>
+
+			<div class="tooltip__value">{{ model.value | currency }}</div>
+		</div>
+	</ng-template>
 </ngx-charts-bar-vertical-2d>

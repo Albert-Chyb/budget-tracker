@@ -1,3 +1,17 @@
 :host {
 	display: block;
 }
+
+.tooltip {
+	font-size: 1.3em;
+	padding: 0.3rem;
+
+	&__heading {
+		font-size: 1em;
+	}
+
+	&__value {
+		margin-top: 0.2rem;
+		font-size: 0.9em;
+	}
+}
