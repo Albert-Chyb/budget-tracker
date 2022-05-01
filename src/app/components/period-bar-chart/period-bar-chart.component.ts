@@ -44,12 +44,13 @@ export class PeriodBarChartComponent {
 	private _statistics: WalletStatistics;
 	private _layoutName: TPeriodBarChartLayoutName = 'full';
 
+	readonly colorScheme: any = {
+		domain: ['var(--success-color)', 'var(--warn-color)'],
+	};
+
 	data: any;
 	yAxisLabel = 'Suma pieniędzy';
 	xAxisLabel: string = '';
-	colorScheme: any = {
-		domain: ['var(--success-color)', 'var(--warn-color)'],
-	};
 	chartLayoutConfig: any = this._getLayoutConfig(this._layoutName);
 
 	@Output() onPeriodSelect = new EventEmitter<WalletStatistics>();
