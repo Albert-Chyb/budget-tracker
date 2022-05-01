@@ -2,14 +2,14 @@
 	[results]="data"
 	[yAxisLabel]="yAxisLabel"
 	[xAxisLabel]="xAxisLabel"
-	[showXAxisLabel]="showAxisLabels"
-	[showYAxisLabel]="showAxisLabels"
+	[showXAxisLabel]="chartLayoutConfig.showAxisLabels"
+	[showYAxisLabel]="chartLayoutConfig.showAxisLabels"
 	[xAxis]="true"
 	[yAxis]="true"
 	[scheme]="colorScheme"
 	[roundEdges]="false"
-	[groupPadding]="groupPadding"
-	[barPadding]="barPadding"
+	[groupPadding]="chartLayoutConfig.groupPadding"
+	[barPadding]="chartLayoutConfig.barPadding"
 	(select)="handleBarSelect($event)"
 >
 </ngx-charts-bar-vertical-2d>

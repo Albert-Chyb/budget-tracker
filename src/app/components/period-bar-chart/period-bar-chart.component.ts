@@ -18,6 +18,20 @@ import {
 	WalletYearStatistics,
 } from '@common/models/wallet-statistics';
 
+const COMPACT_LAYOUT = Object.freeze({
+	showAxisLabels: false,
+	barPadding: 1,
+	groupPadding: 2,
+});
+
+const FULL_LAYOUT = Object.freeze({
+	showAxisLabels: true,
+	barPadding: 8,
+	groupPadding: 16,
+});
+
+export type TPeriodBarChartLayoutName = 'compact' | 'full';
+
 @Component({
 	selector: 'period-bar-chart',
 	templateUrl: './period-bar-chart.component.html',
@@ -28,6 +42,7 @@ export class PeriodBarChartComponent {
 	constructor(@Inject(LOCALE_ID) private readonly _locale: string) {}
 
 	private _statistics: WalletStatistics;
+	private _layoutName: TPeriodBarChartLayoutName = 'full';
 
 	data: any;
 	yAxisLabel = 'Suma pieniędzy';
@@ -35,12 +50,18 @@ export class PeriodBarChartComponent {
 	colorScheme: any = {
 		domain: ['var(--success-color)', 'var(--warn-color)'],
 	};
+	chartLayoutConfig: any = this._getLayoutConfig(this._layoutName);
 
 	@Output() onPeriodSelect = new EventEmitter<WalletStatistics>();
 
-	@Input() showAxisLabels = true;
-	@Input() barPadding = 8;
-	@Input() groupPadding = 16;
+	@Input()
+	set layout(newLayoutName: TPeriodBarChartLayoutName) {
+		this._layoutName = newLayoutName;
+		this.chartLayoutConfig = this._getLayoutConfig(newLayoutName);
+	}
+	get layout() {
+		return this._layoutName;
+	}
 
 	@Input('period')
 	set periodStatistics(value: WalletStatistics) {
@@ -56,6 +77,16 @@ export class PeriodBarChartComponent {
 
 	handleBarSelect(event: any) {
 		this.onPeriodSelect.emit(event.period);
+	}
+
+	private _getLayoutConfig(name: TPeriodBarChartLayoutName) {
+		switch (name) {
+			case 'compact':
+				return COMPACT_LAYOUT;
+
+			case 'full':
+				return FULL_LAYOUT;
+		}
 	}
 
 	private _convertPeriodToChartData(period: WalletStatistics) {

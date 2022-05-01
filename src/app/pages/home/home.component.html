@@ -153,9 +153,7 @@
 					<mat-card-content>
 						<period-bar-chart
 							[period]="data.periodStatistics"
-							[showAxisLabels]="layout.expensesChart.showAxisLabels"
-							[barPadding]="layout.expensesChart.barPadding"
-							[groupPadding]="layout.expensesChart.groupPadding"
+							[layout]="layout.expensesChart.chartLayoutName"
 							class="chart"
 							(onPeriodSelect)="onBarChartClick($event)"
 						></period-bar-chart>
