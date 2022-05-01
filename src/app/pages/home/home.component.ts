@@ -247,7 +247,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 	}
 
 	onBarChartClick(statistics: WalletStatistics) {
-		console.log(statistics);
 		if (statistics.name !== 'day') {
 			const [year, month, week] = statistics.date;
 
