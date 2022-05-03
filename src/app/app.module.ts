@@ -36,7 +36,6 @@ import { GlobalErrorHandler } from '@common/errors/global-error-handler';
 import { PolishMatPaginatorIntl } from '@common/mat-paginator-intl';
 import { AlertComponent } from '@components/alert/alert.component';
 import { CategoriesListComponent } from '@components/categories-list/categories-list.component';
-import { CategorizedExpensesChartComponent } from '@components/categorized-expenses-chart/categorized-expenses-chart.component';
 import { CategoryComponent } from '@components/category/category.component';
 import { ClueComponent } from '@components/clue/clue.component';
 import { FileInputComponent } from '@components/file-input/file-input.component';
@@ -81,6 +80,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PeriodBarChartComponent } from './components/period-bar-chart/period-bar-chart.component';
+import { PeriodCategoriesPieChartComponent } from './components/period-categories-pie-chart/period-categories-pie-chart.component';
 import { MatModule } from './mat.module';
 
 const PolishLocaleProvider: Provider = {
@@ -133,7 +133,6 @@ const AppDateAdapterProvider: Provider = {
 		FileSizeValidatorDirective,
 		LoadingPipe,
 		PeriodPickerComponent,
-		CategorizedExpensesChartComponent,
 		TransactionsTableComponent,
 		TransactionsComponent,
 		PaginatedTransactionsTableComponent,
@@ -146,6 +145,7 @@ const AppDateAdapterProvider: Provider = {
 		CategoriesListComponent,
 		CategoryComponent,
 		PeriodBarChartComponent,
+		PeriodCategoriesPieChartComponent,
 	],
 	imports: [
 		NgxChartsModule,

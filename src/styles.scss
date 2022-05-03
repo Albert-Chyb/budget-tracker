@@ -66,3 +66,8 @@ body {
 		fill: hsl(0, 0%, 100%);
 	}
 }
+
+.chart-legend .legend-label .active .legend-label-text {
+	color: #fff !important;
+	text-decoration: underline;
+}

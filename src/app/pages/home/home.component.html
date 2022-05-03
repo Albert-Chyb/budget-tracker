@@ -173,13 +173,11 @@
 					</mat-card-header>
 
 					<mat-card-content>
-						<div class="chart-wrapper">
-							<categorized-expenses-chart
-								class="chart"
-								[data]="data.periodStatistics.categories"
-								[categories]="data.categories"
-							></categorized-expenses-chart>
-						</div>
+						<period-categories-pie-chart
+							class="chart"
+							[categories]="data.categories"
+							[categorizedStatistics]="data.periodStatistics.categories"
+						></period-categories-pie-chart>
 					</mat-card-content>
 				</mat-card>
 			</mat-grid-tile>
