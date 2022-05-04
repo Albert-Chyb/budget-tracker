@@ -3,4 +3,7 @@
 	[legend]="showLegend"
 	[legendPosition]="legendPosition"
 >
+	<ng-template #tooltipTemplate let-model="model">
+		<period-chart-tooltip [model]="model"></period-chart-tooltip>
+	</ng-template>
 </ngx-charts-pie-chart>

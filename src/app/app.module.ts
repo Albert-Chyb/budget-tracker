@@ -81,6 +81,7 @@ import { AppComponent } from './app.component';
 import { PeriodBarChartComponent } from './components/period-bar-chart/period-bar-chart.component';
 import { PeriodCategoriesPieChartComponent } from './components/period-categories-pie-chart/period-categories-pie-chart.component';
 import { MatModule } from './mat.module';
+import { PeriodChartTooltipComponent } from './components/period-chart-tooltip/period-chart-tooltip.component';
 
 const PolishLocaleProvider: Provider = {
 	provide: LOCALE_ID,
@@ -145,6 +146,7 @@ const AppDateAdapterProvider: Provider = {
 		CategoryComponent,
 		PeriodBarChartComponent,
 		PeriodCategoriesPieChartComponent,
+  PeriodChartTooltipComponent,
 	],
 	imports: [
 		NgxChartsModule,
