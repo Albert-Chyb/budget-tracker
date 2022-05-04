@@ -75,7 +75,6 @@ import { TransactionsComponent } from '@pages/transactions/transactions.componen
 import { WalletsComponent } from '@pages/wallets/wallets.component';
 import { LoadingPipe } from '@pipes/loading/loading.pipe';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { NgChartsModule } from 'ng2-charts';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -154,7 +153,6 @@ const AppDateAdapterProvider: Provider = {
 		BrowserAnimationsModule,
 		MatModule,
 		FormsModule,
-		NgChartsModule,
 		AuthGuardModule,
 		provideFirebaseApp(() => initializeApp(environment.firestore)),
 		provideAuth(() => {
