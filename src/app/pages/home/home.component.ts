@@ -52,10 +52,6 @@ import {
 	xSmallLayout,
 } from './layouts';
 
-/*
- TODO: Adjust charts theme to the dark background.
- */
-
 enum QueryParamsKeys {
 	Year = 'year',
 	Month = 'month',
