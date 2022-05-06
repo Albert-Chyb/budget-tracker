@@ -1,44 +1,36 @@
 <ng-container *ngIf="years$ | async as years">
 	<form class="period-picker-form" id="period-picker" #periodForm="ngForm">
-		<mat-button-toggle-group
-			name="period"
-			aria-label="Okres z jakiego wyświetlić statystyki"
-			[(ngModel)]="selectedPeriod"
-		>
-			<mat-button-toggle value="year">Rok</mat-button-toggle>
-			<mat-button-toggle value="month">Miesiąc</mat-button-toggle>
-			<mat-button-toggle value="week">Tydzień</mat-button-toggle>
-		</mat-button-toggle-group>
+		<!-- TODO: Add reset buttons for form inputs -->
 
-		<mat-form-field class="year" *ngIf="hasSelection">
+		<mat-form-field class="year">
 			<mat-label>Rok</mat-label>
 
-			<mat-select name="year" [(ngModel)]="year" #yearModel="ngModel" required>
+			<mat-select
+				name="year"
+				#yearModel="ngModel"
+				required
+				[(ngModel)]="period.year"
+			>
 				<mat-option *ngFor="let year of years" [value]="year">
 					{{ year }}
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
 
-		<mat-form-field class="month" *ngIf="isSelectedWeek || isSelectedMonth">
+		<mat-form-field class="month" *ngIf="period.length >= 1">
 			<mat-label>Miesiąc</mat-label>
 
-			<mat-select
-				name="month"
-				[(ngModel)]="month"
-				#monthModel="ngModel"
-				required
-			>
+			<mat-select name="month" [(ngModel)]="period.month" #monthModel="ngModel">
 				<mat-option *ngFor="let month of months; let i = index" [value]="i">
 					{{ month }}
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
 
-		<mat-form-field class="week" *ngIf="isSelectedWeek">
+		<mat-form-field class="week" *ngIf="period.length >= 2">
 			<mat-label>Tydzień</mat-label>
 
-			<mat-select name="week" [(ngModel)]="week" #weekModel="ngModel" required>
+			<mat-select name="week" [(ngModel)]="period.week" #weekModel="ngModel">
 				<mat-option *ngFor="let weekIndex of weeks" [value]="weekIndex">
 					{{ weekIndex + 1 }}
 				</mat-option>

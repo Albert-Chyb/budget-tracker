@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TimePeriod } from '@common/models/period';
 import { numberOfWeeksInMonth } from '@helpers/date';
 import { Observable } from 'rxjs';
 
@@ -10,12 +11,7 @@ export type TPeriodPickerInjectorData = {
 	value: TPeriodPickerValue;
 };
 
-export type TPeriodPickerValue = {
-	year: number;
-	month: number;
-	week: number;
-	periodName: TPeriodName;
-} | null;
+export type TPeriodPickerValue = TimePeriod;
 
 @Component({
 	templateUrl: './period-picker.component.html',
@@ -27,13 +23,10 @@ export class PeriodPickerComponent {
 		@Inject(MAT_DIALOG_DATA) private readonly _data: TPeriodPickerInjectorData
 	) {}
 
-	private _selectedPeriod: TPeriodName = this._data.value.periodName ?? 'year';
-	year: number = this._data.value.year;
-	month: number = this._data.value.month;
-	week: number = this._data.value.week;
+	readonly period = TimePeriod.fromPeriod(this._data.value);
+	readonly years$ = this._data.years$;
 
-	years$ = this._data.years$;
-
+	// TODO: Use formatDate() to generate list of months.
 	readonly months = [
 		'Styczeń',
 		'Luty',
@@ -49,59 +42,13 @@ export class PeriodPickerComponent {
 		'Grudzień',
 	];
 
-	get selectedPeriod(): TPeriodName {
-		return this._selectedPeriod;
-	}
-	set selectedPeriod(value: TPeriodName) {
-		this._selectedPeriod = value;
-
-		switch (value) {
-			case 'year':
-				this.month = null;
-				this.week = null;
-				break;
-
-			case 'month':
-				this.week = null;
-				break;
-
-			case 'week':
-				break;
-
-			default:
-				throw new Error('There is not such period.');
-		}
-	}
-
-	get hasSelection(): boolean {
-		return !!this.selectedPeriod;
-	}
-
-	get isSelectedYear(): boolean {
-		return this.selectedPeriod === 'year';
-	}
-
-	get isSelectedMonth(): boolean {
-		return this.selectedPeriod === 'month';
-	}
-
-	get isSelectedWeek(): boolean {
-		return this.selectedPeriod === 'week';
-	}
-
 	get weeks(): number[] {
-		const length = numberOfWeeksInMonth(this.year, this.month);
+		const length = numberOfWeeksInMonth(this.period.year, this.period.month);
 
 		return new Array(length).fill(0).map((n, index) => index);
 	}
 
 	processValue(): TPeriodPickerValue {
-		const value = {
-			year: this.year,
-			month: this.month,
-			week: this.week,
-			periodName: this.selectedPeriod,
-		};
-		return value;
+		return TimePeriod.fromPeriod(this.period);
 	}
 }

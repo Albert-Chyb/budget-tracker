@@ -3,14 +3,14 @@ import { ComponentType } from '@angular/cdk/portal';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	NgZone,
 	OnDestroy,
 	OnInit,
 } from '@angular/core';
 import { limit, orderBy } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Breakpoint } from '@common/breakpoints';
+import { TimePeriod } from '@common/models/period';
 import { distinctUntilKeysChanged } from '@common/rxjs-custom-operators/distinctUntilKeysChanged';
 import {
 	PeriodPickerComponent,
@@ -82,14 +82,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 		private readonly _categories: CategoriesService,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
-		private readonly _loading: LoadingService,
-		private readonly _ngZone: NgZone
+		private readonly _loading: LoadingService
 	) {}
 
 	private readonly _wallets$: Observable<IWallet[]> = this._wallets
 		.list()
 		.pipe(shareReplay());
-
 	private _yearsSubscription: Subscription;
 	private readonly _years$ = this._walletStatistics
 		.availableYears()
@@ -98,30 +96,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 	readonly cols = 12;
 	readonly rowHeightRem = 1;
 	readonly gutterSizeRem = 0.5;
-
 	readonly maxTransactionsCount = 8;
 
 	/** Emits whenever the wallet changes */
-	readonly selectedWallet$: Observable<TWalletPickerValue> =
-		this._route.queryParamMap.pipe(
-			map(params => params.get(QueryParamsKeys.Wallet)),
-			distinctUntilChanged()
-		);
+	readonly selectedWallet$: Observable<string> = this._route.queryParamMap.pipe(
+		map(params => params.get(QueryParamsKeys.Wallet)),
+		distinctUntilChanged()
+	);
 
 	/** Emits whenever the period changes */
-	readonly selectedPeriod$: Observable<TPeriodPickerValue> =
+	readonly selectedPeriod$: Observable<TimePeriod> =
 		this._route.queryParamMap.pipe(
-			map(params => {
-				const [year, month, week] = this._buildPeriodDateParts(params);
-
-				return {
-					periodName: params.get(QueryParamsKeys.PeriodName) as TPeriodName,
-					year,
-					month,
-					week,
-				};
-			}),
-			distinctUntilKeysChanged(['year', 'month', 'week', 'periodName'])
+			map(params => this._buildPeriodFromQueryParams(params)),
+			distinctUntilKeysChanged(['year', 'month', 'week'])
 		);
 
 	/** Emits whenever statistics object has changed */
@@ -246,9 +233,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 		if (statistics.name !== 'day') {
 			const [year, month, week] = statistics.date;
 
-			this._ngZone.run(() =>
-				this._setQueryParams({ year, month, week, periodName: statistics.name })
-			);
+			this._setPeriodInQueryParams(new TimePeriod(year, month, week));
 		}
 	}
 
@@ -257,7 +242,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 		const selectedWallet = await this._openWalletPicker();
 
 		if (selectedWallet) {
-			this._setQueryParams({ wallet: selectedWallet });
+			this._setWalletInQueryParams(selectedWallet);
 		}
 	}
 
@@ -266,9 +251,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 		const newPeriod = await this._openPeriodPicker();
 
 		if (newPeriod) {
-			const { year, month, week, periodName } = newPeriod;
-
-			this._setQueryParams({ year, month, week, periodName });
+			this._setPeriodInQueryParams(newPeriod);
 		}
 	}
 
@@ -277,16 +260,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 		return this._route.snapshot.queryParamMap.get(QueryParamsKeys.Wallet);
 	}
 
-	/** Currently selected period's name */
-	get selectedPeriod(): TPeriodName {
-		return this._route.snapshot.queryParamMap.get(
-			QueryParamsKeys.PeriodName
-		) as TPeriodName;
-	}
-
 	/** Currently selected period */
-	get selectedPeriodParts(): [number, number, number] {
-		return this._buildPeriodDateParts(this._route.snapshot.queryParamMap);
+	get selectedPeriod() {
+		return this._buildPeriodFromQueryParams(this._route.snapshot.queryParamMap);
 	}
 
 	private _openWalletPicker(): Promise<TWalletPickerValue> {
@@ -301,19 +277,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 	}
 
 	private _openPeriodPicker(): Promise<TPeriodPickerValue> {
-		const [year, month, week] = this.selectedPeriodParts;
-
 		return this._openPicker<
 			PeriodPickerComponent,
 			TPeriodPickerInjectorData,
 			TPeriodPickerValue
 		>(PeriodPickerComponent, {
-			value: {
-				year,
-				month,
-				week,
-				periodName: this.selectedPeriod,
-			},
+			value: this.selectedPeriod,
 			years$: this._years$,
 		});
 	}
@@ -332,7 +301,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 			.toPromise();
 	}
 
-	private _buildPeriodDateParts(params: ParamMap): [number, number, number] {
+	private _buildPeriodFromQueryParams(params: ParamMap): TimePeriod {
 		const paramsNames: TPeriodName[] = [
 			QueryParamsKeys.Year,
 			QueryParamsKeys.Month,
@@ -347,14 +316,25 @@ export class HomeComponent implements OnInit, OnDestroy {
 			}
 		});
 
-		return [year, month, week];
+		return new TimePeriod(year, month, week);
 	}
 
-	private _setQueryParams(queryParams: Params) {
+	private _setPeriodInQueryParams(period: TimePeriod) {
+		const { year, month, week } = period;
+
 		return this._router.navigate([], {
 			relativeTo: this._route,
 			queryParamsHandling: 'merge',
-			queryParams,
+			queryParams: { year, month, week },
+			replaceUrl: true,
+		});
+	}
+
+	private _setWalletInQueryParams(wallet: string) {
+		return this._router.navigate([], {
+			relativeTo: this._route,
+			queryParamsHandling: 'merge',
+			queryParams: { wallet },
 			replaceUrl: true,
 		});
 	}
