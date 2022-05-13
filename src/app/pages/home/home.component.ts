@@ -10,7 +10,7 @@ import { limit, orderBy } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Breakpoint } from '@common/breakpoints';
-import { TimePeriod } from '@common/models/period';
+import { TimePeriod } from '@common/models/time-period';
 import { distinctUntilKeysChanged } from '@common/rxjs-custom-operators/distinctUntilKeysChanged';
 import {
 	PeriodPickerComponent,

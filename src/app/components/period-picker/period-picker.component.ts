@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TimePeriod } from '@common/models/period';
+import { TimePeriod } from '@common/models/time-period';
 import { numberOfWeeksInMonth } from '@helpers/date';
 import { Observable } from 'rxjs';
 
