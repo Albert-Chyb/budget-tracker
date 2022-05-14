@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { collection, doc, docData, Firestore } from '@angular/fire/firestore';
-import { WalletYearStatistics } from '@models/wallet-statistics';
+import { isNullish } from '@common/helpers/isNullish';
+import { PeriodStatistics } from '@common/models/period-statistics';
+import { TimePeriod } from '@common/models/time-period';
 import { WalletStatisticsConverter } from '@models/wallets-statistics-converter';
 import { CollectionsInfoService } from '@services/collections-info/collections-info.service';
 import { UserService } from '@services/user/user.service';
@@ -28,19 +30,27 @@ export class WalletsStatisticsService {
 			)
 		);
 
-	year(year: number): Observable<WalletYearStatistics> {
+	year(year: number): Observable<PeriodStatistics> {
 		return this._collection$.pipe(
 			switchMap(collection => docData(doc(collection, String(year)))),
-			map(statistics => new WalletYearStatistics(statistics, year))
+			map(statistics =>
+				isNullish(statistics)
+					? new PeriodStatistics(0, 0, [], new TimePeriod(year), null)
+					: statistics
+			)
 		);
 	}
 
-	wallet(walletId: string, year: number): Observable<WalletYearStatistics> {
+	wallet(walletId: string, year: number): Observable<PeriodStatistics> {
 		return this._collection$.pipe(
 			switchMap(collection =>
 				docData(doc(collection, `${year}/year-by-wallets/${walletId}`))
 			),
-			map(statistics => new WalletYearStatistics(statistics, year))
+			map(statistics =>
+				isNullish(statistics)
+					? new PeriodStatistics(0, 0, [], new TimePeriod(year), null)
+					: statistics
+			)
 		);
 	}
 

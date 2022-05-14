@@ -58,7 +58,7 @@
 						<p
 							mat-card-subtitle
 							*ngIf="
-								data.prevPeriodStatistics.prevPeriodExists;
+								data.prevPeriodStatistics.prevPeriodStatisticsExists;
 								else noPrevIncome
 							"
 							[ngClass]="{
@@ -94,7 +94,7 @@
 						<p
 							mat-card-subtitle
 							*ngIf="
-								data.prevPeriodStatistics.prevPeriodExists;
+								data.prevPeriodStatistics.prevPeriodStatisticsExists;
 								else noPrevExpenses
 							"
 							class="decrease-is-better"

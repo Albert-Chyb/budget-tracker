@@ -6,7 +6,7 @@ import {
 	SimpleChanges,
 } from '@angular/core';
 import { ICategory } from '@common/interfaces/category';
-import { WalletCategorizedStatistics } from '@common/models/wallet-statistics';
+import { PeriodCategories } from '@common/models/period-statistics';
 import { LegendPosition } from '@swimlane/ngx-charts';
 
 @Component({
@@ -21,7 +21,7 @@ export class PeriodCategoriesPieChartComponent implements OnChanges {
 	readonly legendPosition = LegendPosition.Below;
 
 	@Input() categories: ICategory[];
-	@Input() categorizedStatistics: WalletCategorizedStatistics;
+	@Input() categorizedStatistics: PeriodCategories;
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if ('categories' in changes || 'categorizedStatistics' in changes) {
@@ -29,10 +29,7 @@ export class PeriodCategoriesPieChartComponent implements OnChanges {
 		}
 	}
 
-	private _setChartData(
-		stats: WalletCategorizedStatistics,
-		categories: ICategory[]
-	) {
+	private _setChartData(stats: PeriodCategories, categories: ICategory[]) {
 		this.data = Array.from(stats)
 			.filter(category => category.expenses > 0)
 			.map(categoryStatistics => ({

@@ -10,6 +10,7 @@ import { limit, orderBy } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Breakpoint } from '@common/breakpoints';
+import { PeriodStatistics } from '@common/models/period-statistics';
 import { TimePeriod } from '@common/models/time-period';
 import { distinctUntilKeysChanged } from '@common/rxjs-custom-operators/distinctUntilKeysChanged';
 import {
@@ -26,10 +27,6 @@ import {
 import { DEFAULT_CLUE_NAME } from '@directives/clue-if/clue-if.directive';
 import { IWallet } from '@interfaces/wallet';
 import { PrevPeriodComparison } from '@models/prev-period-comparison';
-import {
-	WalletStatistics,
-	WalletYearStatistics,
-} from '@models/wallet-statistics';
 import { CategoriesService } from '@services/categories/categories.service';
 import { LoadingService } from '@services/loading/loading.service';
 import { MainSidenavService } from '@services/main-sidenav/main-sidenav.service';
@@ -118,7 +115,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 	]).pipe(
 		switchMap(([period, wallet]) => {
 			const { year } = period;
-			let observable$: Observable<WalletYearStatistics>;
+			let observable$: Observable<PeriodStatistics>;
 
 			if (wallet === 'all') {
 				// We want to retrieve statistic for a year
@@ -136,8 +133,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 					({ year: oldYear }, { year: newYear }) => oldYear !== newYear
 				),
 				map(({ month, week }) => {
-					const periodStatistics: WalletStatistics =
-						yearStatistics.getNestedPeriod(month, week);
+					const periodStatistics: PeriodStatistics = yearStatistics.getNested(
+						month,
+						week
+					);
 
 					return {
 						current: periodStatistics,
@@ -229,11 +228,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	onBarChartClick(statistics: WalletStatistics) {
-		if (statistics.name !== 'day') {
-			const [year, month, week] = statistics.date;
-
-			this._setPeriodInQueryParams(new TimePeriod(year, month, week));
+	onBarChartClick(statistics: PeriodStatistics) {
+		if (statistics.period.name !== 'day') {
+			this._setPeriodInQueryParams(statistics.period);
 		}
 	}
 

@@ -10,13 +10,7 @@ import {
 } from '@angular/core';
 import { capitalize } from '@common/helpers/capitalize';
 import { beginningOfWeek } from '@common/helpers/date';
-import {
-	WalletDayStatistics,
-	WalletMonthStatistics,
-	WalletStatistics,
-	WalletWeekStatistics,
-	WalletYearStatistics,
-} from '@common/models/wallet-statistics';
+import { PeriodStatistics } from '@common/models/period-statistics';
 
 const COMPACT_LAYOUT = Object.freeze({
 	showAxisLabels: false,
@@ -41,7 +35,7 @@ export type TPeriodBarChartLayoutName = 'compact' | 'full';
 export class PeriodBarChartComponent {
 	constructor(@Inject(LOCALE_ID) private readonly _locale: string) {}
 
-	private _statistics: WalletStatistics;
+	private _statistics: PeriodStatistics;
 	private _layoutName: TPeriodBarChartLayoutName = 'full';
 
 	readonly colorScheme: any = {
@@ -53,7 +47,7 @@ export class PeriodBarChartComponent {
 	xAxisLabel: string = '';
 	chartLayoutConfig: any = this._getLayoutConfig(this._layoutName);
 
-	@Output() onPeriodSelect = new EventEmitter<WalletStatistics>();
+	@Output() onPeriodSelect = new EventEmitter<PeriodStatistics>();
 
 	@Input()
 	set layout(newLayoutName: TPeriodBarChartLayoutName) {
@@ -65,14 +59,14 @@ export class PeriodBarChartComponent {
 	}
 
 	@Input('period')
-	set periodStatistics(value: WalletStatistics) {
+	set periodStatistics(value: PeriodStatistics) {
 		this._statistics = value;
 		this.data = Array.from(value).map(period =>
 			this._convertPeriodToChartData(period)
 		);
 		this.xAxisLabel = this._getXAxisLabel();
 	}
-	get periodStatistics(): WalletStatistics {
+	get periodStatistics(): PeriodStatistics {
 		return this._statistics;
 	}
 
@@ -90,7 +84,7 @@ export class PeriodBarChartComponent {
 		}
 	}
 
-	private _convertPeriodToChartData(period: WalletStatistics) {
+	private _convertPeriodToChartData(period: PeriodStatistics) {
 		return {
 			name: this._getPeriodLabel(period),
 			series: [
@@ -108,37 +102,53 @@ export class PeriodBarChartComponent {
 		};
 	}
 
-	private _getPeriodLabel(period: WalletStatistics): string {
-		const [year, month, week, day] = period.date;
+	private _getPeriodLabel(statistics: PeriodStatistics): string {
+		const [year, month, week, day] = statistics.period.parts;
+		const periodName = statistics.period.name;
 		let label: string;
 
-		if (period instanceof WalletMonthStatistics) {
-			label = formatDate(new Date(year, month, 1), 'LLLL', this._locale);
-		} else if (period instanceof WalletWeekStatistics) {
-			label = String(period.index + 1);
-		} else if (period instanceof WalletDayStatistics) {
-			const weekBeginning = beginningOfWeek(year, month, week);
-			const monday = weekBeginning.getDate();
+		switch (periodName) {
+			case 'month':
+				label = formatDate(new Date(year, month, 1), 'LLLL', this._locale);
+				break;
 
-			label = formatDate(
-				new Date(year, month, monday + day),
-				'EEEE',
-				this._locale
-			);
+			case 'week':
+				label = String(statistics.period.week + 1);
+				break;
+
+			case 'day':
+				const weekBeginning = beginningOfWeek(year, month, week);
+				const monday = weekBeginning.getDate();
+
+				label = formatDate(
+					new Date(year, month, monday + day),
+					'EEEE',
+					this._locale
+				);
+				break;
+
+			default:
+				break;
 		}
 
 		return capitalize(label);
 	}
 
 	private _getXAxisLabel() {
-		if (this._statistics instanceof WalletYearStatistics) {
-			return 'Miesiąc';
-		} else if (this._statistics instanceof WalletMonthStatistics) {
-			return 'Tydzień';
-		} else if (this._statistics instanceof WalletWeekStatistics) {
-			return 'Dzień tygodnia';
-		} else {
-			return 'Okres';
+		const periodName = this._statistics.period.name;
+
+		switch (periodName) {
+			case 'year':
+				return 'Miesiąc';
+
+			case 'month':
+				return 'Tydzień';
+
+			case 'week':
+				return 'Dzień tygodnia';
+
+			default:
+				return 'Okres';
 		}
 	}
 }
