@@ -1,12 +1,4 @@
-import { registerLocaleData } from '@angular/common';
-import localePL from '@angular/common/locales/pl';
-import {
-	DEFAULT_CURRENCY_CODE,
-	ErrorHandler,
-	LOCALE_ID,
-	NgModule,
-	Provider,
-} from '@angular/core';
+import { ErrorHandler, NgModule, Provider } from '@angular/core';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { AuthGuardModule } from '@angular/fire/auth-guard';
@@ -77,16 +69,9 @@ import { AppComponent } from './app.component';
 import { PeriodBarChartComponent } from './components/period-bar-chart/period-bar-chart.component';
 import { PeriodCategoriesPieChartComponent } from './components/period-categories-pie-chart/period-categories-pie-chart.component';
 import { PeriodChartTooltipComponent } from './components/period-chart-tooltip/period-chart-tooltip.component';
+import { IntlModule } from './intl.module';
 import { MatModule } from './mat.module';
 
-const PolishLocaleProvider: Provider = {
-	provide: LOCALE_ID,
-	useValue: 'pl-PL',
-};
-const PolishCurrencyCodeProvider: Provider = {
-	provide: DEFAULT_CURRENCY_CODE,
-	useValue: 'PLN',
-};
 const ErrorHandlerProvider: Provider = {
 	provide: ErrorHandler,
 	useClass: GlobalErrorHandler,
@@ -148,6 +133,7 @@ const CluesDatasetsProvider: Provider = {
 		MatModule,
 		FormsModule,
 		AuthGuardModule,
+		IntlModule,
 		provideFirebaseApp(() => initializeApp(environment.firestore)),
 		provideAuth(() => {
 			const auth = getAuth();
@@ -194,16 +180,7 @@ const CluesDatasetsProvider: Provider = {
 			return functions;
 		}),
 	],
-	providers: [
-		PolishLocaleProvider,
-		PolishCurrencyCodeProvider,
-		ErrorHandlerProvider,
-		CluesDatasetsProvider,
-	],
+	providers: [ErrorHandlerProvider, CluesDatasetsProvider],
 	bootstrap: [AppComponent],
 })
-export class AppModule {
-	constructor() {
-		registerLocaleData(localePL, 'pl-PL');
-	}
-}
+export class AppModule {}
