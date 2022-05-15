@@ -64,13 +64,13 @@ import { WalletsComponent } from '@pages/wallets/wallets.component';
 import { LoadingPipe } from '@pipes/loading/loading.pipe';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { environment } from 'src/environments/environment';
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PeriodBarChartComponent } from './components/period-bar-chart/period-bar-chart.component';
 import { PeriodCategoriesPieChartComponent } from './components/period-categories-pie-chart/period-categories-pie-chart.component';
 import { PeriodChartTooltipComponent } from './components/period-chart-tooltip/period-chart-tooltip.component';
-import { IntlModule } from './intl.module';
-import { MatModule } from './mat.module';
+import { AppRoutingModule } from './modules/app-routing.module';
+import { IntlModule } from './modules/intl.module';
+import { MatModule } from './modules/mat.module';
 
 const ErrorHandlerProvider: Provider = {
 	provide: ErrorHandler,
