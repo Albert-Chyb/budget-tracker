@@ -4,7 +4,11 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
-import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import {
+	DateAdapter,
+	MatNativeDateModule,
+	MatRippleModule,
+} from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -18,7 +22,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import {
+	MatPaginatorIntl,
+	MatPaginatorModule,
+} from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
@@ -33,6 +40,8 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AppDateAdapter } from '@common/app-date-adapter';
+import { PolishMatPaginatorIntl } from '@common/mat-paginator-intl';
 
 const MAT_FORM_FIELD_OPTIONS: MatFormFieldDefaultOptions = {
 	appearance: 'outline',
@@ -81,6 +90,14 @@ const MAT_SNACKBAR_OPTIONS: MatSnackBarConfig = {
 		{
 			provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
 			useValue: MAT_SNACKBAR_OPTIONS,
+		},
+		{
+			provide: DateAdapter,
+			useClass: AppDateAdapter,
+		},
+		{
+			provide: MatPaginatorIntl,
+			useClass: PolishMatPaginatorIntl,
 		},
 	],
 })

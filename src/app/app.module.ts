@@ -26,14 +26,10 @@ import {
 	provideStorage,
 } from '@angular/fire/storage';
 import { FormsModule } from '@angular/forms';
-import { DateAdapter } from '@angular/material/core';
-import { MatPaginatorIntl } from '@angular/material/paginator';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppDateAdapter } from '@common/app-date-adapter';
 import { cluesDatasets } from '@common/clues-datasets';
 import { GlobalErrorHandler } from '@common/errors/global-error-handler';
-import { PolishMatPaginatorIntl } from '@common/mat-paginator-intl';
 import { AlertComponent } from '@components/alert/alert.component';
 import { CategoriesListComponent } from '@components/categories-list/categories-list.component';
 import { CategoryComponent } from '@components/category/category.component';
@@ -80,8 +76,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PeriodBarChartComponent } from './components/period-bar-chart/period-bar-chart.component';
 import { PeriodCategoriesPieChartComponent } from './components/period-categories-pie-chart/period-categories-pie-chart.component';
-import { MatModule } from './mat.module';
 import { PeriodChartTooltipComponent } from './components/period-chart-tooltip/period-chart-tooltip.component';
+import { MatModule } from './mat.module';
 
 const PolishLocaleProvider: Provider = {
 	provide: LOCALE_ID,
@@ -98,10 +94,6 @@ const ErrorHandlerProvider: Provider = {
 const CluesDatasetsProvider: Provider = {
 	provide: CLUES_DATASETS,
 	useValue: new Map(Object.entries(cluesDatasets)),
-};
-const AppDateAdapterProvider: Provider = {
-	provide: DateAdapter,
-	useClass: AppDateAdapter,
 };
 
 @NgModule({
@@ -146,7 +138,7 @@ const AppDateAdapterProvider: Provider = {
 		CategoryComponent,
 		PeriodBarChartComponent,
 		PeriodCategoriesPieChartComponent,
-  PeriodChartTooltipComponent,
+		PeriodChartTooltipComponent,
 	],
 	imports: [
 		NgxChartsModule,
@@ -207,11 +199,6 @@ const AppDateAdapterProvider: Provider = {
 		PolishCurrencyCodeProvider,
 		ErrorHandlerProvider,
 		CluesDatasetsProvider,
-		AppDateAdapterProvider,
-		{
-			provide: MatPaginatorIntl,
-			useClass: PolishMatPaginatorIntl,
-		},
 	],
 	bootstrap: [AppComponent],
 })
