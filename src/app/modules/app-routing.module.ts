@@ -15,7 +15,7 @@ import { WalletsComponent } from '@pages/wallets/wallets.component';
 import {
 	DefaultQueryParametersGuard,
 	DEFAULT_QUERY_PARAMETERS,
-} from './guards/default-query-parameters/default-query-parameters.guard';
+} from '.././guards/default-query-parameters/default-query-parameters.guard';
 
 const redirectLoggedInToHome = () => redirectLoggedInTo(['/']);
 const redirectLoggedOutToLogin = () => redirectUnauthorizedTo(['/login']);
