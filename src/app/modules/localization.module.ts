@@ -14,7 +14,7 @@ import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 		},
 	],
 })
-export class IntlModule {
+export class LocalizationModule {
 	constructor() {
 		registerLocaleData(localePL, 'pl-PL');
 	}

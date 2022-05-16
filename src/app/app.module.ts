@@ -69,7 +69,7 @@ import { PeriodBarChartComponent } from './components/period-bar-chart/period-ba
 import { PeriodCategoriesPieChartComponent } from './components/period-categories-pie-chart/period-categories-pie-chart.component';
 import { PeriodChartTooltipComponent } from './components/period-chart-tooltip/period-chart-tooltip.component';
 import { AppRoutingModule } from './modules/app-routing.module';
-import { IntlModule } from './modules/intl.module';
+import { LocalizationModule } from './modules/localization.module';
 import { MatModule } from './modules/mat.module';
 
 const ErrorHandlerProvider: Provider = {
@@ -133,7 +133,7 @@ const CluesDatasetsProvider: Provider = {
 		MatModule,
 		FormsModule,
 		AuthGuardModule,
-		IntlModule,
+		LocalizationModule,
 		provideFirebaseApp(() => initializeApp(environment.firestore)),
 		provideAuth(() => {
 			const auth = getAuth();
