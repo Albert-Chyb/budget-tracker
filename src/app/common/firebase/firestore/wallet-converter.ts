@@ -9,7 +9,9 @@ export class FirestoreWalletConverter
 	implements FirestoreDataConverter<IWalletBase>
 {
 	toFirestore(wallet: IWalletBase): IWalletBase {
-		wallet.balance = ~~(wallet.balance * 100);
+		if ('balance' in wallet) {
+			wallet.balance = Math.trunc(wallet.balance * 100);
+		}
 
 		return wallet;
 	}
