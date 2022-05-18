@@ -28,7 +28,8 @@
 			"@interfaces/*": ["src/app/common/interfaces/*"],
 			"@models/*": ["src/app/common/models/*"],
 			"@helpers/*": ["src/app/common/helpers/*"],
-			"@validators/*": ["src/app/common/validators/*"]
+			"@validators/*": ["src/app/common/validators/*"],
+			"@modules/*": ["src/app/modules/*"]
 		}
 	},
 	"angularCompilerOptions": {
