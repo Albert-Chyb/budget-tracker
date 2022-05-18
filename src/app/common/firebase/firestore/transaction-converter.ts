@@ -15,7 +15,7 @@ export class FirestoreTransactionConverter
 {
 	toFirestore(transaction: ITransaction): DocumentData {
 		const docData = {
-			amount: ~~(transaction.amount * 100),
+			amount: Math.trunc(transaction.amount * 100),
 			type: transaction.type,
 			date: transaction.date,
 			category: transaction.category,
