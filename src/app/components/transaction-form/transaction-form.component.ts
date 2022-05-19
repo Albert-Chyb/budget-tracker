@@ -117,7 +117,14 @@ export class TransactionFormComponent {
 	}
 
 	get maxAmount(): number | null {
-		const walletBalance: number = this.transaction.wallet?.balance ?? 0;
+		if (
+			isNullish(this.transaction.wallet) ||
+			isNullish(this.transaction.type)
+		) {
+			return Infinity;
+		}
+
+		const walletBalance: number = this.transaction.wallet.balance;
 
 		return this.transaction.type === 'expense'
 			? walletBalance
