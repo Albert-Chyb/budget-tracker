@@ -1,3 +1,5 @@
+import { formatDate } from '@angular/common';
+
 /** Returns number of days in a month. */
 export function numberOfDaysInMonth(year: number, monthIndex: number): number {
 	return new Date(year, monthIndex + 1, 0).getDate();
@@ -46,4 +48,12 @@ export function numberOfWeeksInMonth(year: number, monthIndex: number): number {
 			firstDayInMonth(year, monthIndex)) /
 			7
 	);
+}
+
+export function generateMonthsNames(locale: string): string[] {
+	return new Array(12)
+		.fill(0)
+		.map((value, index) =>
+			formatDate(new Date(2022, index, 1), 'LLLL', locale)
+		);
 }
