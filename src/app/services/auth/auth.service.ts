@@ -30,13 +30,11 @@ export class AuthService {
 	loginWithGoogle(): Promise<UserCredential> {
 		const googleProvider = new GoogleAuthProvider();
 
-		return this._executeAuthorization(() =>
-			signInWithPopup(this._afAuth, googleProvider)
-		);
+		return signInWithPopup(this._afAuth, googleProvider);
 	}
 
 	loginAnonymously(): Promise<UserCredential> {
-		return this._executeAuthorization(() => signInAnonymously(this._afAuth));
+		return signInAnonymously(this._afAuth);
 	}
 
 	async upgradeAnonymousAccount(): Promise<UserCredential> {
@@ -64,14 +62,6 @@ export class AuthService {
 		await this._afAuth.signOut();
 
 		this._router.navigateByUrl('/login');
-	}
-
-	private async _executeAuthorization(
-		handler: () => Promise<UserCredential>
-	): Promise<UserCredential> {
-		const credential: UserCredential = await handler();
-
-		return credential;
 	}
 
 	get isLoggedIn$() {
