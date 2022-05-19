@@ -1,41 +1,73 @@
 <ng-container *ngIf="years$ | async as years">
 	<form class="period-picker-form" id="period-picker" #periodForm="ngForm">
-		<!-- TODO: Add reset buttons for form inputs -->
+		<div class="period-picker-form__period-part">
+			<mat-form-field class="year">
+				<mat-label>Rok</mat-label>
 
-		<mat-form-field class="year">
-			<mat-label>Rok</mat-label>
+				<mat-select
+					name="year"
+					#yearModel="ngModel"
+					required
+					[(ngModel)]="period.year"
+				>
+					<mat-option *ngFor="let year of years" [value]="year">
+						{{ year }}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
 
-			<mat-select
-				name="year"
-				#yearModel="ngModel"
-				required
-				[(ngModel)]="period.year"
+			<button
+				mat-icon-button
+				aria-label="Clear the year input"
+				(click)="yearModel.reset()"
 			>
-				<mat-option *ngFor="let year of years" [value]="year">
-					{{ year }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
+				<mat-icon>clear</mat-icon>
+			</button>
+		</div>
 
-		<mat-form-field class="month" *ngIf="period.length >= 1">
-			<mat-label>Miesiąc</mat-label>
+		<div class="period-picker-form__period-part" *ngIf="period.length >= 1">
+			<mat-form-field class="month">
+				<mat-label>Miesiąc</mat-label>
 
-			<mat-select name="month" [(ngModel)]="period.month" #monthModel="ngModel">
-				<mat-option *ngFor="let month of months; let i = index" [value]="i">
-					{{ month }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
+				<mat-select
+					name="month"
+					[(ngModel)]="period.month"
+					#monthModel="ngModel"
+				>
+					<mat-option *ngFor="let month of months; let i = index" [value]="i">
+						{{ month }}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
 
-		<mat-form-field class="week" *ngIf="period.length >= 2">
-			<mat-label>Tydzień</mat-label>
+			<button
+				mat-icon-button
+				aria-label="Clear the month input"
+				(click)="monthModel.reset()"
+			>
+				<mat-icon>clear</mat-icon>
+			</button>
+		</div>
 
-			<mat-select name="week" [(ngModel)]="period.week" #weekModel="ngModel">
-				<mat-option *ngFor="let weekIndex of weeks" [value]="weekIndex">
-					{{ weekIndex + 1 }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
+		<div class="period-picker-form__period-part" *ngIf="period.length >= 2">
+			<mat-form-field class="week">
+				<mat-label>Tydzień</mat-label>
+
+				<mat-select name="week" [(ngModel)]="period.week" #weekModel="ngModel">
+					<mat-option *ngFor="let weekIndex of weeks" [value]="weekIndex">
+						{{ weekIndex + 1 }}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<button
+				mat-icon-button
+				aria-label="Clear the week input"
+				(click)="weekModel.reset()"
+			>
+				<mat-icon>clear</mat-icon>
+			</button>
+		</div>
 	</form>
 
 	<mat-dialog-actions>

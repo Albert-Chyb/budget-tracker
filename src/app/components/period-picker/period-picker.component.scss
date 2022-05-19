@@ -17,6 +17,11 @@
 
 .period-picker-form {
 	min-height: 30rem;
+
+	&__period-part {
+		display: flex;
+		column-gap: 1rem;
+	}
 }
 
 .mat-dialog-actions {
