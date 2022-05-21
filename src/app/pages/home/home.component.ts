@@ -138,12 +138,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 						week
 					);
 
-					return {
-						current: periodStatistics,
-						comparisonWithPrevPeriod: new PrevPeriodComparison(
-							periodStatistics
-						),
-					};
+					return periodStatistics;
 				})
 			)
 		)
@@ -162,8 +157,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 		map(([wallets, categories, statistics, transactions]) => ({
 			wallets,
 			categories,
-			periodStatistics: statistics.current,
-			prevPeriodStatistics: statistics.comparisonWithPrevPeriod,
+			periodStatistics: statistics,
+			comparison: new PrevPeriodComparison(statistics),
 			transactions,
 		}))
 	);

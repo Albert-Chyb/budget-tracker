@@ -1,54 +1,22 @@
-import { isNullish } from '@common/helpers/isNullish';
+import { PercentageChangeComparison } from './percentage-change-comparison';
 import { PeriodStatistics } from './period-statistics';
 
 export class PrevPeriodComparison {
-	constructor(private readonly _statistics: PeriodStatistics) {
-		const prevPeriodStatistics = this._getPrevPeriod();
-
-		this.prevPeriodStatistics = prevPeriodStatistics;
-		this.prevPeriodStatisticsExists = !isNullish(prevPeriodStatistics);
-
-		if (this.prevPeriodStatisticsExists) {
-			this.expensesPercentageChange = this._percentageChange(
-				this._statistics.expenses,
-				this.prevPeriodStatistics.expenses
-			);
-
-			this.incomePercentageChange = this._percentageChange(
-				this._statistics.income,
-				this.prevPeriodStatistics.income
-			);
-		}
-	}
+	constructor(private readonly _statistics: PeriodStatistics) {}
 
 	/** Reference to the previous period object. */
-	readonly prevPeriodStatistics: PeriodStatistics;
+	private readonly _prevPeriodStatistics: PeriodStatistics =
+		this._getPrevPeriod();
 
-	/** If the previous period is outside of the current year. */
-	readonly prevPeriodStatisticsExists: boolean;
+	readonly expenses = new PercentageChangeComparison(
+		this._prevPeriodStatistics?.expenses,
+		this._statistics.expenses
+	);
 
-	readonly expensesPercentageChange: number;
-
-	readonly incomePercentageChange: number;
-
-	/**
-	 * Calculates percentage change.
-	 * @param newValue Current value
-	 * @param prevValue Older value
-	 * @returns Percentage change
-	 */
-	private _percentageChange(
-		newValue: number,
-		prevValue: number | null
-	): number {
-		if (prevValue === null || !this.prevPeriodStatisticsExists) {
-			return null;
-		}
-
-		const delta = newValue - prevValue;
-
-		return prevValue === 0 ? 0 : delta / prevValue;
-	}
+	readonly income = new PercentageChangeComparison(
+		this._prevPeriodStatistics?.income,
+		this._statistics.income
+	);
 
 	private _getPrevPeriod(): PeriodStatistics {
 		const [, month, week] = this._statistics.period.parts;

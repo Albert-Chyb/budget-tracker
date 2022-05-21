@@ -55,28 +55,25 @@
 				<mat-card>
 					<mat-card-header>
 						<h2 mat-card-title>Przychody</h2>
+
 						<p
-							mat-card-subtitle
-							*ngIf="
-								data.prevPeriodStatistics.prevPeriodStatisticsExists;
-								else noPrevIncome
-							"
+							*ngIf="data.comparison.income.isComparisonAvailable"
 							[ngClass]="{
-								increase: data.prevPeriodStatistics.incomePercentageChange > 0,
-								decrease: data.prevPeriodStatistics.incomePercentageChange < 0
+								'profitable-change': data.comparison.income.compare() > 0,
+								'unprofitable-change': data.comparison.income.compare() < 0
 							}"
+							mat-card-subtitle
 						>
-							{{
-								data.prevPeriodStatistics.incomePercentageChange >= 0
-									? '+'
-									: ''
-							}}{{ data.prevPeriodStatistics.incomePercentageChange | percent }}
-							vs ostatni okres
+							{{ data.comparison.income.compare() | percentageChange }} vs
+							ostatni okres
 						</p>
 
-						<ng-template #noPrevIncome>
-							<p mat-card-subtitle>Przychody w wybranym okresie.</p>
-						</ng-template>
+						<p
+							*ngIf="!data.comparison.income.isComparisonAvailable"
+							mat-card-subtitle
+						>
+							Przychody obecnym okresie.
+						</p>
 					</mat-card-header>
 
 					<mat-card-content>
@@ -91,32 +88,25 @@
 				<mat-card>
 					<mat-card-header>
 						<h2 mat-card-title>Wydatki</h2>
+
 						<p
-							mat-card-subtitle
-							*ngIf="
-								data.prevPeriodStatistics.prevPeriodStatisticsExists;
-								else noPrevExpenses
-							"
-							class="decrease-is-better"
+							*ngIf="data.comparison.expenses.isComparisonAvailable"
 							[ngClass]="{
-								increase:
-									data.prevPeriodStatistics.expensesPercentageChange > 0,
-								decrease: data.prevPeriodStatistics.expensesPercentageChange < 0
+								'profitable-change': data.comparison.expenses.compare() < 0,
+								'unprofitable-change': data.comparison.expenses.compare() > 0
 							}"
+							mat-card-subtitle
 						>
-							{{
-								data.prevPeriodStatistics.expensesPercentageChange >= 0
-									? '+'
-									: ''
-							}}{{
-								data.prevPeriodStatistics.expensesPercentageChange | percent
-							}}
-							vs ostatni okres
+							{{ data.comparison.expenses.compare() | percentageChange }} vs
+							ostatni okres
 						</p>
 
-						<ng-template #noPrevExpenses>
-							<p mat-card-subtitle>Wydatki w wybranym okresie</p>
-						</ng-template>
+						<p
+							*ngIf="!data.comparison.expenses.isComparisonAvailable"
+							mat-card-subtitle
+						>
+							Wydatki w obecnym okresie.
+						</p>
 					</mat-card-header>
 
 					<mat-card-content>

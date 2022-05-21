@@ -13,6 +13,7 @@ import { SelectOnFocusDirective } from '@directives/select-on-focus/select-on-fo
 import { AppRoutingModule } from '@modules/app-routing.module';
 import { MatModule } from '@modules/mat.module';
 import { LoadingPipe } from '@pipes/loading/loading.pipe';
+import { PercentageChangePipe } from '../pipes/percentage-change/percentage-change.pipe';
 import { CluesModule } from './clues.module';
 import { FormValidatorsModule } from './form-validators.module';
 
@@ -27,6 +28,7 @@ import { FormValidatorsModule } from './form-validators.module';
 		GlobalFabDirective,
 		CurrencyInputDirective,
 		CollectionPaginatorDirective,
+		PercentageChangePipe,
 	],
 	exports: [
 		PromptDialogComponent,
@@ -44,6 +46,7 @@ import { FormValidatorsModule } from './form-validators.module';
 		AppRoutingModule,
 		CluesModule,
 		FormValidatorsModule,
+		PercentageChangePipe,
 	],
 	imports: [
 		FormValidatorsModule,
