@@ -20,12 +20,12 @@ import { environment } from 'src/environments/environment';
 
 @NgModule({
 	imports: [
-		provideFirebaseApp(() => initializeApp(environment.firestore)),
+		provideFirebaseApp(() => initializeApp(environment.firebase)),
 		provideAuth(() => {
 			const auth = getAuth();
 
-			if (environment.firestoreEmulators.useEmulators) {
-				const [host, port] = environment.firestoreEmulators.auth;
+			if (environment.firebaseEmulators.useEmulators) {
+				const [host, port] = environment.firebaseEmulators.auth;
 
 				connectAuthEmulator(auth, `http://${host}:${port}`);
 			}
@@ -35,8 +35,8 @@ import { environment } from 'src/environments/environment';
 		provideFirestore(() => {
 			const firestore = getFirestore();
 
-			if (environment.firestoreEmulators.useEmulators) {
-				const [host, port] = environment.firestoreEmulators.firestore;
+			if (environment.firebaseEmulators.useEmulators) {
+				const [host, port] = environment.firebaseEmulators.firestore;
 
 				connectFirestoreEmulator(firestore, <string>host, <number>port);
 			}
@@ -46,8 +46,8 @@ import { environment } from 'src/environments/environment';
 		provideStorage(() => {
 			const storage = getStorage();
 
-			if (environment.firestoreEmulators.useEmulators) {
-				const [host, port] = environment.firestoreEmulators.storage;
+			if (environment.firebaseEmulators.useEmulators) {
+				const [host, port] = environment.firebaseEmulators.storage;
 
 				connectStorageEmulator(storage, <string>host, <number>port);
 			}
@@ -57,8 +57,8 @@ import { environment } from 'src/environments/environment';
 		provideFunctions(() => {
 			const functions = getFunctions();
 
-			if (environment.firestoreEmulators.useEmulators) {
-				const [host, port] = environment.firestoreEmulators.functions;
+			if (environment.firebaseEmulators.useEmulators) {
+				const [host, port] = environment.firebaseEmulators.functions;
 
 				connectFunctionsEmulator(functions, <string>host, <number>port);
 			}
