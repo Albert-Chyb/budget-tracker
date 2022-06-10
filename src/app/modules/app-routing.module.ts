@@ -4,7 +4,8 @@ import {
 	redirectLoggedInTo,
 	redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, TitleStrategy } from '@angular/router';
+import { AppTitleStrategy } from '@common/app-title-strategy';
 import { CategoriesComponent } from '@pages/categories/categories.component';
 import { CreateTransactionComponent } from '@pages/create-transaction/create-transaction.component';
 import { EditTransactionComponent } from '@pages/edit-transaction/edit-transaction.component';
@@ -27,12 +28,12 @@ const routes: Routes = [
 		redirectTo: 'dashboard',
 	},
 	{
+		title: 'Budżet',
 		path: 'dashboard',
 		component: HomeComponent,
 		canActivate: [AuthGuard, DefaultQueryParametersGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
-			name: 'Strona główna',
 			[DEFAULT_QUERY_PARAMETERS]: {
 				wallet: 'all',
 				year: new Date().getFullYear(),
@@ -41,57 +42,57 @@ const routes: Routes = [
 		runGuardsAndResolvers: 'paramsOrQueryParamsChange',
 	},
 	{
+		title: 'Zaloguj się',
 		path: 'login',
 		component: LoginComponent,
 		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedInToHome,
-			name: 'Zaloguj się',
 		},
 	},
 	{
+		title: 'Portfele',
 		path: 'wallets',
 		component: WalletsComponent,
 		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
-			name: 'Portfele',
 		},
 	},
 	{
+		title: 'Kategorie',
 		path: 'categories',
 		component: CategoriesComponent,
 		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
-			name: 'Kategorie',
 		},
 	},
 	{
+		title: 'Nowa transakcja',
 		path: 'transaction',
 		component: CreateTransactionComponent,
 		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
-			name: 'Nowa transakcja',
 		},
 	},
 	{
+		title: 'Edytuj transakcje',
 		path: 'transaction/:id',
 		component: EditTransactionComponent,
 		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
-			name: 'Edytuj transakcję',
 		},
 	},
 	{
+		title: 'Transakcje',
 		path: 'transactions',
 		component: TransactionsComponent,
 		canActivate: [AuthGuard],
 		data: {
 			authGuardPipe: redirectLoggedOutToLogin,
-			name: 'Transakcje',
 		},
 	},
 ];
@@ -99,5 +100,11 @@ const routes: Routes = [
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],
 	exports: [RouterModule],
+	providers: [
+		{
+			provide: TitleStrategy,
+			useClass: AppTitleStrategy,
+		},
+	],
 })
 export class AppRoutingModule {}
