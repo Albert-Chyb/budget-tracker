@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { getDownloadURL } from '@angular/fire/storage';
 import { MatDialog } from '@angular/material/dialog';
 import {
 	INewCategoryDialogResult,
@@ -11,9 +10,8 @@ import { ICategory, ICategoryBase } from '@interfaces/category';
 import { AlertService } from '@services/alert/alert.service';
 import { CategoriesService } from '@services/categories/categories.service';
 import { LoadingService } from '@services/loading/loading.service';
-import { StorageService } from '@services/storage/storage.service';
-import { from, Observable } from 'rxjs';
-import { filter, first, map, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
 
 @Component({
 	templateUrl: './categories.component.html',
@@ -31,7 +29,6 @@ export class CategoriesComponent {
 		private readonly _categories: CategoriesService,
 		private readonly _loading: LoadingService,
 		private readonly _dialog: MatDialog,
-		private readonly _storage: StorageService,
 		private readonly _alert: AlertService
 	) {}
 
@@ -94,7 +91,7 @@ export class CategoriesComponent {
 
 		if (iconChanged) {
 			const { url, path } = await this._loading.add(
-				this._uploadIcon(category.icon, id)
+				this._categories.uploadIcon(category.icon, id).pipe(first()).toPromise()
 			);
 
 			iconUrl = url;
@@ -122,7 +119,9 @@ export class CategoriesComponent {
 	 * @param category Category object that will be available in the injector.
 	 * @returns An observable that emits only once and only if dialog returns any data.
 	 */
-	private _openDialog(category?: ICategory) {
+	private _openDialog(
+		category?: ICategory
+	): Observable<INewCategoryDialogResult> {
 		return this._dialog
 			.open<
 				NewCategoryDialogComponent,
@@ -139,32 +138,7 @@ export class CategoriesComponent {
 			);
 	}
 
-	/**
-	 * Uploads an icon.
-	 *
-	 * @param icon Icon that will be uploaded to the storage.
-	 * @returns Url to the file.
-	 */
-	private _uploadIcon(
-		icon: File,
-		id: string
-	): Promise<{ url: string; path: string }> {
-		const upload = this._storage.upload('categories-icons', icon, id);
-
-		return upload.snapshot$
-			.pipe(
-				filter(snap => snap.bytesTransferred === snap.totalBytes),
-				switchMap(snap =>
-					from(getDownloadURL(snap.ref)).pipe(
-						map(url => ({ path: snap.ref.fullPath, url }))
-					)
-				),
-				first()
-			)
-			.toPromise();
-	}
-
-	private _handleError(error: any) {
+	private _handleError(error: any): void {
 		if (error.code === 'is-referenced') {
 			this._alert.open(
 				'Przynajmniej jedna transakcja znajduję się w tej kategorii.',
