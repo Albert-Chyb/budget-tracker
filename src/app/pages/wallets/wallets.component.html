@@ -6,12 +6,7 @@
 			#loading
 			*ngFor="let wallet of wallets; trackBy: trackById"
 		>
-			<wallet
-				[wallet]="wallet"
-				[show-actions]="true"
-				(onWalletDelete)="loading.pending(deleteWallet(wallet))"
-				(onWalletEdit)="updateName(wallet, loading)"
-			></wallet>
+			<wallet [wallet]="wallet" [show-actions]="true"></wallet>
 		</loading-indicator>
 	</div>
 </section>

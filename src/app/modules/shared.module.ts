@@ -14,6 +14,7 @@ import { AppRoutingModule } from '@modules/app-routing.module';
 import { MatModule } from '@modules/mat.module';
 import { LoadingPipe } from '@pipes/loading/loading.pipe';
 import { PercentageChangePipe } from '../pipes/percentage-change/percentage-change.pipe';
+import { ActionsModule } from './actions.module';
 import { CluesModule } from './clues.module';
 import { FormValidatorsModule } from './form-validators.module';
 
@@ -46,6 +47,7 @@ import { FormValidatorsModule } from './form-validators.module';
 		AppRoutingModule,
 		CluesModule,
 		FormValidatorsModule,
+		ActionsModule,
 		PercentageChangePipe,
 	],
 	imports: [
@@ -55,6 +57,7 @@ import { FormValidatorsModule } from './form-validators.module';
 		FormsModule,
 		AppRoutingModule,
 		CluesModule.datasets(new Map(Object.entries(cluesDatasets))),
+		ActionsModule,
 	],
 })
 export class SharedModule {}

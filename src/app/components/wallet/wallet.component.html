@@ -10,10 +10,11 @@
 			</button>
 
 			<mat-menu #menu>
-				<button mat-menu-item (click)="onWalletEdit.emit(wallet)">
+				<button mat-menu-item action="rename-wallet" [action-payload]="wallet">
 					Zmień nazwę
 				</button>
-				<button mat-menu-item (click)="onWalletDelete.emit(wallet)">
+
+				<button mat-menu-item action="delete-wallet" [action-payload]="wallet">
 					Usuń
 				</button>
 			</mat-menu>

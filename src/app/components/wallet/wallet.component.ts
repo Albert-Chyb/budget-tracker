@@ -1,10 +1,4 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	EventEmitter,
-	Input,
-	Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IWallet } from '@interfaces/wallet';
 
 @Component({
@@ -18,6 +12,4 @@ export class WalletComponent {
 
 	@Input('wallet') wallet: IWallet;
 	@Input('show-actions') showActions: boolean = false;
-	@Output('onWalletEdit') onWalletEdit = new EventEmitter<IWallet>();
-	@Output('onWalletDelete') onWalletDelete = new EventEmitter<IWallet>();
 }

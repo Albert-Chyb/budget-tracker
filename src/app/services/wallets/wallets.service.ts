@@ -22,7 +22,7 @@ import {
 	Update,
 } from '@models/collection';
 import { UserService } from '@services/user/user.service';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { catchError, map, mapTo } from 'rxjs/operators';
 
 interface Methods
@@ -59,24 +59,21 @@ export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 
 		return res$.pipe(
 			catchError(error => {
-				this._handleError(error);
-
-				return of(null);
+				if (
+					error instanceof FirebaseError &&
+					error.code === 'functions/aborted'
+				) {
+					return throwError(
+						new AppError(
+							'Cannot delete a wallet that is referenced by a transaction',
+							ErrorCode.WalletReferenced
+						)
+					);
+				} else {
+					return throwError(error);
+				}
 			}),
 			mapTo(null)
 		);
-	}
-
-	private _handleError(error: any) {
-		if (error instanceof FirebaseError && error.code === 'functions/aborted') {
-			this._errorHandler.handleError(
-				new AppError(
-					'Cannot delete a wallet that is referenced by a transaction',
-					ErrorCode.WalletReferenced
-				)
-			);
-		} else {
-			this._errorHandler.handleError(error);
-		}
 	}
 }
