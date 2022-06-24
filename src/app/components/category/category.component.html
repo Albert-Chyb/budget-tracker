@@ -14,7 +14,11 @@
 				<span>Edytuj</span>
 			</button>
 
-			<button mat-menu-item (click)="onCategoryDelete.emit(category)">
+			<button
+				mat-menu-item
+				action="delete-category"
+				[action-payload]="category"
+			>
 				<mat-icon>delete</mat-icon>
 				<span>Usuń</span>
 			</button>

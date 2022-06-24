@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { APP_ACTION, APP_ACTIONS } from '../actions/action-provider-token';
+import { DeleteCategoryAction } from '../actions/delete-category';
 import { DeleteWalletAction } from '../actions/delete-wallet';
 import { RenameWalletAction } from '../actions/rename-wallet';
 import { ActionDispatcherDirective } from '../directives/action-dispatcher/action-dispatcher.directive';
@@ -18,6 +19,11 @@ import { ActionDispatcherDirective } from '../directives/action-dispatcher/actio
 		{
 			provide: APP_ACTION,
 			useValue: ['rename-wallet', RenameWalletAction],
+			multi: true,
+		},
+		{
+			provide: APP_ACTION,
+			useValue: ['delete-category', DeleteCategoryAction],
 			multi: true,
 		},
 		{
