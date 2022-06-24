@@ -1,4 +1,4 @@
-import { ErrorHandler, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Firestore } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
@@ -23,7 +23,7 @@ import {
 } from '@models/collection';
 import { StorageService } from '@services/storage/storage.service';
 import { UserService } from '@services/user/user.service';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
 
 interface Methods
@@ -42,7 +42,6 @@ export class CategoriesService extends Collection<Methods>(...ALL_MIXINS) {
 		afStore: Firestore,
 		user: UserService,
 		private readonly _afFunctions: Functions,
-		private readonly _errorHandler: ErrorHandler,
 		private readonly _storage: StorageService
 	) {
 		super(afStore, user.getUid$().pipe(map(uid => `/users/${uid}/categories`)));
@@ -55,11 +54,7 @@ export class CategoriesService extends Collection<Methods>(...ALL_MIXINS) {
 		);
 
 		return from(deleteCategory({ id })).pipe(
-			catchError(error => {
-				this._handleError(error);
-
-				return of(null);
-			}),
+			catchError(this._catchError),
 			mapTo(null)
 		);
 	}
@@ -86,16 +81,16 @@ export class CategoriesService extends Collection<Methods>(...ALL_MIXINS) {
 		);
 	}
 
-	private _handleError(error: any) {
+	private _catchError(error: any): Observable<any> {
+		let exception: any = error;
+
 		if (error instanceof FirebaseError && error.code === 'functions/aborted') {
-			this._errorHandler.handleError(
-				new AppError(
-					'The category could not be deleted, because it is referenced by at least one transaction.',
-					ErrorCode.CategoryReferenced
-				)
+			exception = new AppError(
+				'The category could not be deleted, because it is referenced by at least one transaction.',
+				ErrorCode.CategoryReferenced
 			);
-		} else {
-			this._errorHandler.handleError(error);
 		}
+
+		return throwError(exception);
 	}
 }
