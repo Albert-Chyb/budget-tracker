@@ -2,12 +2,9 @@
 	<h1>Twoje portfele</h1>
 
 	<div class="wallets" *clueIf="wallets.length === 0">
-		<loading-indicator
-			#loading
-			*ngFor="let wallet of wallets; trackBy: trackById"
-		>
+		<ng-container *ngFor="let wallet of wallets; trackBy: trackById">
 			<wallet [wallet]="wallet" [show-actions]="true"></wallet>
-		</loading-indicator>
+		</ng-container>
 	</div>
 </section>
 
