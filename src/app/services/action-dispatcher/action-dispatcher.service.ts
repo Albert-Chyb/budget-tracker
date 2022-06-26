@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppError } from '@common/errors/app-error';
 import { isNullish } from '@common/helpers/isNullish';
 import { from, Observable, of, race, throwError } from 'rxjs';
-import { catchError, first, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, mapTo, switchMap, take } from 'rxjs/operators';
 import {
 	ActionDefinition,
 	ActionDefinitionConstructor,
@@ -27,7 +27,7 @@ export class ActionDispatcherService<ActionPayload> {
 		const actionResult = this._standardizeResult(action.execute());
 
 		return actionResult.pipe(
-			first(),
+			take(1),
 			switchMap(() => {
 				const snackbar = this._snackbar.open(action.onCompleteMsg, 'Cofnij');
 
