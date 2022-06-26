@@ -4,6 +4,7 @@ import { APP_ACTION, APP_ACTIONS } from '../actions/action-provider-token';
 import { DeleteCategoryAction } from '../actions/delete-category';
 import { DeleteWalletAction } from '../actions/delete-wallet';
 import { RenameWalletAction } from '../actions/rename-wallet';
+import { UpdateCategoryAction } from '../actions/update-category';
 import { ActionDispatcherDirective } from '../directives/action-dispatcher/action-dispatcher.directive';
 
 @NgModule({
@@ -24,6 +25,11 @@ import { ActionDispatcherDirective } from '../directives/action-dispatcher/actio
 		{
 			provide: APP_ACTION,
 			useValue: ['delete-category', DeleteCategoryAction],
+			multi: true,
+		},
+		{
+			provide: APP_ACTION,
+			useValue: ['update-category', UpdateCategoryAction],
 			multi: true,
 		},
 		{

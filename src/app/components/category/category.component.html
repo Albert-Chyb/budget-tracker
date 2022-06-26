@@ -9,7 +9,11 @@
 		</button>
 
 		<mat-menu #menu="matMenu">
-			<button mat-menu-item (click)="onCategoryEdit.emit(category)">
+			<button
+				mat-menu-item
+				action="update-category"
+				[action-payload]="category"
+			>
 				<mat-icon>edit</mat-icon>
 				<span>Edytuj</span>
 			</button>
