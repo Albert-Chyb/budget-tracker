@@ -32,10 +32,12 @@ export class ActionDispatcherService<ActionPayload> {
 				const snackbar = this._snackbar.open(action.onCompleteMsg, 'Cofnij');
 
 				return race(
-					snackbar
-						.onAction()
-						.pipe(switchMap(() => this._standardizeResult(action.undo()))),
-					snackbar.afterDismissed().pipe(mapTo(null))
+					snackbar.afterDismissed().pipe(mapTo(false)),
+					snackbar.onAction().pipe(mapTo(true))
+				).pipe(
+					switchMap(shouldUndo =>
+						shouldUndo ? this._standardizeResult(action.undo()) : of(null)
+					)
 				);
 			}),
 			catchError(this._catchError)
@@ -57,9 +59,9 @@ export class ActionDispatcherService<ActionPayload> {
 		return new ActionConstructor(this._injector, payload);
 	}
 
-	/** Tries to convert the received value into an observable. */
+	/** Converts the received value into an observable. */
 	private _standardizeResult(result: any): Observable<void> {
-		return isNullish(result) ? of(result) : from(result).pipe(mapTo(null));
+		return isNullish(result) ? of(result) : <Observable<any>>from(result);
 	}
 
 	/** Method for rxjs' catchError operator. */
