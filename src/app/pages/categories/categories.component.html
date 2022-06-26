@@ -5,8 +5,6 @@
 		<categories-list
 			*clueIf="categories.length === 0"
 			[categories]="categories"
-			(onCategoryDelete)="deleteCategory($event)"
-			(onCategoryEdit)="editCategory($event)"
 		></categories-list>
 	</ng-container>
 </section>

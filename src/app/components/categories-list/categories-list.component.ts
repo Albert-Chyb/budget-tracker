@@ -1,10 +1,4 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	EventEmitter,
-	Input,
-	Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ICategory } from '@interfaces/category';
 
 @Component({
@@ -15,9 +9,6 @@ import { ICategory } from '@interfaces/category';
 })
 export class CategoriesListComponent {
 	@Input('categories') categories: ICategory[];
-
-	@Output('onCategoryDelete') onCategoryDelete = new EventEmitter<ICategory>();
-	@Output('onCategoryEdit') onCategoryEdit = new EventEmitter<ICategory>();
 
 	/** Function for ngFor directive. */
 	trackById(index: number, category: ICategory) {
