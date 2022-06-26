@@ -24,7 +24,7 @@ import {
 import { StorageService } from '@services/storage/storage.service';
 import { UserService } from '@services/user/user.service';
 import { from, Observable, throwError } from 'rxjs';
-import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 
 interface Methods
 	extends Create<ICategoryCreatePayload, ICategory>,
@@ -71,11 +71,13 @@ export class CategoriesService extends Collection<Methods>(...ALL_MIXINS) {
 	): Observable<{ url: string; path: string }> {
 		const upload = this._storage.upload('categories-icons', icon, id);
 
-		return upload.snapshot$.pipe(
-			filter(snap => snap.bytesTransferred === snap.totalBytes),
-			switchMap(snap =>
-				from(getDownloadURL(snap.ref)).pipe(
-					map(url => ({ path: snap.ref.fullPath, url }))
+		return upload.pipe(
+			switchMap(uploadResult =>
+				from(getDownloadURL(uploadResult.ref)).pipe(
+					map(url => ({
+						url,
+						path: uploadResult.metadata.fullPath,
+					}))
 				)
 			)
 		);

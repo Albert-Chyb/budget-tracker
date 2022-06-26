@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import {
 	ref,
 	Storage,
+	uploadBytes,
 	uploadBytesResumable,
+	UploadResult,
 	UploadTask,
 	UploadTaskSnapshot,
 } from '@angular/fire/storage';
 import { generateUniqueString } from '@helpers/generateUniqueString';
 import { UserService } from '@services/user/user.service';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
@@ -27,7 +29,7 @@ export class StorageService {
 	 * @param name Name that the file will be saved under (unique string is generated automatically if it's unspecified)
 	 * @returns An object with useful observables.
 	 */
-	upload(folder: string, file: File, name?: string) {
+	uploadResumable(folder: string, file: File, name?: string) {
 		const fileName = name ?? this._createId();
 		const uid = this._user.getUid();
 		const reference = ref(this._afStorage, `${uid}/${folder}/${fileName}`);
@@ -40,6 +42,15 @@ export class StorageService {
 		};
 	}
 
+	upload(folder: string, file: File, name?: string): Observable<UploadResult> {
+		const fileName = name ?? this._createId();
+		const uid = this._user.getUid();
+		const reference = ref(this._afStorage, `${uid}/${folder}/${fileName}`);
+		const task = uploadBytes(reference, file);
+
+		return from(task);
+	}
+
 	private _createSnapshotObservable(
 		task: UploadTask
 	): Observable<UploadTaskSnapshot> {
@@ -48,7 +59,10 @@ export class StorageService {
 				'state_changed',
 				snap => subscriber.next(snap),
 				error => subscriber.error(error),
-				() => subscriber.complete()
+				() => {
+					subscriber.next(task.snapshot);
+					subscriber.complete();
+				}
 			);
 		});
 	}
