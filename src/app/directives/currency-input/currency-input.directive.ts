@@ -1,12 +1,15 @@
 import {
 	formatCurrency,
+	getLocaleCurrencySymbol,
 	getLocaleNumberSymbol,
 	NumberSymbol,
 } from '@angular/common';
 import {
+	ChangeDetectorRef,
 	DEFAULT_CURRENCY_CODE,
 	Directive,
 	ElementRef,
+	HostBinding,
 	HostListener,
 	Inject,
 	LOCALE_ID,
@@ -15,6 +18,8 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isNullish } from '@helpers/isNullish';
+
+const MAX_ALLOWED_DECIMALS_PLACES = 2;
 
 @Directive({
 	selector: '[currencyInput]',
@@ -31,24 +36,21 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		@Self() elementRef: ElementRef<HTMLInputElement>,
 		private readonly _renderer: Renderer2,
 		@Inject(LOCALE_ID) private readonly _localeId: string,
-		@Inject(DEFAULT_CURRENCY_CODE) private readonly _currencyCode: string
+		@Inject(DEFAULT_CURRENCY_CODE) private readonly _currencyCode: string,
+		private readonly _changeDetector: ChangeDetectorRef
 	) {
 		this._inputRef = elementRef.nativeElement;
 	}
 
-	private _changeNgFormValue: (newValue: number) => void;
+	private _setNgFormValue: (newValue: number) => void;
 	private _setNgTouchedState: () => void;
 	private _inputRef: HTMLInputElement;
-	private _HTMLInputValue: string = '';
+
+	@HostBinding('type') inputType: 'text' | 'number' = 'text';
 
 	private readonly _decimalSeparator = getLocaleNumberSymbol(
 		this._localeId,
 		NumberSymbol.CurrencyDecimal
-	);
-
-	private readonly _thousandsSeparator = getLocaleNumberSymbol(
-		this._localeId,
-		NumberSymbol.CurrencyGroup
 	);
 
 	/** Matches all characters except decimal separator and digits. */
@@ -57,19 +59,16 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		'g'
 	);
 
-	// /(^[\d\s]*)((?<!\s)\,?\d{0,2})?$/
-	private readonly _amountPattern = this._buildAmountPattern();
-
 	writeValue(amount: number): void {
 		if (!isNullish(amount)) {
-			this._setHTMLInputValue(this._formatCurrency(amount));
+			this._inputRef.value = this._formatCurrency(amount);
 		} else {
-			this._setHTMLInputValue('');
+			this._inputRef.value = '';
 		}
 	}
 
 	registerOnChange(fn: any): void {
-		this._changeNgFormValue = fn;
+		this._setNgFormValue = fn;
 	}
 
 	registerOnTouched(fn: any): void {
@@ -86,68 +85,68 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		}
 	}
 
-	@HostListener('focus')
-	handleInputFocus() {
-		this._inputRef.select();
-	}
-
 	@HostListener('input')
 	handleInput() {
-		const value = this._inputRef.value.trimLeft();
-		const isValid = this._amountPattern.test(value);
+		let [intPart, decimalPart] = this._inputRef.value.split('.');
+		let wereDecimalsTrimmed = false;
 
-		if (value.length === 0) {
-			this._setHTMLInputValue(value);
-			this._changeNgFormValue(null);
-		} else if (!isValid) {
-			this._setHTMLInputValue(this._HTMLInputValue);
-		} else {
-			const amount = +this._formatRawAmount(value);
-
-			this._setHTMLInputValue(value);
-			this._changeNgFormValue(amount);
+		if (decimalPart?.length > MAX_ALLOWED_DECIMALS_PLACES) {
+			decimalPart = decimalPart.substring(0, 2);
+			wereDecimalsTrimmed = true;
 		}
+
+		const valueAsString = `${intPart}.${decimalPart}`;
+		const valueAsNumber = parseFloat(valueAsString);
+
+		this._setNgFormValue(isNaN(valueAsNumber) ? null : valueAsNumber);
+
+		if (wereDecimalsTrimmed) {
+			this._inputRef.value = valueAsString;
+		}
+	}
+
+	@HostListener('focus')
+	handleInputFocus() {
+		const value: string = this._inputRef.value;
+
+		this.inputType = 'number';
+		this._inputRef.value = this._formatRawAmount(value);
+		this._changeDetector.detectChanges();
+
+		this._inputRef.select();
 	}
 
 	@HostListener('blur')
 	handleInputBlur() {
-		const value = this._inputRef.value.trim();
-		const isValid = this._amountPattern.test(value);
+		this.inputType = 'text';
+		this._changeDetector.detectChanges();
 
-		if (isValid && value.length > 0) {
-			const amount = +this._formatRawAmount(value);
-
-			this._setHTMLInputValue(this._formatCurrency(amount));
-			this._changeNgFormValue(amount);
-		} else {
-			this._changeNgFormValue(null);
+		if (this._inputRef.value.length > 0) {
+			this._inputRef.value = this._formatCurrency(
+				parseFloat(this._inputRef.value)
+			);
 		}
 
 		this._setNgTouchedState();
 	}
 
 	private _formatCurrency(value: number) {
-		return formatCurrency(value, this._localeId, '', this._currencyCode);
-	}
-
-	private _setHTMLInputValue(newValue: string) {
-		this._renderer.setProperty(this._inputRef, 'value', newValue);
-		this._HTMLInputValue = newValue;
+		return formatCurrency(
+			value,
+			this._localeId,
+			getLocaleCurrencySymbol(this._localeId),
+			this._currencyCode
+		);
 	}
 
 	private _formatRawAmount(value: string) {
-		return value
-			.replace(this._unwantedChars, '')
-			.replace(this._decimalSeparator, '.');
-	}
+		const sign = value.startsWith('-') ? '-' : '';
 
-	private _buildAmountPattern(): RegExp {
-		const separator: string = /\s/.test(this._thousandsSeparator)
-			? /\s/.source
-			: this._thousandsSeparator;
-
-		return new RegExp(
-			`(^[\\d${separator}]*)((?<!${separator})\\${this._decimalSeparator}?\\d{0,2})?$`
+		return (
+			sign +
+			value
+				.replace(this._unwantedChars, '')
+				.replace(this._decimalSeparator, '.')
 		);
 	}
 }
