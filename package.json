@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^14.0.5",
     "@angular/platform-browser-dynamic": "^14.0.5",
     "@angular/router": "^14.0.5",
+    "@angular/service-worker": "^14.0.5",
     "@swimlane/ngx-charts": "^20.1.0",
     "firebase": "^9.4.0",
     "rxfire": "^6.0.0",
