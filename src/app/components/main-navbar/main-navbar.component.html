@@ -1,4 +1,4 @@
-<div class="main-navbar-wrapper" *ngIf="data$ | async as data">
+<div class="main-navbar-wrapper">
 	<mat-toolbar color="primary" role="heading">
 		<button mat-icon-button (click)="toggleSidenav()">
 			<mat-icon>menu</mat-icon>
@@ -7,31 +7,36 @@
 		<a mat-button routerLink="/">Monitor budżetu</a>
 		<div class="spacer"></div>
 
-		<button
-			mat-icon-button
-			matTooltip="Wyloguj się"
-			*ngIf="data.isLoggedIn; else login"
-			(click)="logout()"
-			aria-label="Wyloguj się"
-		>
-			<mat-icon>logout</mat-icon>
-		</button>
-
-		<ng-template #login>
-			<a
-				mat-icon-button
-				matTooltip="Zaloguj się"
-				routerLink="/login"
-				aria-label="Zaloguj się"
-			>
-				<mat-icon>login</mat-icon>
-			</a>
-		</ng-template>
+		<ng-container
+			*ngIf="isLoggedIn$ | async; then logoutBtn; else loginBtn"
+		></ng-container>
 	</mat-toolbar>
 
 	<mat-progress-bar
-		*ngIf="data.shouldDisplayLoader"
+		*ngIf="shouldDisplayLoader$ | async"
 		mode="indeterminate"
 		color="accent"
 	></mat-progress-bar>
 </div>
+
+<ng-template #loginBtn>
+	<a
+		mat-icon-button
+		matTooltip="Zaloguj się"
+		routerLink="/login"
+		aria-label="Zaloguj się"
+	>
+		<mat-icon>login</mat-icon>
+	</a>
+</ng-template>
+
+<ng-template #logoutBtn>
+	<button
+		mat-icon-button
+		matTooltip="Wyloguj się"
+		(click)="logout()"
+		aria-label="Wyloguj się"
+	>
+		<mat-icon>logout</mat-icon>
+	</button>
+</ng-template>
