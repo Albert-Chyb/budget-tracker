@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+	getBlob,
 	ref,
 	Storage,
 	uploadBytes,
@@ -11,6 +12,7 @@ import {
 import { generateUniqueString } from '@helpers/generateUniqueString';
 import { UserService } from '@services/user/user.service';
 import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root',
@@ -49,6 +51,15 @@ export class StorageService {
 		const task = uploadBytes(reference, file);
 
 		return from(task);
+	}
+
+	downloadFile(folder: string): Observable<File> {
+		const uid = this._user.getUid();
+		const fileRef = ref(this._afStorage, `${uid}/${folder}`);
+
+		return from(getBlob(fileRef)).pipe(
+			map(blob => new File([blob], fileRef.name, { type: blob.type }))
+		);
 	}
 
 	private _createSnapshotObservable(

@@ -7,7 +7,7 @@ import {
 } from '@components/new-category-dialog/new-category-dialog.component';
 import { CategoriesService } from '@services/categories/categories.service';
 import { LoadingService } from '@services/loading/loading.service';
-import { defer, from, iif, Observable, of } from 'rxjs';
+import { defer, iif, Observable, of } from 'rxjs';
 import { filter, map, mapTo, switchMap, take, tap } from 'rxjs/operators';
 import { ActionDefinition } from './action-definition';
 
@@ -86,9 +86,7 @@ export class UpdateCategoryAction extends ActionDefinition<ICategory> {
 	}
 
 	private _saveIcon(): Observable<void> {
-		return from(fetch(this.payload.icon)).pipe(
-			switchMap(res => from(res.blob())),
-			map(blob => new File([blob], this.payload.id, { type: blob.type })),
+		return this._categories.downloadIcon(this.payload.id).pipe(
 			tap(icon => (this._icon = icon)),
 			mapTo(null)
 		);

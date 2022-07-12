@@ -1,7 +1,7 @@
 import { ICategory } from '@common/interfaces/category';
 import { CategoriesService } from '@services/categories/categories.service';
 import { LoadingService } from '@services/loading/loading.service';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { mapTo, switchMap, tap } from 'rxjs/operators';
 import { ActionDefinition } from './action-definition';
 
@@ -13,14 +13,12 @@ export class DeleteCategoryAction extends ActionDefinition<ICategory> {
 	onCompleteMsg: string = `Usunięto categorię: ${this.payload.name}`;
 
 	execute(): void | Observable<void> | Promise<void> {
+		const { id } = this.payload;
+
 		return this._loading.add(
-			this._downloadIcon().pipe(
-				tap(blob => {
-					this._icon = new File([blob], this.payload.id, {
-						type: blob.type,
-					});
-				}),
-				switchMap(() => this._categories.delete(this.payload.id))
+			this._categories.downloadIcon(id).pipe(
+				tap(icon => (this._icon = icon)),
+				switchMap(() => this._categories.delete(id))
 			)
 		);
 	}
@@ -42,9 +40,5 @@ export class DeleteCategoryAction extends ActionDefinition<ICategory> {
 				mapTo(null)
 			)
 		);
-	}
-
-	private _downloadIcon(): Observable<Blob> {
-		return from(fetch(this.payload.icon).then(res => res.blob()));
 	}
 }

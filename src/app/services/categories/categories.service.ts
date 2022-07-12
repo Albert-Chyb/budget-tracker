@@ -83,6 +83,10 @@ export class CategoriesService extends Collection<Methods>(...ALL_MIXINS) {
 		);
 	}
 
+	downloadIcon(id: string): Observable<File> {
+		return this._storage.downloadFile(`categories-icons/${id}`);
+	}
+
 	private _catchError(error: any): Observable<any> {
 		let exception: any = error;
 
