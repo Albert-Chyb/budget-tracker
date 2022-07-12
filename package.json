@@ -23,7 +23,7 @@
     "@angular/router": "^14.0.5",
     "@angular/service-worker": "^14.0.5",
     "@swimlane/ngx-charts": "^20.1.0",
-    "firebase": "^9.4.0",
+    "firebase": "^9.9.0",
     "rxfire": "^6.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
