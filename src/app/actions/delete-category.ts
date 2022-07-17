@@ -32,7 +32,6 @@ export class DeleteCategoryAction extends ActionDefinition<ICategory> {
 							name: this.payload.name,
 							defaultTransactionsType: this.payload.defaultTransactionsType,
 							icon: uploadSnapshot.url,
-							iconPath: uploadSnapshot.path,
 						},
 						this.payload.id
 					)

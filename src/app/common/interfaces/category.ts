@@ -13,7 +13,6 @@ export interface ICategory extends ICategoryBase {
 export interface ICategoryBase {
 	name: string;
 	icon: string;
-	iconPath: string;
 	defaultTransactionsType: TTransactionType;
 }
 

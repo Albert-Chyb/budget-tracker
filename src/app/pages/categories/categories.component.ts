@@ -101,13 +101,11 @@ export class CategoriesComponent {
 		const payload: ICategoryBase = {
 			name: category.name,
 			icon: iconUrl,
-			iconPath,
 			defaultTransactionsType: category.defaultTransactionsType,
 		};
 
 		if (!iconChanged) {
 			delete payload.icon;
-			delete payload.iconPath;
 		}
 
 		return payload;

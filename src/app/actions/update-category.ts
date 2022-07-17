@@ -29,14 +29,13 @@ export class UpdateCategoryAction extends ActionDefinition<ICategory> {
 							switchMap(() => this._uploadIcon(dialogData.icon))
 						)
 					),
-					of({ url: this.payload.icon, path: this.payload.iconPath })
+					of({ url: this.payload.icon })
 				).pipe(
 					map(icon => {
 						const category: ICategoryUpdatePayload = {
 							name: dialogData.name,
 							defaultTransactionsType: dialogData.defaultTransactionsType,
 							icon: icon.url,
-							iconPath: icon.path,
 						};
 
 						return category;
@@ -54,7 +53,7 @@ export class UpdateCategoryAction extends ActionDefinition<ICategory> {
 	undo(): Observable<void> {
 		const undoTask = iif(
 			() => isNullish(this._icon),
-			of({ url: this.payload.icon, path: this.payload.iconPath }),
+			of({ url: this.payload.icon }),
 			defer(() => this._categories.uploadIcon(this._icon, this.payload.id))
 		).pipe(
 			switchMap(icon => {
@@ -62,7 +61,6 @@ export class UpdateCategoryAction extends ActionDefinition<ICategory> {
 					name: this.payload.name,
 					defaultTransactionsType: this.payload.defaultTransactionsType,
 					icon: icon.url,
-					iconPath: icon.path,
 				};
 
 				return this._categories.update(this.payload.id, category);
