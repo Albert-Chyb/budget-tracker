@@ -20,6 +20,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isNullish } from '@helpers/isNullish';
 
 const MAX_ALLOWED_DECIMALS_PLACES = 2;
+const NUMBER_INPUT_DECIMAL_SEPARATOR = '.';
 
 @Directive({
 	selector: '[currencyInput]',
@@ -87,15 +88,17 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 
 	@HostListener('input')
 	handleInput() {
-		let [intPart, decimalPart] = this._inputRef.value.split('.');
+		let [intPart, decimalPart] = this._inputRef.value.split(
+			NUMBER_INPUT_DECIMAL_SEPARATOR
+		);
 		let wereDecimalsTrimmed = false;
 
 		if (decimalPart?.length > MAX_ALLOWED_DECIMALS_PLACES) {
-			decimalPart = decimalPart.substring(0, 2);
+			decimalPart = decimalPart.substring(0, MAX_ALLOWED_DECIMALS_PLACES);
 			wereDecimalsTrimmed = true;
 		}
 
-		const valueAsString = `${intPart}.${decimalPart}`;
+		const valueAsString = `${intPart}${NUMBER_INPUT_DECIMAL_SEPARATOR}${decimalPart}`;
 		const valueAsNumber = parseFloat(valueAsString);
 
 		this._setNgFormValue(isNaN(valueAsNumber) ? null : valueAsNumber);
@@ -123,7 +126,12 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 
 		if (this._inputRef.value.length > 0) {
 			this._inputRef.value = this._formatCurrency(
-				parseFloat(this._inputRef.value)
+				parseFloat(
+					this._inputRef.value.replace(
+						this._decimalSeparator,
+						NUMBER_INPUT_DECIMAL_SEPARATOR
+					)
+				)
 			);
 		}
 
@@ -146,7 +154,7 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 			sign +
 			value
 				.replace(this._unwantedChars, '')
-				.replace(this._decimalSeparator, '.')
+				.replace(this._decimalSeparator, NUMBER_INPUT_DECIMAL_SEPARATOR)
 		);
 	}
 }
