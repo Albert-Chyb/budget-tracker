@@ -3,7 +3,11 @@
 
 	<div class="wallets" *clueIf="wallets.length === 0">
 		<ng-container *ngFor="let wallet of wallets; trackBy: trackById">
-			<wallet [wallet]="wallet" [show-actions]="true"></wallet>
+			<wallet
+				[wallets]="wallets"
+				[wallet]="wallet"
+				[show-actions]="true"
+			></wallet>
 		</ng-container>
 	</div>
 </section>

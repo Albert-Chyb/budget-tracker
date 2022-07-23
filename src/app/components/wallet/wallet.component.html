@@ -14,6 +14,10 @@
 					Zmień nazwę
 				</button>
 
+				<button mat-menu-item [mat-menu-trigger-for]="walletsMenu">
+					Przelej pieniądze do
+				</button>
+
 				<button mat-menu-item action="delete-wallet" [action-payload]="wallet">
 					Usuń
 				</button>
@@ -27,3 +31,14 @@
 		</p>
 	</mat-card-content>
 </mat-card>
+
+<mat-menu #walletsMenu="matMenu">
+	<button
+		mat-menu-item
+		*ngFor="let menuWallet of wallets"
+		action="transfer-money"
+		[action-payload]="{ sourceWallet: wallet, targetWallet: menuWallet }"
+	>
+		{{ menuWallet.name }}
+	</button>
+</mat-menu>
