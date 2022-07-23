@@ -1,4 +1,4 @@
-import { ErrorHandler, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Firestore } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
@@ -38,13 +38,12 @@ interface Methods
 })
 export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 	constructor(
-		afStore: Firestore,
+		firestore: Firestore,
 		user: UserService,
-		private readonly _afFunctions: Functions,
-		private readonly _errorHandler: ErrorHandler
+		private readonly _afFunctions: Functions
 	) {
 		super(
-			afStore,
+			firestore,
 			user.getUid$().pipe(map(uid => `users/${uid}/wallets`)),
 			new FirestoreWalletConverter()
 		);
@@ -75,5 +74,27 @@ export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 			}),
 			mapTo(null)
 		);
+	}
+
+	/**
+	 * Transfers money between two different wallets.
+	 * @param sourceWallet Id of a wallet that money should be transferred from.
+	 * @param targetWallet Id of a wallet that money should be transferred to.
+	 * @param amount Amount of money to transfer.
+	 * @returns Observable that emits when transfer was finalized.
+	 */
+	transferMoney(
+		sourceWallet: string,
+		targetWallet: string,
+		amount: number
+	): Observable<void> {
+		const transferMoneyFn = httpsCallable(
+			this._afFunctions,
+			CloudFunction.TransferMoney
+		);
+
+		const res$ = from(transferMoneyFn({ sourceWallet, targetWallet, amount }));
+
+		return res$.pipe(mapTo(null));
 	}
 }
