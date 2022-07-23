@@ -4,7 +4,7 @@ import {
 	Inject,
 	Input,
 } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 const DEFAULT_CONFIG: AmountDialogConfig = Object.freeze({
 	amount: 0,
@@ -31,7 +31,13 @@ export class AmountDialogComponent {
 	@Input() min: number;
 	@Input() max: number;
 
-	constructor(@Inject(MAT_DIALOG_DATA) receivedConfig: AmountDialogConfig) {
+	constructor(
+		@Inject(MAT_DIALOG_DATA) receivedConfig: AmountDialogConfig,
+		private readonly _dialogRef: MatDialogRef<
+			AmountDialogComponent,
+			AmountDialogResult
+		>
+	) {
 		const config: AmountDialogConfig = {
 			...DEFAULT_CONFIG,
 			...receivedConfig,
@@ -40,5 +46,9 @@ export class AmountDialogComponent {
 		this.amount = config.amount;
 		this.min = config.min;
 		this.max = config.max;
+	}
+
+	handleSubmit() {
+		this._dialogRef.close(this.amount);
 	}
 }

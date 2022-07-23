@@ -1,6 +1,11 @@
 <h2 mat-dialog-title>Kwota</h2>
 
-<form mat-dialog-content class="amount-dialog">
+<form
+	#amountForm="ngForm"
+	mat-dialog-content
+	class="amount-dialog"
+	(ngSubmit)="handleSubmit()"
+>
 	<mat-form-field class="amount-dialog__input">
 		<mat-label>Kwota</mat-label>
 		<input
@@ -29,8 +34,7 @@
 		class="amount-dialog__confirm-btn"
 		mat-stroked-button
 		color="accent"
-		[mat-dialog-close]="amount"
-		[disabled]="amountModel.invalid"
+		[disabled]="amountForm.invalid"
 	>
 		OK
 	</button>
