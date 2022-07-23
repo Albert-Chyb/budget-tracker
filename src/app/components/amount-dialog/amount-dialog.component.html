@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Kwota</h2>
+
+<form mat-dialog-content class="amount-dialog">
+	<mat-form-field class="amount-dialog__input">
+		<mat-label>Kwota</mat-label>
+		<input
+			name="amount"
+			matInput
+			type="text"
+			placeholder="np.: 100"
+			[(ngModel)]="amount"
+			currencyInput
+			#amountModel="ngModel"
+			[textMax]="max"
+			[textMin]="min"
+		/>
+
+		<mat-error *ngIf="amountModel.hasError('min')"
+			>Kwota nie może być mniejsza niż
+			{{ amountModel.getError('min').min | currency }}</mat-error
+		>
+		<mat-error *ngIf="amountModel.hasError('max')"
+			>Kwota nie może być większa niż
+			{{ amountModel.getError('max').max | currency }}</mat-error
+		>
+	</mat-form-field>
+
+	<button
+		class="amount-dialog__confirm-btn"
+		mat-stroked-button
+		color="accent"
+		[mat-dialog-close]="amount"
+		[disabled]="amountModel.invalid"
+	>
+		OK
+	</button>
+</form>

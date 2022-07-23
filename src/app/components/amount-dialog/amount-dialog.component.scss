@@ -1,0 +1,13 @@
+:host {
+	display: block;
+}
+
+.amount-dialog {
+	&__input {
+		width: 100%;
+	}
+
+	&__confirm-btn {
+		width: 100%;
+	}
+}

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { cluesDatasets } from '@common/clues-datasets';
 import { AlertComponent } from '@components/alert/alert.component';
+import { AmountDialogComponent } from '@components/amount-dialog/amount-dialog.component';
 import { FileInputComponent } from '@components/file-input/file-input.component';
 import { LoadingIndicatorComponent } from '@components/loading-indicator/loading-indicator.component';
 import { PromptDialogComponent } from '@components/prompt-dialog/prompt-dialog.component';
@@ -30,6 +31,7 @@ import { FormValidatorsModule } from './form-validators.module';
 		CurrencyInputDirective,
 		CollectionPaginatorDirective,
 		PercentageChangePipe,
+		AmountDialogComponent,
 	],
 	exports: [
 		PromptDialogComponent,
@@ -49,6 +51,7 @@ import { FormValidatorsModule } from './form-validators.module';
 		FormValidatorsModule,
 		ActionsModule,
 		PercentageChangePipe,
+		AmountDialogComponent,
 	],
 	imports: [
 		FormValidatorsModule,
