@@ -5,7 +5,6 @@ import {
 	NumberSymbol,
 } from '@angular/common';
 import {
-	ChangeDetectorRef,
 	DEFAULT_CURRENCY_CODE,
 	Directive,
 	ElementRef,
@@ -19,8 +18,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isNullish } from '@helpers/isNullish';
 
-const MAX_ALLOWED_DECIMALS_PLACES = 2;
-const NUMBER_INPUT_DECIMAL_SEPARATOR = '.';
+const CURRENCY_PATTERN = /^\-?\d*(\,|\.)?\d{0,2}$/;
 
 @Directive({
 	selector: '[currencyInput]',
@@ -37,8 +35,7 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		@Self() elementRef: ElementRef<HTMLInputElement>,
 		private readonly _renderer: Renderer2,
 		@Inject(LOCALE_ID) private readonly _localeId: string,
-		@Inject(DEFAULT_CURRENCY_CODE) private readonly _currencyCode: string,
-		private readonly _changeDetector: ChangeDetectorRef
+		@Inject(DEFAULT_CURRENCY_CODE) private readonly _currencyCode: string
 	) {
 		this._inputRef = elementRef.nativeElement;
 	}
@@ -46,25 +43,22 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 	private _setNgFormValue: (newValue: number) => void;
 	private _setNgTouchedState: () => void;
 	private _inputRef: HTMLInputElement;
+	private _prevInputValue = '';
 
-	@HostBinding('type') inputType: 'text' | 'number' = 'text';
+	@HostBinding('type') readonly inputType = 'text';
+	@HostBinding('inputmode') readonly inputmode = 'decimal';
 
+	private readonly _validCharacters = /\d|\,|\.|\-/;
 	private readonly _decimalSeparator = getLocaleNumberSymbol(
 		this._localeId,
 		NumberSymbol.CurrencyDecimal
 	);
 
-	/** Matches all characters except decimal separator and digits. */
-	private readonly _unwantedChars = new RegExp(
-		'[^\\d' + this._decimalSeparator + ']',
-		'g'
-	);
-
 	writeValue(amount: number): void {
 		if (!isNullish(amount)) {
-			this._inputRef.value = this._formatCurrency(amount);
+			this._setInputValue(this._formatCurrency(amount));
 		} else {
-			this._inputRef.value = '';
+			this._setInputValue('');
 		}
 	}
 
@@ -86,75 +80,72 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 		}
 	}
 
-	@HostListener('input')
-	handleInput() {
-		let [intPart, decimalPart] = this._inputRef.value.split(
-			NUMBER_INPUT_DECIMAL_SEPARATOR
-		);
-		let wereDecimalsTrimmed = false;
+	@HostListener('input', ['$event']) handleInputChange($event: InputEvent) {
+		const inputValue = this._getInputValue();
+		const valueAsNumber = Number(inputValue);
 
-		if (decimalPart?.length > MAX_ALLOWED_DECIMALS_PLACES) {
-			decimalPart = decimalPart.substring(0, MAX_ALLOWED_DECIMALS_PLACES);
-			wereDecimalsTrimmed = true;
+		if (inputValue.length === 0) {
+			// An empty string would coerce to a zero.
+			this._setNgFormValue(null);
+			return;
 		}
 
-		const valueAsString = `${intPart}${NUMBER_INPUT_DECIMAL_SEPARATOR}${decimalPart}`;
-		const valueAsNumber = parseFloat(valueAsString);
-
-		this._setNgFormValue(isNaN(valueAsNumber) ? null : valueAsNumber);
-
-		if (wereDecimalsTrimmed) {
-			this._inputRef.value = valueAsString;
+		if (!CURRENCY_PATTERN.test(inputValue)) {
+			// Check if the user entered a valid currency.
+			this._setInputValue(this._prevInputValue);
+			return;
 		}
+
+		if ($event.data === '.') {
+			// Convert the dot to the decimal separator.
+			this._setInputValue(inputValue);
+		}
+
+		this._prevInputValue = inputValue;
+		this._setNgFormValue(valueAsNumber);
 	}
 
-	@HostListener('focus')
-	handleInputFocus() {
-		const value: string = this._inputRef.value;
+	/** Formats input's value to a normal decimal number */
+	@HostListener('focus') unformat() {
+		/** Input's value formatted as a currency */
+		const formatted = this._getInputValue();
+		const unformatted = [...formatted]
+			.filter(letter => letter.match(this._validCharacters))
+			.join('');
 
-		this.inputType = 'number';
-		this._inputRef.value = this._formatRawAmount(value);
-		this._changeDetector.detectChanges();
-
+		this._prevInputValue = unformatted;
+		this._setInputValue(unformatted);
 		this._inputRef.select();
 	}
 
-	@HostListener('blur')
-	handleInputBlur() {
-		this.inputType = 'text';
-		this._changeDetector.detectChanges();
+	/** Formats input's value to a currency format */
+	@HostListener('blur') format() {
+		const inputValue = this._getInputValue();
 
-		if (this._inputRef.value.length > 0) {
-			this._inputRef.value = this._formatCurrency(
-				parseFloat(
-					this._inputRef.value.replace(
-						this._decimalSeparator,
-						NUMBER_INPUT_DECIMAL_SEPARATOR
-					)
-				)
-			);
+		if (inputValue.length > 0) {
+			this._setInputValue(this._formatCurrency(Number(inputValue)));
 		}
 
 		this._setNgTouchedState();
 	}
 
-	private _formatCurrency(value: number) {
+	private _formatCurrency(currency: number) {
+		const currencySymbol = getLocaleCurrencySymbol(this._localeId);
+
 		return formatCurrency(
-			value,
+			currency,
 			this._localeId,
-			getLocaleCurrencySymbol(this._localeId),
+			currencySymbol,
 			this._currencyCode
 		);
 	}
 
-	private _formatRawAmount(value: string) {
-		const sign = value.startsWith('-') ? '-' : '';
+	/** Sets the value on the input without changing it in the ngModel. */
+	private _setInputValue(value: string) {
+		this._inputRef.value = value.replace('.', this._decimalSeparator);
+	}
 
-		return (
-			sign +
-			value
-				.replace(this._unwantedChars, '')
-				.replace(this._decimalSeparator, NUMBER_INPUT_DECIMAL_SEPARATOR)
-		);
+	private _getInputValue() {
+		return this._inputRef.value.replace(this._decimalSeparator, '.');
 	}
 }
