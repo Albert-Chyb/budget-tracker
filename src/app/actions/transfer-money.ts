@@ -9,6 +9,7 @@ import {
 	AmountDialogConfig,
 	AmountDialogResult as AmountDialogResultData,
 } from '@components/amount-dialog/amount-dialog.component';
+import { LoadingService } from '@services/loading/loading.service';
 import { WalletsService } from '@services/wallets/wallets.service';
 import { Observable } from 'rxjs';
 import { filter, switchMap, take, tap } from 'rxjs/operators';
@@ -24,6 +25,7 @@ export class TransferMoneyAction extends ActionDefinition<TransferMoneyActionPay
 	private readonly _localeId = this.getDependency(LOCALE_ID);
 	private readonly _currencyCode = this.getDependency(DEFAULT_CURRENCY_CODE);
 	private readonly _dialogs = this.getDependency(MatDialog);
+	private readonly _loading = this.getDependency(LoadingService);
 
 	/** Amount to transfer as an integer value. */
 	private _amount = 0;
@@ -51,13 +53,14 @@ export class TransferMoneyAction extends ActionDefinition<TransferMoneyActionPay
 			.pipe(
 				take(1),
 				filter(amount => !isNullish(amount) && amount > 0),
-				tap(value => console.log(`Otrzymana wartość: ${value}`)),
 				tap(amount => (this._amount = Math.trunc(amount * 100))),
 				switchMap(() =>
-					this._wallets.transferMoney(
-						sourceWallet.id,
-						targetWallet.id,
-						this._amount
+					this._loading.add(
+						this._wallets.transferMoney(
+							sourceWallet.id,
+							targetWallet.id,
+							this._amount
+						)
 					)
 				)
 			);
@@ -66,10 +69,12 @@ export class TransferMoneyAction extends ActionDefinition<TransferMoneyActionPay
 	undo(): void | Observable<void> | Promise<void> {
 		const { sourceWallet, targetWallet } = this.payload;
 
-		return this._wallets.transferMoney(
-			targetWallet.id,
-			sourceWallet.id,
-			this._amount
+		return this._loading.add(
+			this._wallets.transferMoney(
+				targetWallet.id,
+				sourceWallet.id,
+				this._amount
+			)
 		);
 	}
 
