@@ -59,12 +59,7 @@ export class Money {
 	[Symbol.toPrimitive](hint: string) {
 		switch (hint) {
 			case 'number':
-				return +formatCurrency(
-					this.asDecimal,
-					this._localeId,
-					null,
-					getLocaleCurrencyCode(this._localeId)
-				);
+				return this.asDecimal;
 
 			case 'string':
 				return this.toString();
