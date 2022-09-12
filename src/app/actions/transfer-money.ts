@@ -1,9 +1,9 @@
-import { formatCurrency, getCurrencySymbol } from '@angular/common';
-import { DEFAULT_CURRENCY_CODE, LOCALE_ID } from '@angular/core';
+import { LOCALE_ID } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MAX_MONEY_AMOUNT_VALUE } from '@common/constants';
 import { isNullish } from '@common/helpers/isNullish';
 import { IWallet } from '@common/interfaces/wallet';
+import { Money } from '@common/models/money';
 import {
 	AmountDialogComponent,
 	AmountDialogConfig,
@@ -23,24 +23,21 @@ interface TransferMoneyActionPayload {
 export class TransferMoneyAction extends ActionDefinition<TransferMoneyActionPayload> {
 	private readonly _wallets = this.getDependency(WalletsService);
 	private readonly _localeId = this.getDependency(LOCALE_ID);
-	private readonly _currencyCode = this.getDependency(DEFAULT_CURRENCY_CODE);
 	private readonly _dialogs = this.getDependency(MatDialog);
 	private readonly _loading = this.getDependency(LoadingService);
 
 	/** Amount to transfer as an integer value. */
-	private _amount = 0;
+	private _amount: Money;
 
 	get onCompleteMsg(): string {
-		return `Poprawnie przesłano kwote: ${this._formatCurrency(
-			this._amount / 100
-		)}`;
+		return `Poprawnie przesłano kwote: ${this._amount}`;
 	}
 
 	execute(): void | Observable<void> | Promise<void> {
 		const { sourceWallet, targetWallet } = this.payload;
 		const dialogConfig: AmountDialogConfig = {
-			amount: 0,
-			min: 0.01,
+			amount: new Money(0, this._localeId),
+			min: new Money(1, this._localeId),
 			max: this._calculateMaxTransferValue(sourceWallet, targetWallet),
 		};
 
@@ -52,8 +49,8 @@ export class TransferMoneyAction extends ActionDefinition<TransferMoneyActionPay
 			.afterClosed()
 			.pipe(
 				take(1),
-				filter(amount => !isNullish(amount) && amount > 0),
-				tap(amount => (this._amount = Math.trunc(amount * 100))),
+				filter(amount => !isNullish(amount) && amount.asDecimal > 0),
+				tap(amount => (this._amount = amount)),
 				switchMap(() =>
 					this._loading.add(
 						this._wallets.transferMoney(
@@ -78,22 +75,19 @@ export class TransferMoneyAction extends ActionDefinition<TransferMoneyActionPay
 		);
 	}
 
-	private _formatCurrency(amount: number) {
-		return formatCurrency(
-			amount,
-			this._localeId,
-			getCurrencySymbol(this._currencyCode, 'wide', this._localeId),
-			this._currencyCode
-		);
-	}
-
 	private _calculateMaxTransferValue(
 		sourceWallet: IWallet,
 		targetWallet: IWallet
-	) {
-		return Math.min(
-			sourceWallet.balance,
-			MAX_MONEY_AMOUNT_VALUE - targetWallet.balance
+	): Money {
+		return Money.fromDecimal(
+			Math.min(
+				sourceWallet.balance.asDecimal,
+				Money.fromDecimal(
+					MAX_MONEY_AMOUNT_VALUE,
+					this.getDependency(LOCALE_ID)
+				).subtract(targetWallet.balance).asDecimal
+			),
+			this._localeId
 		);
 	}
 }

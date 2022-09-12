@@ -21,7 +21,7 @@
 					Portfel <strong>musi</strong> mieć nazwę
 				</mat-error>
 				<mat-error *ngIf="name.hasError('minlength')">
-					Nazwa musi zawierać <strong>conajmniej</strong>
+					Nazwa musi zawierać <strong>przynajmniej</strong>
 					{{ name.getError('minlength').requiredLength }} znaki
 				</mat-error>
 				<mat-error *ngIf="name.hasError('maxlength')">
@@ -40,23 +40,16 @@
 					currencyInput
 					[(ngModel)]="wallet.balance"
 					#balance="ngModel"
-					inputmode="decimal"
 					required
-					[textMax]="maxMoneyAmount"
-					[textMin]="0"
 				/>
 				<mat-label>Wartość</mat-label>
 				<mat-icon matPrefix>paid</mat-icon>
-				<span matSuffix>PLN</span>
 
 				<mat-error *ngIf="balance.hasError('required')">
 					Balans jest wymagany
 				</mat-error>
 				<mat-error *ngIf="balance.hasError('min')">
 					Balans <strong>nie może</strong> być ujemny
-				</mat-error>
-				<mat-error *ngIf="balance.hasError('pattern')">
-					Podaj <strong>poprawnie</strong> sformatowaną wartość.
 				</mat-error>
 				<mat-error *ngIf="balance.hasError('max')">
 					Maksymalna wartość portfela wynosi 1 milion.

@@ -31,10 +31,10 @@ export class PeriodCategoriesPieChartComponent implements OnChanges {
 
 	private _setChartData(stats: PeriodCategories, categories: ICategory[]) {
 		this.data = Array.from(stats)
-			.filter(category => category.expenses > 0)
+			.filter(category => category.expenses.asInteger)
 			.map(categoryStatistics => ({
 				name: categories.find(cat => cat.id === categoryStatistics.id).name,
-				value: categoryStatistics.expenses,
+				value: categoryStatistics.expenses.asDecimal,
 			}));
 	}
 }

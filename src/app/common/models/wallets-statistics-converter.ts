@@ -8,6 +8,7 @@ import {
 	IWalletPeriodStatistics,
 	TWalletCategorizedStatistics,
 } from '@interfaces/wallet-statistics';
+import { Money } from './money';
 import {
 	PeriodCategoryStatistics,
 	PeriodStatistics,
@@ -17,6 +18,8 @@ import { TimePeriod } from './time-period';
 export class WalletStatisticsConverter
 	implements FirestoreDataConverter<PeriodStatistics>
 {
+	constructor(private readonly _localeId: string) {}
+
 	toFirestore(modelObject: any, options?: any): DocumentData {
 		throw new Error('The wallet statistics are read only.');
 	}
@@ -26,7 +29,6 @@ export class WalletStatisticsConverter
 		options: SnapshotOptions
 	): PeriodStatistics {
 		const statistics = snapshot.data() as IWalletPeriodStatistics;
-		this._convertAmountFields(statistics);
 
 		const year = this._getYear(snapshot.ref.path);
 		const root = this._convertStatistics(
@@ -38,25 +40,6 @@ export class WalletStatisticsConverter
 		this._convertIntoInstances(statistics, root);
 
 		return root;
-	}
-
-	private _convertAmountFields(statistics: IWalletPeriodStatistics): void {
-		const fieldsToConvert: string[] = ['income', 'expenses'];
-
-		for (const key in statistics) {
-			if (Object.prototype.hasOwnProperty.call(statistics, key)) {
-				const element = (statistics as any)[key];
-
-				if (typeof element === 'object') {
-					this._convertAmountFields(element);
-				} else if (
-					fieldsToConvert.includes(key) &&
-					typeof element === 'number'
-				) {
-					(statistics as any)[key] = element / 100;
-				}
-			}
-		}
 	}
 
 	private _convertIntoInstances(
@@ -97,11 +80,12 @@ export class WalletStatisticsConverter
 		parent: PeriodStatistics | null
 	): PeriodStatistics {
 		return new PeriodStatistics(
-			statistics.income,
-			statistics.expenses,
+			new Money(statistics.income, this._localeId),
+			new Money(statistics.expenses, this._localeId),
 			this._convertCategories(statistics.categories),
 			period,
-			parent
+			parent,
+			this._localeId
 		);
 	}
 
@@ -110,7 +94,11 @@ export class WalletStatisticsConverter
 	): PeriodCategoryStatistics[] {
 		return Object.entries(categories).map(
 			([id, { income, expenses }]) =>
-				new PeriodCategoryStatistics(id, income, expenses)
+				new PeriodCategoryStatistics(
+					id,
+					new Money(income, this._localeId),
+					new Money(expenses, this._localeId)
+				)
 		);
 	}
 }

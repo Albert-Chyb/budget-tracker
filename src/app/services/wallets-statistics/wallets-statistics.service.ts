@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { collection, doc, docData, Firestore } from '@angular/fire/firestore';
 import { isNullish } from '@common/helpers/isNullish';
+import { Money } from '@common/models/money';
 import { PeriodStatistics } from '@common/models/period-statistics';
 import { TimePeriod } from '@common/models/time-period';
 import { WalletStatisticsConverter } from '@models/wallets-statistics-converter';
@@ -16,7 +17,8 @@ export class WalletsStatisticsService {
 	constructor(
 		private readonly _afStore: Firestore,
 		private readonly _user: UserService,
-		private readonly _collectionsInfo: CollectionsInfoService
+		private readonly _collectionsInfo: CollectionsInfoService,
+		@Inject(LOCALE_ID) private readonly _localeId: string
 	) {}
 
 	private readonly _collection$ = this._user
@@ -26,7 +28,7 @@ export class WalletsStatisticsService {
 				collection(
 					this._afStore,
 					`users/${uid}/wallets-statistics/`
-				).withConverter(new WalletStatisticsConverter())
+				).withConverter(new WalletStatisticsConverter(this._localeId))
 			)
 		);
 
@@ -35,7 +37,14 @@ export class WalletsStatisticsService {
 			switchMap(collection => docData(doc(collection, String(year)))),
 			map(statistics =>
 				isNullish(statistics)
-					? new PeriodStatistics(0, 0, [], new TimePeriod(year), null)
+					? new PeriodStatistics(
+							new Money(0, this._localeId),
+							new Money(0, this._localeId),
+							[],
+							new TimePeriod(year),
+							null,
+							this._localeId
+					  )
 					: statistics
 			)
 		);
@@ -48,7 +57,14 @@ export class WalletsStatisticsService {
 			),
 			map(statistics =>
 				isNullish(statistics)
-					? new PeriodStatistics(0, 0, [], new TimePeriod(year), null)
+					? new PeriodStatistics(
+							new Money(0, this._localeId),
+							new Money(0, this._localeId),
+							[],
+							new TimePeriod(year),
+							null,
+							this._localeId
+					  )
 					: statistics
 			)
 		);

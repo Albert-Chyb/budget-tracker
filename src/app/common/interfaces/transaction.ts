@@ -1,4 +1,5 @@
 import { Timestamp } from '@angular/fire/firestore';
+import { Money } from '@common/models/money';
 
 export type TTransactionType = 'expense' | 'income';
 
@@ -6,7 +7,7 @@ export type TTransactionType = 'expense' | 'income';
  * Represents a general transaction object.
  */
 export interface ITransactionBase {
-	amount: number;
+	amount: Money | number;
 	type: TTransactionType;
 	category: string;
 	wallet: string;
@@ -20,6 +21,7 @@ export interface ITransactionBase {
 export interface ITransaction extends ITransactionBase {
 	id: string;
 	date: Date;
+	amount: Money;
 }
 
 /**
@@ -27,6 +29,7 @@ export interface ITransaction extends ITransactionBase {
  */
 export interface ITransactionCreatePayload extends ITransactionBase {
 	date: Date;
+	amount: Money;
 }
 
 /**
@@ -34,6 +37,7 @@ export interface ITransactionCreatePayload extends ITransactionBase {
  */
 export interface ITransactionUpdatePayload extends Partial<ITransactionBase> {
 	date: Date;
+	amount: Money;
 }
 
 /**
@@ -41,4 +45,5 @@ export interface ITransactionUpdatePayload extends Partial<ITransactionBase> {
  */
 export interface ITransactionReadPayload extends ITransactionBase {
 	date: Timestamp;
+	amount: number;
 }

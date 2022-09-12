@@ -1,11 +1,5 @@
+import { getLocaleNumberSymbol, NumberSymbol } from '@angular/common';
 import {
-	formatCurrency,
-	getLocaleCurrencySymbol,
-	getLocaleNumberSymbol,
-	NumberSymbol,
-} from '@angular/common';
-import {
-	DEFAULT_CURRENCY_CODE,
 	Directive,
 	ElementRef,
 	HostBinding,
@@ -13,9 +7,9 @@ import {
 	Inject,
 	LOCALE_ID,
 	Renderer2,
-	Self,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Money } from '@common/models/money';
 import { isNullish } from '@helpers/isNullish';
 
 const CURRENCY_PATTERN = /^\-?\d*(\,|\.)?\d{0,2}$/;
@@ -32,10 +26,9 @@ const CURRENCY_PATTERN = /^\-?\d*(\,|\.)?\d{0,2}$/;
 })
 export class CurrencyInputDirective implements ControlValueAccessor {
 	constructor(
-		@Self() elementRef: ElementRef<HTMLInputElement>,
+		elementRef: ElementRef<HTMLInputElement>,
 		private readonly _renderer: Renderer2,
-		@Inject(LOCALE_ID) private readonly _localeId: string,
-		@Inject(DEFAULT_CURRENCY_CODE) private readonly _currencyCode: string
+		@Inject(LOCALE_ID) private readonly _localeId: string
 	) {
 		this._inputRef = elementRef.nativeElement;
 	}
@@ -43,27 +36,34 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 	private _setNgFormValue: (newValue: number) => void;
 	private _setNgTouchedState: () => void;
 	private _inputRef: HTMLInputElement;
-	private _prevInputValue = '';
 
 	@HostBinding('type') readonly inputType = 'text';
 	@HostBinding('inputmode') readonly inputmode = 'decimal';
 
-	private readonly _validCharacters = /\d|\,|\.|\-/;
 	private readonly _decimalSeparator = getLocaleNumberSymbol(
 		this._localeId,
 		NumberSymbol.CurrencyDecimal
 	);
 
-	writeValue(amount: number): void {
+	amount: Money;
+
+	writeValue(amount: Money): void {
 		if (!isNullish(amount)) {
-			this._setInputValue(this._formatCurrency(amount));
+			this._setInputValue(amount.toString());
 		} else {
 			this._setInputValue('');
 		}
 	}
 
 	registerOnChange(fn: any): void {
-		this._setNgFormValue = fn;
+		this._setNgFormValue = (newValue: number) => {
+			const amount = isNullish(newValue)
+				? null
+				: Money.fromDecimal(newValue, this._localeId);
+
+			this.amount = amount;
+			fn(amount);
+		};
 	}
 
 	registerOnTouched(fn: any): void {
@@ -92,7 +92,7 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 
 		if (!CURRENCY_PATTERN.test(inputValue)) {
 			// Check if the user entered a valid currency.
-			this._setInputValue(this._prevInputValue);
+			this._setInputValue(String(this.amount?.asDecimal ?? ''));
 			return;
 		}
 
@@ -101,43 +101,44 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 			this._setInputValue(inputValue);
 		}
 
-		this._prevInputValue = inputValue;
+		if (inputValue === ',' || inputValue === '.') {
+			// When the user intends to enter just the decimal part, he might start with the decimal separator.
+			// This would result in an error so we automatically prepend 0 with decimal separator to the input,
+			// and set the ng model's value to 0.
+
+			this._setInputValue('0' + this._decimalSeparator);
+			this._setNgFormValue(0);
+			return;
+		}
+
+		if (inputValue === '-') {
+			// The single minus sign would result in an error.
+			// We skip updating the ng model until user enters an number.
+
+			this._setNgFormValue(null);
+			return;
+		}
+
 		this._setNgFormValue(valueAsNumber);
 	}
 
 	/** Formats input's value to a normal decimal number */
 	@HostListener('focus') unformat() {
-		/** Input's value formatted as a currency */
-		const formatted = this._getInputValue();
-		const unformatted = [...formatted]
-			.filter(letter => letter.match(this._validCharacters))
-			.join('');
+		if (!this.hasValue) {
+			return;
+		}
 
-		this._prevInputValue = unformatted;
-		this._setInputValue(unformatted);
+		this._setInputValue(String(this.amount.asDecimal));
 		this._inputRef.select();
 	}
 
 	/** Formats input's value to a currency format */
 	@HostListener('blur') format() {
-		const inputValue = this._getInputValue();
-
-		if (inputValue.length > 0) {
-			this._setInputValue(this._formatCurrency(Number(inputValue)));
+		if (this.hasValue) {
+			this._setInputValue(this.amount.toString());
 		}
 
 		this._setNgTouchedState();
-	}
-
-	private _formatCurrency(currency: number) {
-		const currencySymbol = getLocaleCurrencySymbol(this._localeId);
-
-		return formatCurrency(
-			currency,
-			this._localeId,
-			currencySymbol,
-			this._currencyCode
-		);
 	}
 
 	/** Sets the value on the input without changing it in the ngModel. */
@@ -147,5 +148,9 @@ export class CurrencyInputDirective implements ControlValueAccessor {
 
 	private _getInputValue() {
 		return this._inputRef.value.replace(this._decimalSeparator, '.');
+	}
+
+	get hasValue(): boolean {
+		return !isNullish(this.amount);
 	}
 }

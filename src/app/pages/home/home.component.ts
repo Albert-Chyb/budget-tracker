@@ -3,6 +3,8 @@ import { ComponentType } from '@angular/cdk/portal';
 import {
 	ChangeDetectionStrategy,
 	Component,
+	Inject,
+	LOCALE_ID,
 	OnDestroy,
 	OnInit,
 } from '@angular/core';
@@ -10,6 +12,7 @@ import { limit, orderBy } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Breakpoint } from '@common/breakpoints';
+import { Money } from '@common/models/money';
 import { PeriodStatistics } from '@common/models/period-statistics';
 import { TimePeriod } from '@common/models/time-period';
 import { distinctUntilKeysChanged } from '@common/rxjs-custom-operators/distinctUntilKeysChanged';
@@ -79,7 +82,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 		private readonly _categories: CategoriesService,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
-		private readonly _loading: LoadingService
+		private readonly _loading: LoadingService,
+		@Inject(LOCALE_ID) private readonly _localeId: string
 	) {}
 
 	private readonly _wallets$: Observable<IWallet[]> = this._wallets
@@ -213,14 +217,20 @@ export class HomeComponent implements OnInit, OnDestroy {
 	 * @returns
 	 */
 	getTotalBalance(wallets: IWallet[], target: string | 'all'): number {
+		let balance: Money;
+
 		if (target === 'all') {
-			return wallets.reduce(
-				(totalAmount, wallet) => totalAmount + wallet.balance,
-				0
+			balance = wallets.reduce(
+				(totalAmount, wallet) => totalAmount.add(wallet.balance),
+				new Money(0, this._localeId)
 			);
 		} else {
-			return wallets.find(wallet => wallet.id === this.selectedWallet).balance;
+			balance = wallets.find(
+				wallet => wallet.id === this.selectedWallet
+			).balance;
 		}
+
+		return balance.asDecimal;
 	}
 
 	onBarChartClick(statistics: PeriodStatistics) {

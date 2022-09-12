@@ -1,27 +1,36 @@
 import {
+	DocumentData,
 	FirestoreDataConverter,
 	QueryDocumentSnapshot,
 	SnapshotOptions,
 } from '@angular/fire/firestore';
-import { IWallet, IWalletBase } from '@interfaces/wallet';
+import { Money } from '@common/models/money';
+import { IWallet, IWalletBase, IWalletReadPayload } from '@interfaces/wallet';
 
 export class FirestoreWalletConverter
 	implements FirestoreDataConverter<IWalletBase>
 {
-	toFirestore(wallet: IWalletBase): IWalletBase {
-		if ('balance' in wallet) {
-			wallet.balance = Math.trunc(wallet.balance * 100);
-		}
+	constructor(private readonly _localeId: string) {}
 
-		return wallet;
+	toFirestore(wallet: IWalletBase): DocumentData {
+		const documentData = {
+			name: wallet.name,
+			...('balance' in wallet && { balance: wallet.balance.asInteger }),
+		};
+
+		return documentData;
 	}
 
 	fromFirestore(
-		snapshot: QueryDocumentSnapshot<IWalletBase>,
+		snapshot: QueryDocumentSnapshot<IWalletReadPayload>,
 		options: SnapshotOptions
 	): IWallet {
 		const data = snapshot.data();
 
-		return { ...data, id: snapshot.id, balance: data.balance / 100 };
+		return {
+			...data,
+			id: snapshot.id,
+			balance: new Money(data.balance, this._localeId),
+		};
 	}
 }

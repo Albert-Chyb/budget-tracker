@@ -1,5 +1,6 @@
 import { isNullish } from '@common/helpers/isNullish';
 import { TimePeriod } from '@common/models/time-period';
+import { Money } from './money';
 
 export class PeriodCategories {
 	constructor(categories: PeriodCategoryStatistics[]) {
@@ -32,22 +33,23 @@ export class PeriodCategories {
 export class PeriodCategoryStatistics {
 	constructor(
 		public readonly id: string,
-		public readonly income: number,
-		public readonly expenses: number
+		public readonly income: Money,
+		public readonly expenses: Money
 	) {}
 
-	get difference() {
-		return this.income - this.expenses;
+	get difference(): Money {
+		return this.income.subtract(this.expenses);
 	}
 }
 
 export class PeriodStatistics {
 	constructor(
-		public readonly income: number,
-		public readonly expenses: number,
+		public readonly income: Money,
+		public readonly expenses: Money,
 		categoriesArray: PeriodCategoryStatistics[],
 		private readonly _period: TimePeriod,
-		public readonly parent: PeriodStatistics | null
+		public readonly parent: PeriodStatistics | null,
+		private readonly localeId: string
 	) {
 		this._subPeriods = this._generateEmptySubPeriods(
 			this._period.calculateSubPeriodsCount()
@@ -113,12 +115,12 @@ export class PeriodStatistics {
 	}
 
 	/** Difference between income and expenses. */
-	get difference(): number {
-		return this.income - this.expenses;
+	get difference(): Money {
+		return this.income.subtract(this.expenses);
 	}
 
 	get hasTransactions(): boolean {
-		return this.expenses > 0 || this.income > 0;
+		return this.expenses.asInteger > 0 || this.income.asInteger > 0;
 	}
 
 	get hasSubPeriods(): boolean {
@@ -143,7 +145,14 @@ export class PeriodStatistics {
 			const timePeriod = TimePeriod.fromPeriod(this.period);
 			timePeriod.setNext(index);
 
-			return new PeriodStatistics(0, 0, [], timePeriod, this);
+			return new PeriodStatistics(
+				new Money(0, this.localeId),
+				new Money(0, this.localeId),
+				[],
+				timePeriod,
+				this,
+				this.localeId
+			);
 		});
 	}
 }

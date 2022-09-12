@@ -9,13 +9,13 @@ export class PrevPeriodComparison {
 		this._getPrevPeriod();
 
 	readonly expenses = new PercentageChangeComparison(
-		this._prevPeriodStatistics?.expenses,
-		this._statistics.expenses
+		this._prevPeriodStatistics?.expenses.asDecimal,
+		this._statistics.expenses.asDecimal
 	);
 
 	readonly income = new PercentageChangeComparison(
-		this._prevPeriodStatistics?.income,
-		this._statistics.income
+		this._prevPeriodStatistics?.income.asDecimal,
+		this._statistics.income.asDecimal
 	);
 
 	private _getPrevPeriod(): PeriodStatistics {

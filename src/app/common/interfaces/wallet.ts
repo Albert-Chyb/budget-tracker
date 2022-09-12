@@ -1,9 +1,11 @@
+import { Money } from '@common/models/money';
+
 /**
  * Represents a general wallet object.
  */
 export interface IWalletBase {
 	name: string;
-	balance: number;
+	balance: Money;
 }
 
 /**
@@ -24,6 +26,9 @@ export interface IWalletCreatePayload extends IWalletBase {}
 export interface IWalletUpdatePayload extends Pick<IWalletBase, 'name'> {}
 
 /**
- * Represents a raw wallet object that is returned from the database.
+ * Represents a wallet object that is returned from the database.
  */
-export interface IWalletReadPayload extends IWalletBase {}
+export interface IWalletReadPayload {
+	name: string;
+	balance: number;
+}

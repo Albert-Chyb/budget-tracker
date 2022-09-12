@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { FirestoreTransactionConverter } from '@common/firebase/firestore/transaction-converter';
 import {
@@ -32,11 +32,15 @@ interface Methods
 	providedIn: 'root',
 })
 export class TransactionsService extends Collection<Methods>(...ALL_MIXINS) {
-	constructor(afStore: Firestore, user: UserService) {
+	constructor(
+		afStore: Firestore,
+		user: UserService,
+		@Inject(LOCALE_ID) localeId: string
+	) {
 		super(
 			afStore,
 			user.getUid$().pipe(switchMap(uid => of(`users/${uid}/transactions`))),
-			new FirestoreTransactionConverter()
+			new FirestoreTransactionConverter(localeId)
 		);
 	}
 }

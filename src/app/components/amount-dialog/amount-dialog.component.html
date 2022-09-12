@@ -16,8 +16,6 @@
 			[(ngModel)]="amount"
 			currencyInput
 			#amountModel="ngModel"
-			[textMax]="max"
-			[textMin]="min"
 		/>
 
 		<mat-error *ngIf="amountModel.hasError('min')"

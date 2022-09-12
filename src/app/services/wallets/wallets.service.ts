@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { FirebaseError } from '@angular/fire/app';
 import { Firestore } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
@@ -6,6 +6,7 @@ import { AppError } from '@common/errors/app-error';
 import { ErrorCode } from '@common/errors/error-code';
 import { CloudFunction } from '@common/firebase/cloud-functions/callable-functions';
 import { FirestoreWalletConverter } from '@common/firebase/firestore/wallet-converter';
+import { Money } from '@common/models/money';
 import {
 	IWallet,
 	IWalletCreatePayload,
@@ -40,12 +41,13 @@ export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 	constructor(
 		firestore: Firestore,
 		user: UserService,
-		private readonly _afFunctions: Functions
+		private readonly _afFunctions: Functions,
+		@Inject(LOCALE_ID) readonly localeId: string
 	) {
 		super(
 			firestore,
 			user.getUid$().pipe(map(uid => `users/${uid}/wallets`)),
-			new FirestoreWalletConverter()
+			new FirestoreWalletConverter(localeId)
 		);
 	}
 
@@ -86,14 +88,16 @@ export class WalletsService extends Collection<Methods>(...ALL_MIXINS) {
 	transferMoney(
 		sourceWallet: string,
 		targetWallet: string,
-		amount: number
+		amount: Money
 	): Observable<void> {
 		const transferMoneyFn = httpsCallable(
 			this._afFunctions,
 			CloudFunction.TransferMoney
 		);
 
-		const res$ = from(transferMoneyFn({ sourceWallet, targetWallet, amount }));
+		const res$ = from(
+			transferMoneyFn({ sourceWallet, targetWallet, amount: amount.asInteger })
+		);
 
 		return res$.pipe(mapTo(null));
 	}

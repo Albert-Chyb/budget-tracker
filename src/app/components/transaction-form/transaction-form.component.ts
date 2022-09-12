@@ -3,13 +3,16 @@ import {
 	Component,
 	ContentChild,
 	EventEmitter,
+	Inject,
 	Input,
+	LOCALE_ID,
 	Output,
 	TemplateRef,
 	ViewChild,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MAX_MONEY_AMOUNT_VALUE } from '@common/constants';
+import { Money } from '@common/models/money';
 import { isNullish } from '@helpers/isNullish';
 import { ICategory } from '@interfaces/category';
 import {
@@ -20,7 +23,7 @@ import {
 import { IWallet } from '@interfaces/wallet';
 
 interface ITransactionFormValue {
-	amount: number;
+	amount: Money;
 	type: TTransactionType;
 	date: Date;
 	category: ICategory;
@@ -33,7 +36,7 @@ export class TransactionFormValue implements ITransactionFormValue {
 
 	private _category: ICategory = this._initialValue?.category ?? null;
 
-	amount: number = this._initialValue?.amount ?? null;
+	amount: Money = this._initialValue?.amount ?? null;
 	type: TTransactionType = this._initialValue?.type ?? null;
 	date: Date = this._initialValue?.date ?? new Date();
 	wallet: IWallet = this._initialValue?.wallet ?? null;
@@ -91,6 +94,8 @@ export class TransactionFormValue implements ITransactionFormValue {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionFormComponent {
+	constructor(@Inject(LOCALE_ID) private _localeId: string) {}
+
 	@Input('wallets') wallets: IWallet[];
 	@Input('categories') categories: ICategory[];
 
@@ -124,10 +129,15 @@ export class TransactionFormComponent {
 			return Infinity;
 		}
 
-		const walletBalance: number = this.transaction.wallet.balance;
+		const walletBalance = this.transaction.wallet.balance;
 
 		return this.transaction.type === 'expense'
-			? walletBalance
-			: Math.max(MAX_MONEY_AMOUNT_VALUE - walletBalance, 0);
+			? walletBalance.asDecimal
+			: Math.max(
+					Money.fromDecimal(MAX_MONEY_AMOUNT_VALUE, this._localeId).subtract(
+						this.transaction.wallet.balance
+					).asDecimal,
+					0
+			  );
 	}
 }

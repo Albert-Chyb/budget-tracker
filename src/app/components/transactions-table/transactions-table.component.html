@@ -11,7 +11,7 @@
 		<th mat-header-cell *matHeaderCellDef>Wartość</th>
 		<td mat-cell *matCellDef="let transaction">
 			{{ transaction.type === 'expense' ? '-' : '+' }}
-			{{ transaction.amount | currency }}
+			{{ transaction.amount }}
 		</td>
 	</ng-container>
 

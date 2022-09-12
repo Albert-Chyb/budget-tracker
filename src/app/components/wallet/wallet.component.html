@@ -27,7 +27,7 @@
 
 	<mat-card-content>
 		<p class="wallet-balance">
-			{{ wallet.balance | currency }}
+			{{ wallet.balance.asDecimal | currency }}
 		</p>
 	</mat-card-content>
 </mat-card>

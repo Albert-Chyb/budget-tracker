@@ -90,12 +90,12 @@ export class PeriodBarChartComponent {
 			series: [
 				{
 					name: 'Przychody',
-					value: period.income,
+					value: period.income.asDecimal,
 					period,
 				},
 				{
 					name: 'Wydatki',
-					value: period.expenses,
+					value: period.expenses.asDecimal,
 					period,
 				},
 			],

@@ -7,11 +7,7 @@
 			currencyInput
 			required
 			name="amount"
-			inputmode="decimal"
 			[(ngModel)]="transaction.amount"
-			[textMax]="maxAmount"
-			[textMin]="0"
-			[isInclusive]="false"
 			#amount="ngModel"
 		/>
 		<mat-icon matPrefix>paid</mat-icon>
@@ -118,7 +114,7 @@
 			#wallet="ngModel"
 		>
 			<mat-option *ngFor="let wallet of wallets" [value]="wallet">
-				{{ wallet.name }} ({{ wallet.balance | currency }})
+				{{ wallet.name }} ({{ wallet.balance }})
 			</mat-option>
 		</mat-select>
 		<mat-icon matPrefix>account_balance_wallet</mat-icon>

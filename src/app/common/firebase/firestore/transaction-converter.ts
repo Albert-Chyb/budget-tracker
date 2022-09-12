@@ -4,27 +4,30 @@ import {
 	QueryDocumentSnapshot,
 	SnapshotOptions,
 } from '@angular/fire/firestore';
+import { Money } from '@common/models/money';
 import {
 	ITransaction,
 	ITransactionBase,
+	ITransactionCreatePayload,
 	ITransactionReadPayload,
 } from '@interfaces/transaction';
 
 export class FirestoreTransactionConverter
 	implements FirestoreDataConverter<ITransactionBase>
 {
-	toFirestore(transaction: ITransaction): DocumentData {
+	constructor(private readonly _localeId: string) {}
+
+	toFirestore(transaction: ITransactionCreatePayload): DocumentData {
 		const docData = {
-			amount: Math.trunc(transaction.amount * 100),
+			amount: transaction.amount.asInteger,
 			type: transaction.type,
 			date: transaction.date,
 			category: transaction.category,
 			wallet: transaction.wallet,
+			...('description' in transaction && {
+				description: transaction.description,
+			}),
 		};
-
-		if ('description' in transaction) {
-			Object.assign(docData, { description: transaction.description });
-		}
 
 		return docData;
 	}
@@ -39,7 +42,7 @@ export class FirestoreTransactionConverter
 			...data,
 			id: snapshot.id,
 			date: data.date.toDate(),
-			amount: data.amount / 100,
+			amount: new Money(data.amount, this._localeId),
 		};
 	}
 }
