@@ -39,6 +39,7 @@
 					name="balance"
 					currencyInput
 					[(ngModel)]="wallet.balance"
+					[validator]="amountValidator"
 					#balance="ngModel"
 					required
 				/>
@@ -48,11 +49,14 @@
 				<mat-error *ngIf="balance.hasError('required')">
 					Balans jest wymagany
 				</mat-error>
-				<mat-error *ngIf="balance.hasError('min')">
+
+				<mat-error *ngIf="balance.hasError('tooLittleMoney')">
 					Balans <strong>nie może</strong> być ujemny
 				</mat-error>
-				<mat-error *ngIf="balance.hasError('max')">
-					Maksymalna wartość portfela wynosi 1 milion.
+
+				<mat-error *ngIf="balance.hasError('tooMuchMoney')">
+					Maksymalna wartość portfela wynosi
+					{{ balance.getError('tooMuchMoney').maxPossibleAmount }}.
 				</mat-error>
 			</mat-form-field>
 		</div>

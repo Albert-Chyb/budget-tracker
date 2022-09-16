@@ -10,9 +10,11 @@ import {
 	TemplateRef,
 	ViewChild,
 } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { AbstractControl, NgForm, ValidatorFn } from '@angular/forms';
 import { MAX_MONEY_AMOUNT_VALUE } from '@common/constants';
 import { Money } from '@common/models/money';
+import { maxMoneyAmount } from '@common/validators/max-money-amount-validator';
+import { minMoneyAmount } from '@common/validators/min-money-amount-validator';
 import { isNullish } from '@helpers/isNullish';
 import { ICategory } from '@interfaces/category';
 import {
@@ -121,12 +123,12 @@ export class TransactionFormComponent {
 			: wallet1 === wallet2;
 	}
 
-	get maxAmount(): number | null {
+	get maxAmount(): number {
 		if (
 			isNullish(this.transaction.wallet) ||
 			isNullish(this.transaction.type)
 		) {
-			return Infinity;
+			return Number.MAX_SAFE_INTEGER;
 		}
 
 		const walletBalance = this.transaction.wallet.balance;
@@ -139,5 +141,20 @@ export class TransactionFormComponent {
 					).asDecimal,
 					0
 			  );
+	}
+
+	get amountValidator(): ValidatorFn {
+		return (control: AbstractControl<Money>) => {
+			return {
+				...minMoneyAmount(new Money(0, this._localeId), false)(control),
+				...maxMoneyAmount(
+					new Money(
+						Money.fromDecimal(this.maxAmount, this._localeId),
+						this._localeId
+					),
+					true
+				)(control),
+			};
+		};
 	}
 }

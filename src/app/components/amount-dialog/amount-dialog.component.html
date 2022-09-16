@@ -14,17 +14,18 @@
 			type="text"
 			placeholder="np.: 100"
 			[(ngModel)]="amount"
+			[validator]="amountValidator"
 			currencyInput
 			#amountModel="ngModel"
 		/>
 
-		<mat-error *ngIf="amountModel.hasError('min')"
+		<mat-error *ngIf="amountModel.hasError('tooLittleMoney')"
 			>Kwota nie może być mniejsza niż
-			{{ amountModel.getError('min').min | currency }}</mat-error
+			{{ amountModel.getError('tooLittleMoney').minPossibleAmount }}</mat-error
 		>
-		<mat-error *ngIf="amountModel.hasError('max')"
+		<mat-error *ngIf="amountModel.hasError('tooMuchMoney')"
 			>Kwota nie może być większa niż
-			{{ amountModel.getError('max').max | currency }}</mat-error
+			{{ amountModel.getError('tooMuchMoney').maxPossibleAmount }}</mat-error
 		>
 	</mat-form-field>
 

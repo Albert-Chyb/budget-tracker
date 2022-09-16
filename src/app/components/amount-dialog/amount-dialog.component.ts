@@ -5,8 +5,11 @@ import {
 	Input,
 	LOCALE_ID,
 } from '@angular/core';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Money } from '@common/models/money';
+import { maxMoneyAmount } from '@common/validators/max-money-amount-validator';
+import { minMoneyAmount } from '@common/validators/min-money-amount-validator';
 
 const DEFAULT_CONFIG: (localeId: string) => AmountDialogConfig = (
 	localeId: string
@@ -56,4 +59,9 @@ export class AmountDialogComponent {
 	handleSubmit() {
 		this._dialogRef.close(this.amount);
 	}
+
+	amountValidator: ValidatorFn = (control: AbstractControl<Money>) => ({
+		...minMoneyAmount(this.min, true)(control),
+		...maxMoneyAmount(this.max, true)(control),
+	});
 }

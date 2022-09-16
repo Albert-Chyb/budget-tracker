@@ -14,6 +14,7 @@ import { SelectOnFocusDirective } from '@directives/select-on-focus/select-on-fo
 import { AppRoutingModule } from '@modules/app-routing.module';
 import { MatModule } from '@modules/mat.module';
 import { LoadingPipe } from '@pipes/loading/loading.pipe';
+import { FormControlValidatorDirective } from '../directives/form-control-validator/form-control-validator.directive';
 import { PercentageChangePipe } from '../pipes/percentage-change/percentage-change.pipe';
 import { ActionsModule } from './actions.module';
 import { CluesModule } from './clues.module';
@@ -32,6 +33,7 @@ import { FormValidatorsModule } from './form-validators.module';
 		CollectionPaginatorDirective,
 		PercentageChangePipe,
 		AmountDialogComponent,
+		FormControlValidatorDirective,
 	],
 	exports: [
 		PromptDialogComponent,
@@ -52,6 +54,7 @@ import { FormValidatorsModule } from './form-validators.module';
 		ActionsModule,
 		PercentageChangePipe,
 		AmountDialogComponent,
+		FormControlValidatorDirective,
 	],
 	imports: [
 		FormValidatorsModule,
