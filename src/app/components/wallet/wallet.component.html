@@ -14,7 +14,11 @@
 					Zmień nazwę
 				</button>
 
-				<button mat-menu-item [mat-menu-trigger-for]="walletsMenu">
+				<button
+					mat-menu-item
+					[mat-menu-trigger-for]="walletsMenu"
+					[disabled]="wallets.length === 0"
+				>
 					Przelej pieniądze do
 				</button>
 
