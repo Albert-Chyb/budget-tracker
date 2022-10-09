@@ -1,5 +1,19 @@
 <section>
-	<h1>Kategorie</h1>
+	<mat-toolbar page-toolbar>
+		<h1>Kategorie</h1>
+
+		<div page-toolbar-spacer></div>
+
+		<button
+			type="button"
+			mat-icon-button
+			(click)="addCategory()"
+			aria-label="Dodaj kategorię"
+			color="accent"
+		>
+			<mat-icon>add</mat-icon>
+		</button>
+	</mat-toolbar>
 
 	<ng-container *ngIf="categories$ | loading | async as categories">
 		<categories-list
@@ -8,13 +22,3 @@
 		></categories-list>
 	</ng-container>
 </section>
-
-<button
-	type="button"
-	mat-fab
-	*global-fab
-	(click)="addCategory()"
-	aria-label="Dodaj kategorię"
->
-	<mat-icon>add</mat-icon>
-</button>

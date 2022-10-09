@@ -9,12 +9,15 @@ import { LoadingIndicatorComponent } from '@components/loading-indicator/loading
 import { PromptDialogComponent } from '@components/prompt-dialog/prompt-dialog.component';
 import { CollectionPaginatorDirective } from '@directives/collection-paginator/collection-paginator.directive';
 import { CurrencyInputDirective } from '@directives/currency-input/currency-input.directive';
-import { GlobalFabDirective } from '@directives/global-fab/global-fab.directive';
 import { SelectOnFocusDirective } from '@directives/select-on-focus/select-on-focus.directive';
 import { AppRoutingModule } from '@modules/app-routing.module';
 import { MatModule } from '@modules/mat.module';
 import { LoadingPipe } from '@pipes/loading/loading.pipe';
 import { FormControlValidatorDirective } from '../directives/form-control-validator/form-control-validator.directive';
+import {
+	PageToolbarDirective,
+	PageToolbarSpacerDirective,
+} from '../directives/page-toolbar/page-toolbar.directive';
 import { PercentageChangePipe } from '../pipes/percentage-change/percentage-change.pipe';
 import { ActionsModule } from './actions.module';
 import { CluesModule } from './clues.module';
@@ -28,12 +31,13 @@ import { FormValidatorsModule } from './form-validators.module';
 		FileInputComponent,
 		LoadingIndicatorComponent,
 		SelectOnFocusDirective,
-		GlobalFabDirective,
 		CurrencyInputDirective,
 		CollectionPaginatorDirective,
 		PercentageChangePipe,
 		AmountDialogComponent,
 		FormControlValidatorDirective,
+		PageToolbarDirective,
+		PageToolbarSpacerDirective,
 	],
 	exports: [
 		PromptDialogComponent,
@@ -41,7 +45,6 @@ import { FormValidatorsModule } from './form-validators.module';
 		LoadingIndicatorComponent,
 		AlertComponent,
 		SelectOnFocusDirective,
-		GlobalFabDirective,
 		LoadingPipe,
 		CurrencyInputDirective,
 		CollectionPaginatorDirective,
@@ -55,6 +58,8 @@ import { FormValidatorsModule } from './form-validators.module';
 		PercentageChangePipe,
 		AmountDialogComponent,
 		FormControlValidatorDirective,
+		PageToolbarDirective,
+		PageToolbarSpacerDirective,
 	],
 	imports: [
 		FormValidatorsModule,

@@ -1,14 +1,19 @@
 <section>
-	<h1>Twoje transakcje</h1>
+	<mat-toolbar page-toolbar>
+		<h1>Twoje transakcje</h1>
+
+		<div page-toolbar-spacer></div>
+
+		<a
+			routerLink="/transaction"
+			type="button"
+			mat-icon-button
+			aria-label="Dodaj transakcje"
+			color="accent"
+		>
+			<mat-icon>add</mat-icon>
+		</a>
+	</mat-toolbar>
+
 	<paginated-transactions-table></paginated-transactions-table>
 </section>
-
-<a
-	routerLink="/transaction"
-	type="button"
-	mat-fab
-	*global-fab
-	aria-label="Dodaj transakcje"
->
-	<mat-icon>add</mat-icon>
-</a>

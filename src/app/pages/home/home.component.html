@@ -1,8 +1,8 @@
 <ng-container *ngIf="data$ | loading | async as data">
-	<div class="header-with-actions">
+	<mat-toolbar page-toolbar>
 		<h1>Statystyki</h1>
 
-		<div class="spacer"></div>
+		<div page-toolbar-spacer></div>
 
 		<button
 			[disabled]="data.wallets.length === 0"
@@ -25,7 +25,7 @@
 		>
 			<mat-icon>account_balance_wallet</mat-icon>
 		</button>
-	</div>
+	</mat-toolbar>
 
 	<ng-container *clueIf="data.wallets.length === 0">
 		<mat-grid-list

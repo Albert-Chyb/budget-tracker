@@ -1,5 +1,19 @@
 <section *ngIf="wallets$ | loading | async as wallets">
-	<h1>Twoje portfele</h1>
+	<mat-toolbar page-toolbar>
+		<h1>Twoje portfele</h1>
+
+		<div page-toolbar-spacer></div>
+
+		<button
+			type="button"
+			mat-icon-button
+			(click)="createWallet()"
+			aria-label="Dodaj portfel"
+			color="accent"
+		>
+			<mat-icon>add</mat-icon>
+		</button>
+	</mat-toolbar>
 
 	<div class="wallets" *clueIf="wallets.length === 0">
 		<ng-container *ngFor="let wallet of wallets; trackBy: trackById">
@@ -11,13 +25,3 @@
 		</ng-container>
 	</div>
 </section>
-
-<button
-	type="button"
-	mat-fab
-	*global-fab
-	(click)="createWallet()"
-	aria-label="Dodaj portfel"
->
-	<mat-icon>add</mat-icon>
-</button>
