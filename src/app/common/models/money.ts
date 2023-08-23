@@ -77,6 +77,6 @@ export class Money {
 	}
 
 	static fromDecimal(amount: number, localeId: string): Money {
-		return new Money(Math.trunc(amount * 100), localeId);
+		return new Money(Math.trunc(Math.round(amount * 100)), localeId);
 	}
 }
